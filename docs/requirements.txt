@@ -1,0 +1,6 @@
+jupyter
+jupyter-sphinx
+sphinx
+sphinx-audeering-theme >=0.8.0
+sphinx-autodoc-typehints
+sphinx-copybutton
