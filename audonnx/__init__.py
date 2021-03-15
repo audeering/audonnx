@@ -1,5 +1,7 @@
 from audonnx.core.model import Model
-
+from audonnx.core.api import (
+    load,
+)
 
 __all__ = []
 

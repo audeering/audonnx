@@ -1,3 +1,6 @@
+audinterface
+audmodel
+audsp
 jupyter
 jupyter-sphinx
 sphinx

@@ -3,6 +3,13 @@ audonnx
 
 .. automodule:: audonnx
 
+
+load
+----
+
+.. autofunction:: load
+
+
 Model
 -----
 

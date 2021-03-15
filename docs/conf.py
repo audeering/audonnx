@@ -63,3 +63,4 @@ html_theme_options = {
     'logo_only': False,
 }
 html_title = title
+html_static_path = ['_static']
