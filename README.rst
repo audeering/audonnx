@@ -2,9 +2,9 @@
 audonnx
 =======
 
-Deploy models in onnx_ format.
+Deploy models in ONNX_ format.
 
-.. _onnx:
+.. _ONNX:
     https://onnx.ai/
 
 For documentation see:
