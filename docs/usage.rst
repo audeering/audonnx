@@ -86,7 +86,7 @@ To export it, we pass the model and specify an output path.
         onnx_path,
         input_names=['input'],
         output_names=['output'],
-        dynamic_axes={'input': {3: "time"}},
+        dynamic_axes={'input': {3: 'time'}},
         opset_version=12,
     )
 
@@ -133,7 +133,7 @@ Or if we are interested in the raw predictions.
     import pandas as pd
 
     interface = audinterface.Feature(
-        feature_names=onnx_model.labels,
+        feature_names=onnx_model.labels['output'],
         process_func=onnx_model.forward,
     )
     interface.process_index(index)
@@ -209,7 +209,7 @@ The output of the quantized model will be slightly different, though.
 
 .. jupyter-execute::
 
-    onnx_model_3 = audonnx.load(onnx_root, name='model_quant.onnx')
+    onnx_model_3 = audonnx.load(onnx_root, model_file='model_quant.onnx')
     onnx_model_3.forward(signal, sampling_rate)
 
 

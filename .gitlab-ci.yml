@@ -31,11 +31,6 @@ python-3.7:
   stage: test
   image: docker.audeering.com/audeering/python-3.7:latest
 
-python-3.8:
-  extends: .pytest
-  stage: test
-  image: docker.audeering.com/audeering/python-3.8:latest
-
 docs:
   extends: .pytest
   stage: test
