@@ -50,8 +50,8 @@ a file path, a signal array and an index in audformat_.
     IPython.display.Audio(file)
 
 
-Export
-------
+Export to ONNX
+--------------
 
 The model we want to export to ONNX_
 was trained with audpann_.
@@ -111,8 +111,8 @@ Or we directly output the majority class.
     onnx_model.predict(signal, sampling_rate)
 
 
-Interface
----------
+Create an interface
+-------------------
 
 :class:`onnx.Model` does not come with a fancy interface itself,
 but we can use audinterface_ to create one.
@@ -181,8 +181,8 @@ Next time we want to load the model we can simply do:
     onnx_model_2.predict(signal, sampling_rate)
 
 
-Quantize
---------
+Quantize weights
+----------------
 
 To reduce the memory print of a model,
 we can quantize it.
@@ -213,9 +213,96 @@ The output of the quantized model will be slightly different, though.
     onnx_model_3.forward(signal, sampling_rate)
 
 
+Multi-head models
+-----------------
+
+The model we used so far has a single output node,
+now let us switch to one with multiple output nodes,
+a so called multi-head model.
+
+.. jupyter-execute::
+
+    import audmodel
+
+    uid = 'c3a709c9-0b58-48d1-7217-0aa3ea485d2e'
+    root = audmodel.load(uid)
+    onnx_model_multi = audonnx.load(root)
+    onnx_model_multi.output_names
+
+For such a model,
+we get a prediction for every output node:
+
+.. jupyter-execute::
+
+    onnx_model_multi.forward(signal, sampling_rate)
+
+We can also get predictions
+for specific node(s):
+
+.. jupyter-execute::
+
+    onnx_model_multi.predict(
+        signal,
+        sampling_rate,
+        output_names=['client-gender'],
+    )
+
+Or:
+
+.. jupyter-execute::
+
+    onnx_model_multi.predict(
+        signal,
+        sampling_rate,
+        output_names='client-gender',
+    )
+
+And we can create an an interface for it, too:
+
+.. jupyter-execute::
+
+    interface = audinterface.Feature(
+        feature_names=onnx_model_multi.labels['client-gender'],
+        process_func=onnx_model_multi.forward,
+        output_names='client-gender',
+    )
+    interface.process_signal(signal, sampling_rate)
+
+Or if we want to concatenate the predictions of all nodes:
+
+.. jupyter-execute::
+
+    import numpy as np
+
+    interface = audinterface.Feature(
+        feature_names=audeer.flatten_list(
+            list(onnx_model_multi.labels.values())
+        ),
+        process_func=lambda x, sr: np.concatenate(
+            list(onnx_model_multi.forward(x, sr).values()),
+            axis=1,
+        ),
+    )
+    interface.process_signal(signal, sampling_rate)
+
+
+Run on the GPU
+--------------
+
+If you want to run your model
+on the GPU,
+you have to install
+``onnxruntime-gpu``.
+Make sure you install the version
+that fits your CUDA installation.
+You can get the information
+from this table_.
+
+
 .. _audformat: https://audeering.github.io/audformat/
 .. _audinterface: http://tools.pp.audeering.com/audinterface/
 .. _audobject: http://tools.pp.audeering.com/audobject/
 .. _audpann: http://tools.pp.audeering.com/audpann/
 .. _PyTorch: https://pytorch.org/
 .. _ONNX: https://onnx.ai/
+.. _table: https://www.onnxruntime.ai/docs/reference/execution-providers/CUDA-ExecutionProvider.html#version-dependency
