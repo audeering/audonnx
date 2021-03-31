@@ -7,6 +7,12 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.1.1 (2021-03-31)
+--------------------------
+
+* Changed: update documentation how to select specific GPU device
+
+
 Version 0.1.0 (2021-03-25)
 --------------------------
 
