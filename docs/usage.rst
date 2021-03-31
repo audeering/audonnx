@@ -298,6 +298,20 @@ that fits your CUDA installation.
 You can get the information
 from this table_.
 
+Note that it will pick the
+first GPU device it finds.
+To select a specific CUDA device,
+you can do:
+
+.. code-block:: python
+
+    import os
+    import audonnx
+
+    os.environ['CUDA_VISIBLE_DEVICES']='2'  # make cuda:2 default device
+    model = audonnx.load(...)               # load model
+    model.predict(...)                      # run on cuda:2
+
 
 .. _audformat: https://audeering.github.io/audformat/
 .. _audinterface: http://tools.pp.audeering.com/audinterface/
