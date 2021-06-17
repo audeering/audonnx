@@ -1,5 +1,5 @@
 audpann==0.5.1
-audsp
+audsp>=0.12.2
 jupyter
 jupyter-sphinx
 onnx
