@@ -319,4 +319,4 @@ you can do:
 .. _audpann: http://tools.pp.audeering.com/audpann/
 .. _PyTorch: https://pytorch.org/
 .. _ONNX: https://onnx.ai/
-.. _table: https://www.onnxruntime.ai/docs/reference/execution-providers/CUDA-ExecutionProvider.html#version-dependency
+.. _table: https://www.onnxruntime.ai/docs/reference/execution-providers/CUDA-ExecutionProvider.html#requirements
