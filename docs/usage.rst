@@ -90,6 +90,9 @@ To export it, we pass the model and specify an output path.
         opset_version=12,
     )
 
+``predictor.model`` is the implementation of the model
+as a :class:`torch.nn.Module` object.
+
 We can now load the exported model
 and *voilà* we get the same output (well, almost :).
 
