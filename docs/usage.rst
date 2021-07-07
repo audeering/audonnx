@@ -32,6 +32,7 @@ a file path, a signal array and an index in audformat_.
 
     import audiofile
 
+
     file = './docs/_static/test.wav'
     signal, sampling_rate = audiofile.read(file)
     index = pd.MultiIndex.from_arrays(
@@ -61,6 +62,7 @@ Let's load it and apply it to our test signal.
 
     import audpann
 
+
     uid = '74c0af32-6acf-9f31-fe2a-3c05190a88f4'
     predictor = audpann.Predictor(
         uid=uid,
@@ -75,6 +77,7 @@ To export it, we pass the model and specify an output path.
     import audeer
     import os
     import torch
+
 
     onnx_root = audeer.mkdir('onnx')
     onnx_path = os.path.join(onnx_root, 'model.onnx')
@@ -100,18 +103,13 @@ and *voilà* we get the same output (well, almost :).
 
     import audonnx
 
+
     onnx_model = audonnx.Model(
         onnx_path,
         labels=predictor.labels,
         transform=predictor.transform,
     )
-    onnx_model.forward(signal, sampling_rate)
-
-Or we directly output the majority class.
-
-.. jupyter-execute::
-
-    onnx_model.predict(signal, sampling_rate)
+    onnx_model(signal, sampling_rate)
 
 
 Create an interface
@@ -124,22 +122,18 @@ but we can use audinterface_ to create one.
 
     import audinterface
 
-    interface = audinterface.Process(
-        process_func=onnx_model.predict,
-    )
-    interface.process_file(file)
-
-Or if we are interested in the raw predictions.
-
-.. jupyter-execute::
-
-    import pandas as pd
 
     interface = audinterface.Feature(
         feature_names=onnx_model.labels['output'],
-        process_func=onnx_model.forward,
+        process_func=onnx_model,
     )
     interface.process_index(index)
+
+Or if we are only interested in the majority class.
+
+.. jupyter-execute::
+
+    interface.process_index(index).idxmax(axis=1)
 
 
 Save and load
@@ -173,6 +167,7 @@ In addition, we also dump the labels to a yaml file.
 
     import oyaml as yaml
 
+
     with open(os.path.join(onnx_root, 'labels.yaml'), 'w') as fp:
         yaml.dump(onnx_model.labels, fp)
 
@@ -181,7 +176,7 @@ Next time we want to load the model we can simply do:
 .. jupyter-execute::
 
     onnx_model_2 = audonnx.load(onnx_root)
-    onnx_model_2.predict(signal, sampling_rate)
+    onnx_model_2(signal, sampling_rate)
 
 
 Quantize weights
@@ -194,6 +189,7 @@ For instance, we can store model weights as 8 bit integers.
 .. jupyter-execute::
 
     import onnxruntime.quantization
+
 
     quant_path = os.path.join(onnx_root, 'model_quant.onnx')
     quant_model = onnxruntime.quantization.quantize_dynamic(
@@ -213,7 +209,7 @@ The output of the quantized model will be slightly different, though.
 .. jupyter-execute::
 
     onnx_model_3 = audonnx.load(onnx_root, model_file='model_quant.onnx')
-    onnx_model_3.forward(signal, sampling_rate)
+    onnx_model_3(signal, sampling_rate)
 
 
 Multi-head models
@@ -227,6 +223,7 @@ a so called multi-head model.
 
     import audmodel
 
+
     uid = 'c3a709c9-0b58-48d1-7217-0aa3ea485d2e'
     root = audmodel.load(uid)
     onnx_model_multi = audonnx.load(root)
@@ -237,14 +234,14 @@ we get a prediction for every output node:
 
 .. jupyter-execute::
 
-    onnx_model_multi.forward(signal, sampling_rate)
+    onnx_model_multi(signal, sampling_rate)
 
 We can also get predictions
 for specific node(s):
 
 .. jupyter-execute::
 
-    onnx_model_multi.predict(
+    onnx_model_multi(
         signal,
         sampling_rate,
         output_names=['client-gender'],
@@ -254,7 +251,7 @@ Or:
 
 .. jupyter-execute::
 
-    onnx_model_multi.predict(
+    onnx_model_multi(
         signal,
         sampling_rate,
         output_names='client-gender',
@@ -266,7 +263,7 @@ And we can create an an interface for it, too:
 
     interface = audinterface.Feature(
         feature_names=onnx_model_multi.labels['client-gender'],
-        process_func=onnx_model_multi.forward,
+        process_func=onnx_model_multi,
         output_names='client-gender',
     )
     interface.process_signal(signal, sampling_rate)
@@ -277,12 +274,13 @@ Or if we want to concatenate the predictions of all nodes:
 
     import numpy as np
 
+
     interface = audinterface.Feature(
         feature_names=audeer.flatten_list(
             list(onnx_model_multi.labels.values())
         ),
         process_func=lambda x, sr: np.concatenate(
-            list(onnx_model_multi.forward(x, sr).values()),
+            list(onnx_model_multi(x, sr).values()),
             axis=1,
         ),
     )
@@ -313,7 +311,7 @@ you can do:
 
     os.environ['CUDA_VISIBLE_DEVICES']='2'  # make cuda:2 default device
     model = audonnx.load(...)               # load model
-    model.predict(...)                      # run on cuda:2
+    model(...)                              # run on cuda:2
 
 
 .. _audformat: https://audeering.github.io/audformat/

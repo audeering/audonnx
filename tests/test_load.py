@@ -106,9 +106,9 @@ def test_labels(path, labels, expected):
         ),
     ]
 )
-def test_forward(model, signal, sampling_rate, output_names, expected):
+def test_model(model, signal, sampling_rate, output_names, expected):
 
-    y = model.forward(signal, sampling_rate, output_names=output_names)
+    y = model(signal, sampling_rate, output_names=output_names)
 
     if isinstance(output_names, str):
         np.testing.assert_almost_equal(y, expected, decimal=2)
@@ -121,51 +121,6 @@ def test_forward(model, signal, sampling_rate, output_names, expected):
                 expected[output_name],
                 decimal=2,
             )
-
-
-@pytest.mark.parametrize(
-    'model, signal, sampling_rate',
-    [
-        (
-            pytest.MODEL,
-            pytest.SIGNAL,
-            pytest.SAMPLING_RATE,
-        )
-    ]
-)
-@pytest.mark.parametrize(
-    'output_names, expected',
-    [
-        (
-            'client-tone',
-            'negative',
-        ),
-        (
-            ['client-tone'],
-            {
-                'client-tone': 'negative',
-            }
-        ),
-        (
-            None,
-            {
-                'client-tone': 'negative',
-                'client-gender': 'male',
-            }
-        ),
-    ]
-)
-def test_predict(model, signal, sampling_rate, output_names, expected):
-
-    y = model.predict(signal, sampling_rate, output_names=output_names)
-
-    if isinstance(output_names, str):
-        assert y == expected
-    else:
-        if output_names is None:
-            output_names = model.output_names
-        for output_name in output_names:
-            assert y[output_name] == expected[output_name]
 
 
 def test_properties():

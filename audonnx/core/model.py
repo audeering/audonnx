@@ -73,48 +73,25 @@ class Model:
         r"""Type of output node."""
         return self._outputs[name].type
 
+    @audeer.deprecated(
+        removal_version='0.4.0',
+        alternative='__call__',
+    )
     def forward(
             self,
             signal: np.ndarray,
             sampling_rate: int,
             *,
             output_names: typing.Union[str, typing.Sequence[str]] = None,
-    ) -> typing.Union[np.ndarray, typing.Dict[str, np.ndarray]]:
-        r"""Compute raw predictions for one or more output nodes.
+    ) -> typing.Union[
+        np.ndarray,
+        typing.Dict[str, np.ndarray],
+    ]:  # pragma: no cover
+        return self(signal, sampling_rate, output_names=output_names)
 
-        Args:
-            signal: input signal
-            sampling_rate: sampling rate in Hz
-            output_names: name of output or list with output names
-
-        Returns:
-            array if single output name or dictionary with
-            output names as keys and predictions as values
-
-        """
-        if output_names is None:
-            output_names = list(self.output_names)
-            if len(output_names) == 1:  # pragma: no cover
-                output_names = output_names[0]
-
-        if self.transform is not None:
-            signal = self.transform(signal, sampling_rate)
-
-        y = signal.reshape([1] + list(signal.shape))
-        y = self.sess.run(
-            audeer.to_list(output_names),
-            {self.input_name: y},
-        )
-
-        if isinstance(output_names, str):
-            y = y[0]
-        else:
-            y = {
-                name: values for name, values in zip(output_names, y)
-            }
-
-        return y
-
+    @audeer.deprecated(
+        removal_version='0.4.0',
+    )
     def predict(
             self,
             signal: np.ndarray,
@@ -123,26 +100,14 @@ class Model:
             output_names: typing.Union[str, typing.Sequence[str]] = None,
     ) -> typing.Union[
         typing.Union[int, str],
-        typing.Dict[str, typing.Union[int, str]]
-    ]:
-        r"""Predict labels for one or more output nodes.
-
-        Args:
-            signal: input signal
-            sampling_rate: sampling rate in Hz
-            output_names: name of output or list with output names
-
-        Returns:
-            label if single output name or dictionary with
-            output names as keys and labels as values
-
-        """
+        typing.Dict[str, typing.Union[int, str]],
+    ]:  # pragma: no cover
         if output_names is None:
             output_names = list(self.output_names)
             if len(output_names) == 1:  # pragma: no cover
                 output_names = output_names[0]
 
-        y = self.forward(
+        y = self(
             signal,
             sampling_rate,
             output_names=audeer.to_list(output_names),
@@ -188,3 +153,62 @@ class Model:
             else:
                 result[name] = [f'{name}-{idx}' for idx in range(dim)]
         return result
+
+    def __call__(
+            self,
+            signal: np.ndarray,
+            sampling_rate: int,
+            *,
+            output_names: typing.Union[str, typing.Sequence[str]] = None,
+    ) -> typing.Union[
+        np.ndarray,
+        typing.Dict[str, np.ndarray],
+    ]:
+        r"""Compute raw predictions for one or more output nodes.
+
+        If ``output_names`` is a plain string,
+        the output of the according node is returned.
+
+        If ``output_names`` is a list of strings,
+        a dictionary with according nodes as keys and
+        their outputs as values is returned.
+
+        If ``output_names`` is not set
+        and the model has a single output node,
+        the output of that node is returned.
+        Otherwise a dictionary with outputs of all nodes is returned.
+
+        Use :attr:`audonnx.Model.output_names` to get a list of available
+        output nodes.
+
+        Args:
+            signal: input signal
+            sampling_rate: sampling rate in Hz
+            output_names: name of output or list with output names
+
+        Returns:
+            raw predictions as array or dictionary
+
+        """
+        if output_names is None:
+            output_names = list(self.output_names)
+            if len(output_names) == 1:  # pragma: no cover
+                output_names = output_names[0]
+
+        if self.transform is not None:
+            signal = self.transform(signal, sampling_rate)
+
+        y = signal.reshape([1] + list(signal.shape))
+        y = self.sess.run(
+            audeer.to_list(output_names),
+            {self.input_name: y},
+        )
+
+        if isinstance(output_names, str):
+            y = y[0]
+        else:
+            y = {
+                name: values for name, values in zip(output_names, y)
+            }
+
+        return y
