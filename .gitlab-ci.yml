@@ -24,12 +24,12 @@ include:
 python-3.6:
   extends: .pytest
   stage: test
-  image: docker.audeering.com/audeering/python-3.6:latest
+  image: docker.audeering.com/audeering/pytorch:latest
 
 python-3.7:
   extends: .pytest
   stage: test
-  image: docker.audeering.com/audeering/python-3.7:latest
+  image: docker.audeering.com/audeering/pytorch:latest
 
 docs:
   extends: .pytest

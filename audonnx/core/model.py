@@ -4,6 +4,7 @@ import numpy as np
 import onnxruntime
 
 import audeer
+import yaml
 
 
 class Model:
@@ -65,11 +66,11 @@ class Model:
         r"""Names of output nodes."""
         return list(self._outputs)
 
-    def output_shape(self, name: str) -> list:
+    def output_shape(self, name: str) -> typing.List[str]:
         r"""Shape of output node."""
-        return self._outputs[name].shape
+        return self._outputs[name].shape or [1]
 
-    def output_type(self, name: str) -> list:
+    def output_type(self, name: str) -> typing.List[str]:
         r"""Type of output node."""
         return self._outputs[name].type
 
@@ -151,7 +152,10 @@ class Model:
                     )
                 result[name] = labels[name]
             else:
-                result[name] = [f'{name}-{idx}' for idx in range(dim)]
+                if dim == 1:
+                    result[name] = [name]
+                else:
+                    result[name] = [f'{name}-{idx}' for idx in range(dim)]
         return result
 
     def __call__(
@@ -212,3 +216,32 @@ class Model:
             }
 
         return y
+
+    def __repr__(self) -> str:
+
+        def format_labels(
+                labels: typing.List[str],
+        ) -> typing.Sequence[str]:
+            if len(labels) > 6:
+                return labels[:3] + ['...'] + labels[-3:]
+            else:
+                return labels
+
+        d = {
+            f'{self.__class__.__module__}.{self.__class__.__name__}': {
+                'Input': [
+                    self.input_name,
+                    self.input_shape,
+                    self.input_type,
+                ],
+                'Output(s)': {
+                    name: [
+                        self.output_shape(name),
+                        self.output_type(name),
+                        format_labels(self.labels[name]),
+                    ] for name in self.output_names
+                }
+            }
+        }
+
+        return yaml.dump(d, default_flow_style=None).strip()

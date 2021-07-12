@@ -1,4 +1,7 @@
+import os
+
 import numpy as np
+import oyaml as yaml
 import pytest
 
 import audonnx
@@ -8,131 +11,39 @@ import audonnx
     'path, labels, expected',
     [
         (
-            pytest.MODEL_PATH,
-            None,
+            pytest.MODEL_MULTI_PATH,
             {
-                'client-tone': ['client-tone-0', 'client-tone-1',
-                                'client-tone-2', 'client-tone-3'],
-                'client-gender': ['client-gender-0', 'client-gender-1'],
-            }
-        ),
-        (
-            pytest.MODEL_PATH,
-            ['a', 'b', 'c', 'd'],
-            {
-                'client-tone': ['a', 'b', 'c', 'd'],
-                'client-gender': ['client-gender-0', 'client-gender-1'],
-            }
-        ),
-        (
-            pytest.MODEL_PATH,
-            {
-                'client-tone': ['a', 'b', 'c', 'd'],
-                'client-gender': ['e', 'f'],
+                'gender': ['female', 'male'],
             },
             {
-                'client-tone': ['a', 'b', 'c', 'd'],
-                'client-gender': ['e', 'f'],
-            }
-        ),
-        (
-            pytest.MODEL_PATH,
-            {
-                'client-tone': ['a', 'b', 'c', 'd'],
-            },
-            {
-                'client-tone': ['a', 'b', 'c', 'd'],
-                'client-gender': ['client-gender-0', 'client-gender-1'],
-            }
-        ),
-        pytest.param(
-            pytest.MODEL_PATH,
-            ['a', 'b', 'c'],
-            None,
-            marks=pytest.mark.xfail(raises=ValueError),
-        ),
-    ]
-)
-def test_labels(path, labels, expected):
-
-    model = audonnx.Model(path, labels=labels,)
-    assert model.labels == expected
-
-
-@pytest.mark.parametrize(
-    'model, signal, sampling_rate',
-    [
-        (
-            pytest.MODEL,
-            pytest.SIGNAL,
-            pytest.SAMPLING_RATE,
-        )
-    ]
-)
-@pytest.mark.parametrize(
-    'output_names, expected',
-    [
-        (
-            'client-tone',
-            np.array(
-                [1.37, 3.02, 2.28, -7.73],
-                dtype=np.float32,
-            ).reshape(1, 4),
-        ),
-        (
-            ['client-tone'],
-            {
-                'client-tone':
-                    np.array(
-                        [1.37, 3.02, 2.28, -7.73],
-                        dtype=np.float32,
-                    ).reshape(1, 4),
-            },
-        ),
-        (
-            None,
-            {
-                'client-tone':
-                    np.array(
-                        [1.37, 3.02, 2.28, -7.73],
-                        dtype=np.float32,
-                    ).reshape(1, 4),
-                'client-gender':
-                    np.array(
-                        [-3.58, 1.75],
-                        dtype=np.float32,
-                    ).reshape(1, 2),
+                'hidden': np.array([-0.7, -2.04, -3.12, 3.84,
+                                    -0.06, -6.34, 1.36, -5.46], np.float32),
+                'gender': np.array([1.78, 1.22], np.float32),
+                'confidence': np.array(2.6, np.float32),
             },
         ),
     ]
 )
-def test_model(model, signal, sampling_rate, output_names, expected):
+def test_load(path, labels, expected):
 
-    y = model(signal, sampling_rate, output_names=output_names)
+    root = os.path.dirname(path)
 
-    if isinstance(output_names, str):
-        np.testing.assert_almost_equal(y, expected, decimal=2)
-    else:
-        if output_names is None:
-            output_names = model.output_names
-        for output_name in output_names:
-            np.testing.assert_almost_equal(
-                y[output_name],
-                expected[output_name],
-                decimal=2,
-            )
+    transform_path = os.path.join(root, 'transform.yaml')
+    pytest.FEATURE.to_yaml(transform_path)
 
+    labels_path = os.path.join(root, 'labels.yaml')
+    with open(labels_path, 'w') as fp:
+        yaml.dump(labels, fp)
 
-def test_properties():
+    model = audonnx.load(
+        root,
+        model_file=os.path.basename(path),
+        transform_file=os.path.basename(transform_path),
+        labels_file=os.path.basename(labels_path),
+    )
+    y = model(pytest.SIGNAL, pytest.SAMPLING_RATE)
 
-    model = pytest.MODEL
-    inputs = model.sess.get_inputs()
-    outputs = model.sess.get_outputs()
-
-    assert model.input_name == inputs[0].name
-    assert model.input_shape == inputs[0].shape
-    assert model.input_type == inputs[0].type
-    for idx, output_name in enumerate(model.output_names):
-        assert output_name == outputs[idx].name
-        assert model.output_shape(output_name) == outputs[idx].shape
-        assert model.output_type(output_name) == outputs[idx].type
+    for key, values in y.items():
+        np.testing.assert_almost_equal(y[key], expected[key], decimal=2)
+    for key, values in labels.items():
+        assert model.labels[key] == labels[key]

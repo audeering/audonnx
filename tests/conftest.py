@@ -1,16 +1,137 @@
+import glob
 import os
+import random
+import shutil
 
+import numpy as np
 import pytest
+import torch
 
+import audeer
 import audiofile
-import audmodel
-import audonnx
+import audsp
 
 
-pytest.MODEL_ID = 'c3a709c9-0b58-48d1-7217-0aa3ea485d2e'
-pytest.MODEL_ROOT = audmodel.load(pytest.MODEL_ID)
-pytest.MODEL_PATH = os.path.join(pytest.MODEL_ROOT, 'model.onnx')
-pytest.SIGNAL, pytest.SAMPLING_RATE = audiofile.read(
-    os.path.join(os.path.dirname(os.path.realpath(__file__)), 'test.wav')
+pytest.ROOT = audeer.safe_path(
+    os.path.dirname(os.path.realpath(__file__))
 )
-pytest.MODEL = audonnx.load(pytest.MODEL_ROOT)
+pytest.TMP = audeer.mkdir(
+    os.path.join(
+        pytest.ROOT,
+        audeer.uid(),
+    )
+)
+pytest.SIGNAL, pytest.SAMPLING_RATE = audiofile.read(
+    os.path.join(pytest.ROOT, 'test.wav')
+)
+
+# feature extractor
+
+pytest.FEATURE = audsp.Spectrogram(
+    16000,
+    0.02,
+    0.01,
+    center=False,
+    reflect=False,
+    audspec=audsp.AuditorySpectrum(
+        num_bands=8,
+        scale=audsp.define.AuditorySpectrumScale.MEL,
+    ),
+)
+
+# fix seed
+
+seed = 1234
+torch.backends.cudnn.deterministic = True
+torch.manual_seed(seed)
+torch.cuda.manual_seed_all(seed)
+np.random.seed(seed)
+random.seed(seed)
+
+
+# create model with single output node
+
+class TorchModelSingle(torch.nn.Module):
+
+    def __init__(
+        self,
+    ):
+        super().__init__()
+        self.hidden = torch.nn.Linear(8, 8)
+        self.out = torch.nn.Linear(8, 2)
+
+    def forward(self, x: torch.Tensor):
+        y = self.hidden(x.mean(dim=-1))
+        y = self.out(y)
+        return y.squeeze()
+
+
+pytest.MODEL_SINGLE_PATH = os.path.join(pytest.TMP, 'single.onnx')
+torch.onnx.export(
+    TorchModelSingle(),
+    torch.randn(1, 1, 8, 10),
+    pytest.MODEL_SINGLE_PATH,
+    input_names=['input'],
+    output_names=['gender'],
+    dynamic_axes={'input': {3: 'time'}},
+    opset_version=12,
+)
+
+
+# create model with multi output nodes
+
+class TorchModelMulti(torch.nn.Module):
+
+    def __init__(
+        self,
+    ):
+
+        super().__init__()
+
+        self.hidden = torch.nn.Linear(8, 8)
+        self.out = torch.nn.ModuleDict(
+            {
+                'gender': torch.nn.Linear(8, 2),
+                'confidence': torch.nn.Linear(8, 1),
+            }
+        )
+
+    def forward(self, x: torch.Tensor):
+
+        y_hidden = self.hidden(x.mean(dim=-1))
+        y_gender = self.out['gender'](y_hidden)
+        y_confidence = self.out['confidence'](y_hidden)
+
+        return (
+            y_hidden.squeeze(),
+            y_gender.squeeze(),
+            y_confidence.squeeze(),
+        )
+
+
+pytest.MODEL_MULTI_PATH = os.path.join(pytest.TMP, 'multi.onnx')
+torch.onnx.export(
+    TorchModelMulti(),
+    torch.randn(1, 1, 8, 10),
+    pytest.MODEL_MULTI_PATH,
+    input_names=['input'],
+    output_names=['hidden', 'gender', 'confidence'],
+    dynamic_axes={'input': {3: 'time'}},
+    opset_version=12,
+)
+
+
+# clean up
+
+@pytest.fixture(scope='session', autouse=True)
+def cleanup_session():
+    path = os.path.join(
+        pytest.TMP,
+        '..',
+        '.coverage.*',
+    )
+    for file in glob.glob(path):
+        os.remove(file)
+    yield
+    if os.path.exists(pytest.TMP):
+        shutil.rmtree(pytest.TMP)
