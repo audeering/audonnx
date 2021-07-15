@@ -4,10 +4,11 @@ import numpy as np
 import onnxruntime
 
 import audeer
+import audobject
 import yaml
 
 
-class Model:
+class Model(audobject.Object):
     r"""ONNX model.
 
     Args:
@@ -18,6 +19,11 @@ class Model:
             into the desired representation
 
     """
+    @audobject.init_decorator(
+        resolvers={
+            'path': audobject.FilePathResolver,
+        }
+    )
     def __init__(
             self,
             path: str,
@@ -245,3 +251,6 @@ class Model:
         }
 
         return yaml.dump(d, default_flow_style=None).strip()
+
+    def __str__(self) -> str:
+        return repr(self)

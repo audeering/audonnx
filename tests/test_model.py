@@ -189,5 +189,5 @@ def test_properties(model):
         )
     ],
 )
-def test_repr(model, expected):
-    assert repr(model) == expected
+def test_str(model, expected):
+    assert str(model) == expected
