@@ -1,8 +1,8 @@
-audpann==0.5.1
 audsp>=0.12.2
 jupyter
 jupyter-sphinx
 onnx
+torch
 sphinx
 sphinx-audeering-theme >=0.8.0
 sphinx-autodoc-typehints

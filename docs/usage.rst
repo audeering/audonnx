@@ -22,10 +22,9 @@ Usage
 
 :mod:`audonnx` offers a simple interface
 to load and use models in ONNX_ format.
-In the following we will use it to export a model
-trained with PyTorch_ and write an interface for it.
+Models with single or multiple input and output nodes are supported.
 
-But first, let's create some test input -
+We begin with creating some test input -
 a file path, a signal array and an index in audformat_.
 
 .. jupyter-execute::
@@ -34,7 +33,10 @@ a file path, a signal array and an index in audformat_.
 
 
     file = './docs/_static/test.wav'
-    signal, sampling_rate = audiofile.read(file)
+    signal, sampling_rate = audiofile.read(
+        file,
+        always_2d=True,
+    )
     index = pd.MultiIndex.from_arrays(
         [
             [file, file],
@@ -51,53 +53,103 @@ a file path, a signal array and an index in audformat_.
     IPython.display.Audio(file)
 
 
-Export to ONNX
---------------
+Torch model
+-----------
 
-The model we want to export to ONNX_
-was trained with audpann_.
-Let's load it and apply it to our test signal.
+Create Torch_ model with a single input and output node.
 
 .. jupyter-execute::
 
-    import audpann
+    import torch
 
 
-    uid = '74c0af32-6acf-9f31-fe2a-3c05190a88f4'
-    predictor = audpann.Predictor(
-        uid=uid,
-        get_logits=True,
+    class TorchModelSingle(torch.nn.Module):
+
+        def __init__(
+            self,
+        ):
+            super().__init__()
+            self.hidden = torch.nn.Linear(8, 8)
+            self.out = torch.nn.Linear(8, 2)
+
+        def forward(self, x: torch.Tensor):
+            y = self.hidden(x.mean(dim=-1))
+            y = self.out(y)
+            return y.squeeze()
+
+
+    torch_model = TorchModelSingle()
+
+Create feature extraction that converts raw audio signal to a spectrogram.
+
+.. jupyter-execute::
+
+    import audsp
+
+
+    spectrogram = audsp.Spectrogram(
+        16000,
+        0.02,
+        0.01,
+        center=False,
+        reflect=False,
+        audspec=audsp.AuditorySpectrum(
+            num_bands=8,
+            scale=audsp.define.AuditorySpectrumScale.MEL,
+        ),
     )
-    predictor(signal, sampling_rate)
 
-To export it, we pass the model and specify an output path.
+Calculate spectrogram and run Torch_ model.
+
+.. jupyter-execute::
+
+    y = spectrogram(signal, sampling_rate)
+    with torch.no_grad():
+        z = torch_model(torch.from_numpy(y))
+    z
+
+
+Export model
+------------
+
+To export the model to ONNX_ format,
+we pass some dummy input,
+which allows the function to figure out
+correct input and output shapes.
+Since the number of frames in the spectrogram
+varies with the length of the input signal,
+we tell the function that the last dimension
+of the input has a dynamic size.
+And we assign meaningful names to the nodes.
 
 .. jupyter-execute::
 
     import audeer
     import os
-    import torch
 
 
     onnx_root = audeer.mkdir('onnx')
-    onnx_path = os.path.join(onnx_root, 'model.onnx')
+    onnx_model_path = os.path.join(onnx_root, 'model.onnx')
 
-    dummy_input = torch.randn(1, 1, 64, 500)
+    dummy_input = torch.randn(spectrogram.shape(1.0))
     torch.onnx.export(
-        predictor.model,
+        torch_model,
         dummy_input,
-        onnx_path,
-        input_names=['input'],
-        output_names=['output'],
-        dynamic_axes={'input': {3: 'time'}},
+        onnx_model_path,
+        input_names=['spectrogram'],  # assign custom name to input node
+        output_names=['gender'],      # assign custom name to output node
+        dynamic_axes={'spectrogram': {1: 'time'}},  # dynamic size
         opset_version=12,
     )
 
-``predictor.model`` is the implementation of the model
-as a :class:`torch.nn.Module` object.
-
-We can now load the exported model
-and *voilà* we get the same output (well, almost :).
+From the exported model file
+we now create an object of :class:`audonnx.Model`.
+We pass the feature extractor,
+so that the model can automatically convert the
+input signal to the desired representation.
+And we assign labels to the dimensions of the output node.
+Printing the model provides a summary of
+the input and output nodes.
 
 .. jupyter-execute::
 
@@ -105,27 +157,54 @@ and *voilà* we get the same output (well, almost :).
 
 
     onnx_model = audonnx.Model(
-        onnx_path,
-        labels=predictor.labels,
-        transform=predictor.transform,
+        onnx_model_path,
+        labels=['female', 'male'],
+        transform=spectrogram,
     )
+    onnx_model
+
+Get information for individual nodes.
+
+.. jupyter-execute::
+
+    onnx_model.inputs['spectrogram']
+
+.. jupyter-execute::
+
+    print(onnx_model.inputs['spectrogram'].transform)
+
+.. jupyter-execute::
+
+    onnx_model.outputs['gender']
+
+.. jupyter-execute::
+
+    onnx_model.outputs['gender'].labels
+
+Check that the exported model gives the expected output.
+
+.. jupyter-execute::
+
     onnx_model(signal, sampling_rate)
 
-
-Create an interface
--------------------
+Create interface
+----------------
 
 :class:`onnx.Model` does not come with a fancy interface itself,
 but we can use audinterface_ to create one.
 
 .. jupyter-execute::
 
+    import numpy as np
     import audinterface
 
 
     interface = audinterface.Feature(
-        feature_names=onnx_model.labels['output'],
-        process_func=onnx_model,
+        # use labels of output node as feature names
+        feature_names=onnx_model.outputs['gender'].labels,
+        # TODO: simplify to 'process_func=onnx_model'
+        # when https://github.com/audeering/audinterface/pull/22 is merged
+        process_func=lambda x, sr: np.atleast_2d(onnx_model(x, sr)),
     )
     interface.process_index(index)
 
@@ -139,44 +218,36 @@ Or if we are only interested in the majority class.
 Save and load
 -------------
 
-The model we are using works on spectrograms.
-Therefore, we have passed a callable object
-to the ``transform`` argument.
-If given, it is called to do the conversion from
-raw audio to the desired representation.
-Obviously, it is not a bad idea to store
-the transformation with the model.
-Since the callable is serializable class
-from audobject_, we can achieve this easily.
+Save the model to a YAML file.
 
 .. jupyter-execute::
 
-    transform_path = os.path.join(onnx_root, 'transform.yaml')
-    onnx_model.transform.to_yaml(transform_path)
-
-This stores the following yaml representation:
+    onnx_meta_path = os.path.join(onnx_root, 'model.yaml')
+    onnx_model.to_yaml(onnx_meta_path)
 
 .. jupyter-execute::
     :hide-code:
 
-    print(onnx_model.transform.to_yaml_s(include_version=True))
-
-In addition, we also dump the labels to a yaml file.
-
-.. jupyter-execute::
-
     import oyaml as yaml
 
 
-    with open(os.path.join(onnx_root, 'labels.yaml'), 'w') as fp:
-        yaml.dump(onnx_model.labels, fp)
+    with open(onnx_meta_path, 'r') as fp:
+        d = yaml.load(fp, Loader=yaml.Loader)
+    print(yaml.dump(d))
 
-Next time we want to load the model we can simply do:
+Load the model from a YAML file.
 
 .. jupyter-execute::
 
-    onnx_model_2 = audonnx.load(onnx_root)
+    onnx_model_2 = audonnx.Model.from_yaml(onnx_meta_path)
     onnx_model_2(signal, sampling_rate)
+
+Or shorter:
+
+.. jupyter-execute::
+
+    onnx_model_3 = audonnx.load(onnx_root)
+    onnx_model_3(signal, sampling_rate)
 
 
 Quantize weights
@@ -191,118 +262,160 @@ For instance, we can store model weights as 8 bit integers.
     import onnxruntime.quantization
 
 
-    quant_path = os.path.join(onnx_root, 'model_quant.onnx')
-    quant_model = onnxruntime.quantization.quantize_dynamic(
-        onnx_path,
-        quant_path,
+    onnx_quant_path = os.path.join(onnx_root, 'model_quant.onnx')
+    onnxruntime.quantization.quantize_dynamic(
+        onnx_model_path,
+        onnx_quant_path,
         weight_type=onnxruntime.quantization.QuantType.QUInt8,
     )
 
-The converted model is significantly smaller.
+The output of the quantized model differs slightly.
 
 .. jupyter-execute::
 
-    f'{os.stat(quant_path).st_size} << {os.stat(onnx_path).st_size}'
-
-The output of the quantized model will be slightly different, though.
-
-.. jupyter-execute::
-
-    onnx_model_3 = audonnx.load(onnx_root, model_file='model_quant.onnx')
-    onnx_model_3(signal, sampling_rate)
+    onnx_model_4 = audonnx.Model(
+        onnx_quant_path,
+        labels=['female', 'male'],
+        transform=spectrogram,
+    )
+    onnx_model_4(signal, sampling_rate)
 
 
-Multi-head models
------------------
+Model with multiple nodes
+-------------------------
 
-The model we used so far has a single output node,
-now let us switch to one with multiple output nodes,
-a so called multi-head model.
-
-.. jupyter-execute::
-
-    import audmodel
-
-
-    uid = 'c3a709c9-0b58-48d1-7217-0aa3ea485d2e'
-    root = audmodel.load(uid)
-    onnx_model_multi = audonnx.load(root)
-    onnx_model_multi.output_names
-
-For such a model,
-we get a prediction for every output node:
+Define a model that takes as input the
+raw audio in addition to the spectrogram
+and provides two more output nodes -
+the output from the hidden layer and a confidence value.
 
 .. jupyter-execute::
 
-    onnx_model_multi(signal, sampling_rate)
+    class TorchModelMulti(torch.nn.Module):
 
-We can also get predictions
-for specific node(s):
+        def __init__(
+            self,
+        ):
+
+            super().__init__()
+
+            self.hidden_left = torch.nn.Linear(1, 4)
+            self.hidden_right = torch.nn.Linear(8, 4)
+            self.out = torch.nn.ModuleDict(
+                {
+                    'gender': torch.nn.Linear(8, 2),
+                    'confidence': torch.nn.Linear(8, 1),
+                }
+            )
+
+        def forward(self, signal: torch.Tensor, spectrogram: torch.Tensor):
+
+            y_left = self.hidden_left(signal.mean(dim=-1))
+            y_right = self.hidden_right(spectrogram.mean(dim=-1))
+            y_hidden = torch.cat([y_left, y_right], dim=-1)
+            y_gender = self.out['gender'](y_hidden)
+            y_confidence = self.out['confidence'](y_hidden)
+
+            return (
+                y_hidden.squeeze(),
+                y_gender.squeeze(),
+                y_confidence.squeeze(),
+            )
+
+Export the new model to ONNX_ format and load it.
+Note that we do not assign labels to all output nodes.
+In that case, they are automatically created
+from the name of the output node.
+And since the first node expects the raw audio signal,
+we do not set a transform for it.
 
 .. jupyter-execute::
 
-    onnx_model_multi(
+    onnx_multi_path = os.path.join(onnx_root, 'model.onnx')
+
+    torch.onnx.export(
+        TorchModelMulti(),
+        (
+            torch.randn(signal.shape),
+            torch.randn(spectrogram.shape(1.0)),
+        ),
+        onnx_multi_path,
+        input_names=['signal', 'spectrogram'],
+        output_names=['hidden', 'gender', 'confidence'],
+        dynamic_axes={
+            'signal': {1: 'time'},
+            'spectrogram': {1: 'time'},
+        },
+        opset_version=12,
+    )
+
+    onnx_model_5 = audonnx.Model(
+        onnx_multi_path,
+        labels={
+            'gender': ['female', 'male']
+        },
+        transform={
+            'spectrogram': spectrogram,
+        },
+    )
+    onnx_model_5
+
+By default,
+returns a dictionary with output for every node.
+
+.. jupyter-execute::
+
+    onnx_model_5(signal, sampling_rate)
+
+To request specific nodes.
+
+.. jupyter-execute::
+
+    onnx_model_5(
         signal,
         sampling_rate,
-        output_names=['client-gender'],
+        output_names=['gender', 'confidence'],
     )
 
-Or:
+Or a single node:
 
 .. jupyter-execute::
 
-    onnx_model_multi(
+    onnx_model_5(
         signal,
         sampling_rate,
-        output_names='client-gender',
+        output_names='gender',
     )
 
-And we can create an an interface for it, too:
+Create interface and process a file.
 
 .. jupyter-execute::
 
-    interface = audinterface.Feature(
-        feature_names=onnx_model_multi.labels['client-gender'],
-        process_func=onnx_model_multi,
-        output_names='client-gender',
-    )
-    interface.process_signal(signal, sampling_rate)
-
-Or if we want to concatenate the predictions of all nodes:
-
-.. jupyter-execute::
-
-    import numpy as np
-
+    def process_func(x, sr, output_names):
+        y = onnx_model_5(x, sr, output_names=output_names)
+        return np.atleast_2d(y)
 
     interface = audinterface.Feature(
-        feature_names=audeer.flatten_list(
-            list(onnx_model_multi.labels.values())
-        ),
-        process_func=lambda x, sr: np.concatenate(
-            list(onnx_model_multi(x, sr).values()),
-            axis=1,
-        ),
+        feature_names=onnx_model_5.outputs['gender'].labels,
+        # TODO: simplify to 'process_func=onnx_model'
+        # when https://github.com/audeering/audinterface/pull/22 is merged
+        process_func=process_func,
+        output_names='gender',
     )
-    interface.process_signal(signal, sampling_rate)
+    interface.process_file(file)
 
 
 Run on the GPU
 --------------
 
-If you want to run your model
-on the GPU,
-you have to install
-``onnxruntime-gpu``.
-Make sure you install the version
-that fits your CUDA installation.
-You can get the information
-from this table_.
+To run a model on the GPU install ``onnxruntime-gpu``.
+Note that the version has to fit the CUDA installation.
+We can get the information from this table_.
 
-Note that it will pick the
-first GPU device it finds.
+By default,
+it uses the first GPU device it finds.
 To select a specific CUDA device,
-you can do:
+we can do:
 
 .. code-block:: python
 
@@ -318,6 +431,6 @@ you can do:
 .. _audinterface: http://tools.pp.audeering.com/audinterface/
 .. _audobject: http://tools.pp.audeering.com/audobject/
 .. _audpann: http://tools.pp.audeering.com/audpann/
-.. _PyTorch: https://pytorch.org/
+.. _Torch: https://pytorch.org/
 .. _ONNX: https://onnx.ai/
 .. _table: https://www.onnxruntime.ai/docs/reference/execution-providers/CUDA-ExecutionProvider.html#requirements

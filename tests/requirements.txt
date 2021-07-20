@@ -1,4 +1,4 @@
-audsp
+audsp>=0.12.2
 torch
 pytest
 pytest-flake8

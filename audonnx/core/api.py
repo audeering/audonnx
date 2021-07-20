@@ -11,11 +11,14 @@ from audonnx.core.model import Model
 def load(
         root: str,
         *,
-        model_file: str = 'model.onnx',
+        model_file: str = 'model.yaml',
         labels_file: str = 'labels.yaml',
         transform_file: str = 'transform.yaml',
 ) -> Model:
     r"""Load model from folder.
+
+    Tries to load model from YAML file.
+    Otherwise creates object from ONNX file (legacy mode).
 
     Args:
         root: root folder
@@ -29,6 +32,17 @@ def load(
     """
 
     root = audeer.safe_path(root)
+
+    # try to load object from YAML file
+
+    path = os.path.join(root, model_file)
+    if audeer.file_extension(path) == 'yaml':
+        if os.path.exists(path):
+            return Model.from_yaml(path)
+
+    # otherwise create object from ONNX file
+
+    model_file = audeer.replace_file_extension(model_file, 'onnx')
     labels = None
     transform = None
 

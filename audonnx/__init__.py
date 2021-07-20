@@ -1,4 +1,10 @@
-from audonnx.core.model import Model
+from audonnx.core.model import (
+    Model,
+)
+from audonnx.core.model import (
+    InputNode,
+    OutputNode,
+)
 from audonnx.core.api import (
     load,
 )

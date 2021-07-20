@@ -8,28 +8,26 @@ import audonnx
 
 
 @pytest.mark.parametrize(
-    'path, labels, expected',
+    'path, transform, labels, expected',
     [
         (
-            pytest.MODEL_MULTI_PATH,
+            pytest.MODEL_SINGLE_PATH,
+            pytest.SPECTROGRAM,
             {
                 'gender': ['female', 'male'],
             },
-            {
-                'hidden': np.array([-0.7, -2.04, -3.12, 3.84,
-                                    -0.06, -6.34, 1.36, -5.46], np.float32),
-                'gender': np.array([1.78, 1.22], np.float32),
-                'confidence': np.array(2.6, np.float32),
-            },
+            np.array([2.29, 1.21], np.float32),
         ),
     ]
 )
-def test_load(path, labels, expected):
+def test_load_legacy(tmpdir, path, transform, labels, expected):
 
     root = os.path.dirname(path)
 
+    # create from onnx
+
     transform_path = os.path.join(root, 'transform.yaml')
-    pytest.FEATURE.to_yaml(transform_path)
+    transform.to_yaml(transform_path)
 
     labels_path = os.path.join(root, 'labels.yaml')
     with open(labels_path, 'w') as fp:
@@ -43,7 +41,18 @@ def test_load(path, labels, expected):
     )
     y = model(pytest.SIGNAL, pytest.SAMPLING_RATE)
 
-    for key, values in y.items():
-        np.testing.assert_almost_equal(y[key], expected[key], decimal=2)
+    np.testing.assert_almost_equal(y, expected, decimal=2)
     for key, values in labels.items():
-        assert model.labels[key] == labels[key]
+        assert model.outputs[key].labels == labels[key]
+
+    # create from YAML
+
+    model_path = os.path.join(tmpdir, 'model.yaml')
+    model.to_yaml(model_path)
+
+    model = audonnx.load(tmpdir)
+    y = model(pytest.SIGNAL, pytest.SAMPLING_RATE)
+
+    np.testing.assert_almost_equal(y, expected, decimal=2)
+    for key, values in labels.items():
+        assert model.outputs[key].labels == labels[key]
