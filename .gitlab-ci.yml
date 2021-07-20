@@ -26,11 +26,6 @@ python-3.6:
   stage: test
   image: docker.audeering.com/audeering/pytorch:latest
 
-python-3.7:
-  extends: .pytest
-  stage: test
-  image: docker.audeering.com/audeering/pytorch:latest
-
 docs:
   extends: .pytest
   stage: test
