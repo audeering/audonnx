@@ -7,6 +7,33 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.2.0 (2021-07-20)
+--------------------------
+
+* Added:
+  ``InputNode``,
+  ``Model.__call__()``,
+  ``Model.inputs``,
+  ``Model.outputs``,
+  ``OutputNode``
+* Changed: reshape input to expected shape
+* Changed: do not depend on existing models in tests and documentation
+* Changed: support multiple input nodes
+* Changed: make ``Model`` serializable
+* Deprecated:
+  ``Model.forward()``
+  ``Model.labels``,
+  ``Model.predict()``,
+  ``Model.transform``
+* Removed:
+  ``Model.input_node``,
+  ``Model.input_shape``,
+  ``Model.input_type``,
+  ``Model.output_nodes``,
+  ``Model.output_shape``,
+  ``Model.output_type``,
+
+
 Version 0.1.1 (2021-03-31)
 --------------------------
 
