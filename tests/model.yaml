@@ -1,0 +1,28 @@
+$audonnx.core.model.Model==0.1.dev1+gb3d3c79:
+  path: model.onnx
+  labels:
+    gender:
+    - female
+    - male
+  transform:
+    spectrogram:
+      $audsp.core.spectrogram.Spectrogram==0.12.2:
+        win_dur: 0.02
+        hop_dur: 0.01
+        power: false
+        num_fft: 512
+        center: false
+        reflect: false
+        zero_phase: false
+        audspec:
+          $audsp.core.audspec.AuditorySpectrum==0.12.2:
+            num_bands: 8
+            freq_low: null
+            freq_high: null
+            scale: 2
+        unit: seconds
+        channels:
+        - 0
+        mixdown: false
+        resample: false
+        sampling_rate: 16000

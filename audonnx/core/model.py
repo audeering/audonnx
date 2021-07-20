@@ -1,9 +1,11 @@
+import os
 import typing
 
 import numpy as np
 import onnxruntime
 
 import audeer
+import audiofile
 import audobject
 import yaml
 
@@ -164,6 +166,18 @@ class Model(audobject.Object):
 
         Returns:
             model output
+
+        Examples:
+            >>> audio_path = os.path.join('tests', 'test.wav')
+            >>> signal, sampling_rate = audiofile.read(audio_path)
+            >>> model_path = os.path.join('tests', 'model.yaml')
+            >>> model = Model.from_yaml(model_path)
+            >>> model(
+            ...     signal,
+            ...     sampling_rate,
+            ...     output_names='gender',
+            ... ).round(2)
+            array([-0.08, -0.83], dtype=float32)
 
         """
         if output_names is None:
