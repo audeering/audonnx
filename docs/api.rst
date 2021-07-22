@@ -14,7 +14,7 @@ Model
 -----
 
 .. autoclass:: Model
-    :members: from_yaml, inputs, outputs, path, sess, to_yaml
+    :members:
     :special-members: __call__
 
 

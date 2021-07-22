@@ -34,6 +34,13 @@ class Model(audobject.Object):
     Use dictionary to assign labels to specific nodes
     if model has multiple output nodes.
 
+    :class:`Model` inherites from :class:`audobject.Object`,
+    which means you can seralize to
+    and instantiate the class
+    from a YAML file.
+    Have a look at :class:`audobject.Object`
+    to see all available methods.
+
     Args:
         path: path to model file
         labels: list of labels or dictionary with labels
