@@ -56,6 +56,7 @@ intersphinx_mapping = {
 # Disable Gitlab as we need to sign in
 linkcheck_ignore = [
     'https://gitlab.audeering.com',
+    'https://sphinx-doc.org',
 ]
 
 # HTML --------------------------------------------------------------------
