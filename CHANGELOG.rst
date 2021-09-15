@@ -7,6 +7,12 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.2.1 (2021-09-15)
+--------------------------
+
+* Fixed: loading of old models that contain a ``model.yaml`` file
+
+
 Version 0.2.0 (2021-07-20)
 --------------------------
 
