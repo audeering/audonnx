@@ -18,13 +18,21 @@ def load(
     r"""Load model from folder.
 
     Tries to load model from YAML file.
+
     Otherwise creates object from ONNX file (legacy mode).
+    In this case it will load
+    labels and the transform
+    from the corresponding YAML files
+    if provided.
+    The model is expected to be located at
+    ``audeer.replace_file_extension(model_file, 'onnx')``.
 
     Args:
         root: root folder
-        model_file: model file
-        labels_file: yaml file with labels
-        transform_file: yaml file with transformation
+        model_file: model YAML file,
+            in legacy mode path to model ONNX file
+        labels_file: YAML file with labels
+        transform_file: YAML file with transformation
 
     Returns:
         model
@@ -58,31 +66,36 @@ def load(
     """  # noqa: E501
 
     root = audeer.safe_path(root)
+    model_file = os.path.join(root, model_file)
 
-    # try to load object from YAML file
+    # Try to load object from YAML file
 
-    path = os.path.join(root, model_file)
-    if audeer.file_extension(path) == 'yaml':
-        if os.path.exists(path):
-            return Model.from_yaml(path)
+    if (
+            os.path.exists(model_file)
+            and audeer.file_extension(model_file) == 'yaml'
+    ):
+        with open(model_file) as f:
+            first_line = f.readline()
+        if first_line.startswith('$audonnx'):  # ensure correct object
+            return Model.from_yaml(model_file)
 
-    # otherwise create object from ONNX file
+    # Otherwise create object from ONNX file
 
     model_file = audeer.replace_file_extension(model_file, 'onnx')
-    labels = None
-    transform = None
+    labels_file = os.path.join(root, labels_file)
+    transform_file = os.path.join(root, transform_file)
 
-    path = os.path.join(root, labels_file)
-    if os.path.exists(path):
-        with open(path, 'r') as fp:
+    labels = None
+    if os.path.exists(labels_file):
+        with open(labels_file, 'r') as fp:
             labels = yaml.load(fp, yaml.BaseLoader)
 
-    path = os.path.join(root, transform_file)
-    if os.path.exists(path):
-        transform = audobject.Object.from_yaml(path)
+    transform = None
+    if os.path.exists(transform_file):
+        transform = audobject.Object.from_yaml(transform_file)
 
     model = Model(
-        os.path.join(root, model_file),
+        model_file,
         labels=labels,
         transform=transform,
     )

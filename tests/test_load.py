@@ -4,6 +4,7 @@ import numpy as np
 import oyaml as yaml
 import pytest
 
+import audobject
 import audonnx
 
 
@@ -44,6 +45,15 @@ def test_load_legacy(tmpdir, path, transform, labels, expected):
     np.testing.assert_almost_equal(y, expected, decimal=2)
     for key, values in labels.items():
         assert model.outputs[key].labels == labels[key]
+
+    # store wrong model YAML
+
+    model_path = os.path.join(tmpdir, 'single.yaml')
+    audobject.Object().to_yaml(model_path)
+    model = audonnx.load(
+        root,
+        model_file=os.path.basename(path),
+    )
 
     # create from YAML
 
