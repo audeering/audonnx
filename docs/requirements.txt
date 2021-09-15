@@ -4,6 +4,6 @@ jupyter-sphinx
 onnx
 torch
 sphinx
-sphinx-audeering-theme >=0.8.0
+sphinx-audeering-theme >=1.0.14
 sphinx-autodoc-typehints
 sphinx-copybutton
