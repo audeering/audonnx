@@ -433,4 +433,4 @@ we can do:
 .. _audpann: http://tools.pp.audeering.com/audpann/
 .. _Torch: https://pytorch.org/
 .. _ONNX: https://onnx.ai/
-.. _table: https://www.onnxruntime.ai/docs/reference/execution-providers/CUDA-ExecutionProvider.html#requirements
+.. _table: https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html#requirements
