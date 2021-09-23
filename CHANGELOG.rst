@@ -7,6 +7,12 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.2.2 (2021-09-23)
+--------------------------
+
+* Fixed: link to ONNX runtime CUDA mapping table
+
+
 Version 0.2.1 (2021-09-15)
 --------------------------
 
