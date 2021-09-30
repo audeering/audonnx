@@ -178,7 +178,8 @@ class Model(audobject.Object):
             >>> audio_path = os.path.join('tests', 'test.wav')
             >>> signal, sampling_rate = audiofile.read(audio_path)
             >>> model_path = os.path.join('tests', 'model.yaml')
-            >>> model = Model.from_yaml(model_path)
+            >>> import audobject
+            >>> model = audobject.from_yaml(model_path)
             >>> model(
             ...     signal,
             ...     sampling_rate,

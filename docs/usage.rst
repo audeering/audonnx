@@ -239,7 +239,9 @@ Load the model from a YAML file.
 
 .. jupyter-execute::
 
-    onnx_model_2 = audonnx.Model.from_yaml(onnx_meta_path)
+    import audobject
+
+    onnx_model_2 = audobject.from_yaml(onnx_meta_path)
     onnx_model_2(signal, sampling_rate)
 
 Or shorter:

@@ -77,7 +77,7 @@ def load(
         with open(model_file) as f:
             first_line = f.readline()
         if first_line.startswith('$audonnx'):  # ensure correct object
-            return Model.from_yaml(model_file)
+            return audobject.from_yaml(model_file)
 
     # Otherwise create object from ONNX file
 
@@ -92,7 +92,7 @@ def load(
 
     transform = None
     if os.path.exists(transform_file):
-        transform = audobject.Object.from_yaml(transform_file)
+        transform = audobject.from_yaml(transform_file)
 
     model = Model(
         model_file,
