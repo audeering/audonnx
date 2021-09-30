@@ -258,6 +258,11 @@ Quantize weights
 To reduce the memory print of a model,
 we can quantize it.
 For instance, we can store model weights as 8 bit integers.
+For quantization make sure
+you have installed
+``onnx``
+as well as
+``onnxruntime``.
 
 .. jupyter-execute::
 
