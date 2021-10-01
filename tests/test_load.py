@@ -55,6 +55,12 @@ def test_load_legacy(tmpdir, path, transform, labels, expected):
         model_file=os.path.basename(path),
     )
 
+    # file extension does not end on '.yaml'
+
+    model_path = os.path.join(tmpdir, 'model.yml')
+    with pytest.raises(ValueError):
+        model.to_yaml(model_path)
+
     # create from YAML
 
     model_path = os.path.join(tmpdir, 'model.yaml')

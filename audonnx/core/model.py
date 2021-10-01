@@ -231,6 +231,28 @@ class Model(audobject.Object):
     def __str__(self) -> str:
         return repr(self)
 
+    def to_yaml(
+            self,
+            path: str,
+            *,
+            include_version: bool = True,
+    ):
+        r"""Save model to YAML file.
+
+        Args:
+            path: file path, must end on ``.yaml``
+            include_version: add version to class name
+
+        Raises:
+            ValueError: if file path does not end on ``.yaml``
+
+       """
+        path = audeer.safe_path(path)
+        if not audeer.file_extension(path) == 'yaml':
+            raise ValueError(f"Model path {path} does not end on '.yaml'")
+        with open(path, 'w') as fp:
+            super().to_yaml(fp, include_version=include_version)
+
     # deprecated
 
     @audeer.deprecated(
