@@ -7,6 +7,14 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.3.0 (2021-10-01)
+--------------------------
+
+* Changed: audobject >=0.5.0
+* Changed: force ``.yaml`` extension when model is saved
+* Fixed: if possible load model from ``.yaml`` in ``audonnx.load()``
+
+
 Version 0.2.2 (2021-09-23)
 --------------------------
 
