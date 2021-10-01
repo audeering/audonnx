@@ -200,11 +200,8 @@ but we can use audinterface_ to create one.
 
 
     interface = audinterface.Feature(
-        # use labels of output node as feature names
         feature_names=onnx_model.outputs['gender'].labels,
-        # TODO: simplify to 'process_func=onnx_model'
-        # when https://github.com/audeering/audinterface/pull/22 is merged
-        process_func=lambda x, sr: np.atleast_2d(onnx_model(x, sr)),
+        process_func=onnx_model,
     )
     interface.process_index(index)
 
@@ -398,15 +395,9 @@ Create interface and process a file.
 
 .. jupyter-execute::
 
-    def process_func(x, sr, output_names):
-        y = onnx_model_5(x, sr, output_names=output_names)
-        return np.atleast_2d(y)
-
     interface = audinterface.Feature(
         feature_names=onnx_model_5.outputs['gender'].labels,
-        # TODO: simplify to 'process_func=onnx_model'
-        # when https://github.com/audeering/audinterface/pull/22 is merged
-        process_func=process_func,
+        process_func=onnx_model,
         output_names='gender',
     )
     interface.process_file(file)
