@@ -30,7 +30,8 @@ def load(
     Args:
         root: root folder
         model_file: model YAML file,
-            in legacy mode path to model ONNX file
+            that needs to end with ``.yaml``.
+            In legacy mode path to model ONNX file
         labels_file: YAML file with labels
         transform_file: YAML file with transformation
 
@@ -67,21 +68,20 @@ def load(
 
     root = audeer.safe_path(root)
     model_file = os.path.join(root, model_file)
+    model_file_yaml = audeer.replace_file_extension(model_file, 'yaml')
+    model_file_onnx = model_file
 
     # Try to load object from YAML file
 
-    if (
-            os.path.exists(model_file)
-            and audeer.file_extension(model_file) == 'yaml'
-    ):
-        with open(model_file) as f:
+    if os.path.exists(model_file_yaml):
+        with open(model_file_yaml) as f:
             first_line = f.readline()
         if first_line.startswith('$audonnx'):  # ensure correct object
-            return audobject.from_yaml(model_file)
+            return audobject.from_yaml(model_file_yaml)
 
+    # LEGACY support
     # Otherwise create object from ONNX file
 
-    model_file = audeer.replace_file_extension(model_file, 'onnx')
     labels_file = os.path.join(root, labels_file)
     transform_file = os.path.join(root, transform_file)
 
@@ -95,7 +95,7 @@ def load(
         transform = audobject.from_yaml(transform_file)
 
     model = Model(
-        model_file,
+        model_file_onnx,
         labels=labels,
         transform=transform,
     )
