@@ -1,5 +1,6 @@
 import os
 
+import audeer
 import numpy as np
 import oyaml as yaml
 import pytest
@@ -39,6 +40,18 @@ def test_load_legacy(tmpdir, path, transform, labels, expected):
         model_file=os.path.basename(path),
         transform_file=os.path.basename(transform_path),
         labels_file=os.path.basename(labels_path),
+    )
+    y = model(pytest.SIGNAL, pytest.SAMPLING_RATE)
+
+    np.testing.assert_almost_equal(y, expected, decimal=2)
+    for key, values in labels.items():
+        assert model.outputs[key].labels == labels[key]
+
+    # legacy mode -> load from ONNX if YAML does not exist
+
+    model = audonnx.load(
+        root,
+        model_file=audeer.replace_file_extension(path, 'yaml'),
     )
     y = model(pytest.SIGNAL, pytest.SAMPLING_RATE)
 

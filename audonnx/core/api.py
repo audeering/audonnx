@@ -69,7 +69,10 @@ def load(
     root = audeer.safe_path(root)
     model_file = os.path.join(root, model_file)
     model_file_yaml = audeer.replace_file_extension(model_file, 'yaml')
-    model_file_onnx = model_file
+    if audeer.file_extension(model_file) == 'yaml':
+        model_file_onnx = audeer.replace_file_extension(model_file, 'onnx')
+    else:
+        model_file_onnx = model_file
 
     # Try to load object from YAML file
 
