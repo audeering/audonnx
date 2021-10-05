@@ -7,6 +7,12 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.3.1 (2021-10-05)
+--------------------------
+
+* Fixed: ``audonnx.load()`` try to load model from ONNX if YAML does not exist
+
+
 Version 0.3.0 (2021-10-01)
 --------------------------
 
