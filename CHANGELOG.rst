@@ -7,6 +7,12 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.3.2 (2021-11-01)
+--------------------------
+
+* Changed: use ``audobject`` >=0.6.1
+
+
 Version 0.3.1 (2021-10-05)
 --------------------------
 
