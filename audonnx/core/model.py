@@ -53,7 +53,7 @@ class Model(audobject.Object):
             'transform': '_original_args',
         },
         resolvers={
-            'path': audobject.FilePathResolver,
+            'path': audobject.resolver.FilePath,
         },
     )
     def __init__(
