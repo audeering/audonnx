@@ -14,11 +14,11 @@ import audonnx
     [
         (
             pytest.MODEL_SINGLE_PATH,
-            pytest.SPECTROGRAM,
+            pytest.FEATURE,
             {
                 'gender': ['female', 'male'],
             },
-            np.array([2.29, 1.21], np.float32),
+            np.array([-195.1, 73.28], np.float32),
         ),
     ]
 )

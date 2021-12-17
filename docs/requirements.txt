@@ -1,5 +1,4 @@
-audinterface>=0.7.0
-audsp>=1.1.0
+opensmile >=2.3.0
 jupyter
 jupyter-sphinx
 onnx

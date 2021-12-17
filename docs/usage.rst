@@ -52,6 +52,10 @@ a file path, a signal array and an index in audformat_.
     import IPython
     IPython.display.Audio(file)
 
+.. empty line for some extra space
+
+|
+
 
 Torch model
 -----------
@@ -69,7 +73,7 @@ Create Torch_ model with a single input and output node.
             self,
         ):
             super().__init__()
-            self.hidden = torch.nn.Linear(8, 8)
+            self.hidden = torch.nn.Linear(18, 8)
             self.out = torch.nn.Linear(8, 2)
 
         def forward(self, x: torch.Tensor):
@@ -80,30 +84,24 @@ Create Torch_ model with a single input and output node.
 
     torch_model = TorchModelSingle()
 
-Create feature extraction that converts raw audio signal to a spectrogram.
+Create OpenSMILE_ feature extractor to convert the
+raw audio signal to a sequence of low-level descriptors.
 
 .. jupyter-execute::
 
-    import audsp
+    import opensmile
 
 
-    spectrogram = audsp.Spectrogram(
-        16000,
-        0.02,
-        0.01,
-        center=False,
-        reflect=False,
-        audspec=audsp.AuditorySpectrum(
-            num_bands=8,
-            scale=audsp.define.AuditorySpectrumScale.MEL,
-        ),
+    smile = opensmile.Smile(
+        feature_set=opensmile.FeatureSet.GeMAPSv01b,
+        feature_level=opensmile.FeatureLevel.LowLevelDescriptors,
     )
 
-Calculate spectrogram and run Torch_ model.
+Calculate features and run Torch_ model.
 
 .. jupyter-execute::
 
-    y = spectrogram(signal, sampling_rate)
+    y = smile(signal, sampling_rate)
     with torch.no_grad():
         z = torch_model(torch.from_numpy(y))
     z
@@ -116,7 +114,7 @@ To export the model to ONNX_ format,
 we pass some dummy input,
 which allows the function to figure out
 correct input and output shapes.
-Since the number of frames in the spectrogram
+Since the number of extracted feature frames
 varies with the length of the input signal,
 we tell the function that the last dimension
 of the input has a dynamic size.
@@ -131,14 +129,14 @@ And we assign meaningful names to the nodes.
     onnx_root = audeer.mkdir('onnx')
     onnx_model_path = os.path.join(onnx_root, 'model.onnx')
 
-    dummy_input = torch.randn(spectrogram.shape(1.0))
+    dummy_input = torch.randn(y.shape[1:])
     torch.onnx.export(
         torch_model,
         dummy_input,
         onnx_model_path,
-        input_names=['spectrogram'],  # assign custom name to input node
-        output_names=['gender'],      # assign custom name to output node
-        dynamic_axes={'spectrogram': {1: 'time'}},  # dynamic size
+        input_names=['feature'],  # assign custom name to input node
+        output_names=['gender'],  # assign custom name to output node
+        dynamic_axes={'feature': {1: 'time'}},  # dynamic size
         opset_version=12,
     )
 
@@ -159,7 +157,7 @@ the input and output nodes.
     onnx_model = audonnx.Model(
         onnx_model_path,
         labels=['female', 'male'],
-        transform=spectrogram,
+        transform=smile,
     )
     onnx_model
 
@@ -167,11 +165,11 @@ Get information for individual nodes.
 
 .. jupyter-execute::
 
-    onnx_model.inputs['spectrogram']
+    onnx_model.inputs['feature']
 
 .. jupyter-execute::
 
-    print(onnx_model.inputs['spectrogram'].transform)
+    print(onnx_model.inputs['feature'].transform)
 
 .. jupyter-execute::
 
@@ -280,7 +278,7 @@ The output of the quantized model differs slightly.
     onnx_model_4 = audonnx.Model(
         onnx_quant_path,
         labels=['female', 'male'],
-        transform=spectrogram,
+        transform=smile,
     )
     onnx_model_4(signal, sampling_rate)
 
@@ -289,7 +287,7 @@ Model with multiple nodes
 -------------------------
 
 Define a model that takes as input the
-raw audio in addition to the spectrogram
+raw audio in addition to the features
 and provides two more output nodes -
 the output from the hidden layer and a confidence value.
 
@@ -304,7 +302,7 @@ the output from the hidden layer and a confidence value.
             super().__init__()
 
             self.hidden_left = torch.nn.Linear(1, 4)
-            self.hidden_right = torch.nn.Linear(8, 4)
+            self.hidden_right = torch.nn.Linear(18, 4)
             self.out = torch.nn.ModuleDict(
                 {
                     'gender': torch.nn.Linear(8, 2),
@@ -312,10 +310,10 @@ the output from the hidden layer and a confidence value.
                 }
             )
 
-        def forward(self, signal: torch.Tensor, spectrogram: torch.Tensor):
+        def forward(self, signal: torch.Tensor, feature: torch.Tensor):
 
             y_left = self.hidden_left(signal.mean(dim=-1))
-            y_right = self.hidden_right(spectrogram.mean(dim=-1))
+            y_right = self.hidden_right(feature.mean(dim=-1))
             y_hidden = torch.cat([y_left, y_right], dim=-1)
             y_gender = self.out['gender'](y_hidden)
             y_confidence = self.out['confidence'](y_hidden)
@@ -341,14 +339,14 @@ we do not set a transform for it.
         TorchModelMulti(),
         (
             torch.randn(signal.shape),
-            torch.randn(spectrogram.shape(1.0)),
+            torch.randn(y.shape[1:]),
         ),
         onnx_multi_path,
-        input_names=['signal', 'spectrogram'],
+        input_names=['signal', 'feature'],
         output_names=['hidden', 'gender', 'confidence'],
         dynamic_axes={
             'signal': {1: 'time'},
-            'spectrogram': {1: 'time'},
+            'feature': {1: 'time'},
         },
         opset_version=12,
     )
@@ -359,7 +357,7 @@ we do not set a transform for it.
             'gender': ['female', 'male']
         },
         transform={
-            'spectrogram': spectrogram,
+            'feature': smile,
         },
     )
     onnx_model_5
@@ -428,7 +426,7 @@ we can do:
 .. _audformat: https://audeering.github.io/audformat/
 .. _audinterface: http://tools.pp.audeering.com/audinterface/
 .. _audobject: http://tools.pp.audeering.com/audobject/
-.. _audpann: http://tools.pp.audeering.com/audpann/
-.. _Torch: https://pytorch.org/
 .. _ONNX: https://onnx.ai/
+.. _OpenSMILE: https://github.com/audeering/opensmile-python
 .. _table: https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html#requirements
+.. _Torch: https://pytorch.org/

@@ -4,12 +4,14 @@ import random
 import shutil
 
 import numpy as np
+import opensmile
+
 import pytest
 import torch
 
 import audeer
 import audiofile
-import audsp
+import audobject
 
 
 pytest.ROOT = audeer.safe_path(
@@ -28,17 +30,14 @@ pytest.SIGNAL, pytest.SAMPLING_RATE = audiofile.read(
 
 # feature extractor
 
-pytest.SPECTROGRAM = audsp.Spectrogram(
-    16000,
-    0.02,
-    0.01,
-    center=False,
-    reflect=False,
-    audspec=audsp.AuditorySpectrum(
-        num_bands=8,
-        scale=audsp.define.AuditorySpectrumScale.MEL,
-    ),
+pytest.FEATURE = opensmile.Smile(
+    feature_set=opensmile.FeatureSet.GeMAPSv01b,
+    feature_level=opensmile.FeatureLevel.LowLevelDescriptors,
 )
+pytest.FEATURE_SHAPE = pytest.FEATURE(
+    pytest.SIGNAL,
+    pytest.SAMPLING_RATE,
+).shape[1:]
 
 # fix seed
 
@@ -58,7 +57,7 @@ class TorchModelSingle(torch.nn.Module):
         self,
     ):
         super().__init__()
-        self.hidden = torch.nn.Linear(8, 8)
+        self.hidden = torch.nn.Linear(pytest.FEATURE_SHAPE[0], 8)
         self.out = torch.nn.Linear(8, 2)
 
     def forward(self, x: torch.Tensor):
@@ -70,11 +69,11 @@ class TorchModelSingle(torch.nn.Module):
 pytest.MODEL_SINGLE_PATH = os.path.join(pytest.TMP, 'single.onnx')
 torch.onnx.export(
     TorchModelSingle(),
-    torch.randn(pytest.SPECTROGRAM.shape(1.0)),
+    torch.randn(pytest.FEATURE_SHAPE),
     pytest.MODEL_SINGLE_PATH,
-    input_names=['spectrogram'],
+    input_names=['feature'],
     output_names=['gender'],
-    dynamic_axes={'spectrogram': {1: 'time'}},
+    dynamic_axes={'feature': {1: 'time'}},
     opset_version=12,
 )
 
@@ -90,7 +89,7 @@ class TorchModelMulti(torch.nn.Module):
         super().__init__()
 
         self.hidden_left = torch.nn.Linear(1, 4)
-        self.hidden_right = torch.nn.Linear(8, 4)
+        self.hidden_right = torch.nn.Linear(pytest.FEATURE_SHAPE[0], 4)
         self.out = torch.nn.ModuleDict(
             {
                 'gender': torch.nn.Linear(8, 2),
@@ -118,14 +117,14 @@ torch.onnx.export(
     TorchModelMulti(),
     (
         torch.randn(pytest.SIGNAL.shape),
-        torch.randn(pytest.SPECTROGRAM.shape(1.0)),
+        torch.randn(pytest.FEATURE_SHAPE),
     ),
     pytest.MODEL_MULTI_PATH,
-    input_names=['signal', 'spectrogram'],
+    input_names=['signal', 'feature'],
     output_names=['hidden', 'gender', 'confidence'],
     dynamic_axes={
         'signal': {1: 'time'},
-        'spectrogram': {1: 'time'},
+        'feature': {1: 'time'},
     },
     opset_version=12,
 )

@@ -9,13 +9,13 @@ import audonnx
     [
         (
             pytest.MODEL_SINGLE_PATH,
-            pytest.SPECTROGRAM,
+            pytest.FEATURE,
             None,
             {'gender': ['gender-0', 'gender-1']},
         ),
         (
             pytest.MODEL_SINGLE_PATH,
-            pytest.SPECTROGRAM,
+            pytest.FEATURE,
             ['female', 'male'],
             {'gender': ['female', 'male']},
         ),
@@ -44,65 +44,68 @@ def test_labels(path, transform, labels, expected):
         (
             audonnx.Model(
                 pytest.MODEL_SINGLE_PATH,
-                transform=pytest.SPECTROGRAM,
+                transform=pytest.FEATURE,
             ),
             None,
-            np.array([2.29, 1.21], np.float32),
+            np.array([-195.1, 73.28], np.float32),
         ),
         (
             audonnx.Model(
                 pytest.MODEL_SINGLE_PATH,
-                transform=pytest.SPECTROGRAM,
+                transform=pytest.FEATURE,
             ),
             'gender',
-            np.array([2.29, 1.21], np.float32),
+            np.array([-195.1, 73.28], np.float32),
         ),
         (
             audonnx.Model(
                 pytest.MODEL_SINGLE_PATH,
-                transform=pytest.SPECTROGRAM,
+                transform=pytest.FEATURE,
             ),
             ['gender'],
-            {'gender': np.array([2.29, 1.21], np.float32)},
+            {'gender': np.array([-195.1, 73.28], np.float32)},
         ),
         (
             audonnx.Model(
                 pytest.MODEL_MULTI_PATH,
                 transform={
-                    'spectrogram': pytest.SPECTROGRAM,
+                    'feature': pytest.FEATURE,
                 }
             ),
             None,
             {
-                'hidden': np.array([-7.31e-03, -3.56e-01, -2.38e-01,
-                                    3.30e-01, -2.77e+00, 2.63e+00,
-                                    -9.87e+00, 3.06e-01], np.float32),
-                'gender': np.array([-3.53, -3.55], np.float32),
-                'confidence': np.array(-1.33, np.float32),
+                'hidden': np.array([
+                    1.3299127e-01, 2.1280064e-01,
+                    -4.7600174e-01, -3.7167081e-01,
+                    6.6870685e+02, -4.2869656e+02,
+                    -4.5552551e+02, 8.6153650e+02,
+                ], np.float32),
+                'gender': np.array([224.83, -12.72], np.float32),
+                'confidence': np.array(-311.88, np.float32),
             },
         ),
         (
             audonnx.Model(
                 pytest.MODEL_MULTI_PATH,
                 transform={
-                    'spectrogram': pytest.SPECTROGRAM,
+                    'feature': pytest.FEATURE,
                 }
             ),
             ['confidence', 'gender'],
             {
-                'confidence': np.array(-1.33, np.float32),
-                'gender': np.array([-3.53, -3.55], np.float32),
+                'confidence': np.array(-311.88, np.float32),
+                'gender': np.array([224.83, -12.72], np.float32),
             },
         ),
         (
             audonnx.Model(
                 pytest.MODEL_MULTI_PATH,
                 transform={
-                    'spectrogram': pytest.SPECTROGRAM,
+                    'feature': pytest.FEATURE,
                 }
             ),
             'confidence',
-            np.array(-1.33, np.float32),
+            np.array(-311.88, np.float32),
         ),
     ],
 )
@@ -125,7 +128,7 @@ def test_call(model, output_names, expected):
         (
             pytest.MODEL_SINGLE_PATH,
             None,
-            pytest.SPECTROGRAM,
+            pytest.FEATURE,
         ),
         (
             pytest.MODEL_MULTI_PATH,
@@ -133,7 +136,7 @@ def test_call(model, output_names, expected):
                 'gender': ['female', 'male'],
             },
             {
-                'spectrogram': pytest.SPECTROGRAM,
+                'feature': pytest.FEATURE,
             }
         ),
         pytest.param(  # list of labels but multiple output nodes
@@ -145,7 +148,7 @@ def test_call(model, output_names, expected):
         pytest.param(  # transform object but multiple input nodes
             pytest.MODEL_MULTI_PATH,
             None,
-            pytest.SPECTROGRAM,
+            pytest.FEATURE,
             marks=pytest.mark.xfail(raises=ValueError),
         ),
     ],
@@ -184,12 +187,12 @@ def test_nodes(path, labels, transform):
             audonnx.Model(
                 pytest.MODEL_SINGLE_PATH,
                 labels=['female', 'male'],
-                transform=pytest.SPECTROGRAM,
+                transform=pytest.FEATURE,
             ), r'''Input:
-  spectrogram:
-    shape: [8, -1]
+  feature:
+    shape: [18, -1]
     dtype: tensor(float)
-    transform: audsp.core.spectrogram.Spectrogram
+    transform: opensmile.core.smile.Smile
 Output:
   gender:
     shape: [2]
@@ -200,17 +203,17 @@ Output:
             audonnx.Model(
                 pytest.MODEL_MULTI_PATH,
                 transform={
-                    'spectrogram': pytest.SPECTROGRAM,
+                    'feature': pytest.FEATURE,
                 }
             ), r'''Input:
   signal:
     shape: [1, -1]
     dtype: tensor(float)
     transform: None
-  spectrogram:
-    shape: [8, -1]
+  feature:
+    shape: [18, -1]
     dtype: tensor(float)
-    transform: audsp.core.spectrogram.Spectrogram
+    transform: opensmile.core.smile.Smile
 Output:
   hidden:
     shape: [8]
