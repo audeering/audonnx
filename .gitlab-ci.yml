@@ -21,7 +21,7 @@ include:
     - pip install -r tests/requirements.txt
     - python -m pytest
 
-python-3.6:
+python-3.8:
   extends: .pytest
   stage: test
   image: docker.audeering.com/audeering/pytorch:latest
@@ -58,7 +58,7 @@ pages:
 pypi:
   extends: .pytest
   stage: pypi
-  image: docker.audeering.com/audeering/python-3.6:latest
+  image: docker.audeering.com/audeering/python-3.8:latest
   script:
     - python setup.py sdist bdist_wheel
     - python -m twine upload --repository local dist/*
