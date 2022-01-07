@@ -1,28 +1,15 @@
-$audonnx.core.model.Model==0.1.dev1+gb3d3c79:
+$audonnx.core.model.Model==0.3.3.dev0+gac4ece7.d20211216:
   path: model.onnx
   labels:
-    gender:
-    - female
-    - male
+  - female
+  - male
   transform:
-    spectrogram:
-      $audsp.core.spectrogram.Spectrogram==0.12.2:
-        win_dur: 0.02
-        hop_dur: 0.01
-        power: false
-        num_fft: 512
-        center: false
-        reflect: false
-        zero_phase: false
-        audspec:
-          $audsp.core.audspec.AuditorySpectrum==0.12.2:
-            num_bands: 8
-            freq_low: null
-            freq_high: null
-            scale: 2
-        unit: seconds
-        channels:
-        - 0
-        mixdown: false
-        resample: false
-        sampling_rate: 16000
+    $opensmile.core.smile.Smile==2.3.0:
+      feature_set: GeMAPSv01b
+      feature_level: LowLevelDescriptors
+      options: {}
+      sampling_rate: null
+      channels:
+      - 0
+      mixdown: false
+      resample: false

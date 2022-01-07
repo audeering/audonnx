@@ -42,27 +42,15 @@ def load(
         >>> model = load('tests')
         >>> model
         Input:
-          signal:
-            shape: [1, -1]
+          feature:
+            shape: [18, -1]
             dtype: tensor(float)
-            transform: None
-          spectrogram:
-            shape: [8, -1]
-            dtype: tensor(float)
-            transform: audsp.core.spectrogram.Spectrogram
+            transform: opensmile.core.smile.Smile
         Output:
-          hidden:
-            shape: [8]
-            dtype: tensor(float)
-            labels: [hidden-0, hidden-1, hidden-2, (...), hidden-5, hidden-6, hidden-7]
           gender:
             shape: [2]
             dtype: tensor(float)
             labels: [female, male]
-          confidence:
-            shape: [1]
-            dtype: tensor(float)
-            labels: [confidence]
 
     """  # noqa: E501
 
