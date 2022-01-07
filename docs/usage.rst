@@ -396,7 +396,7 @@ Create interface and process a file.
     interface = audinterface.Feature(
         feature_names=onnx_model_5.outputs['gender'].labels,
         process_func=onnx_model,
-        output_names='gender',
+        process_func_args={'output_names': 'gender'},
     )
     interface.process_file(file)
 
