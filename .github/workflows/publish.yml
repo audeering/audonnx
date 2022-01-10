@@ -37,7 +37,6 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install --no-install-recommends --yes libsndfile1 sox
-      if: matrix.os == 'ubuntu-latest' || matrix.os == 'ubuntu-20.04'
 
     - name: Install doc dependencies
       run: |
