@@ -7,6 +7,12 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.4.1 (2022-01-10)
+--------------------------
+
+* Fixed: author email address in Python package metadata
+
+
 Version 0.4.0 (2022-01-10)
 --------------------------
 
