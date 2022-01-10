@@ -7,6 +7,16 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.4.0 (2022-01-10)
+--------------------------
+
+* Added: first public release
+* Changed: switch to MIT license
+* Changed: move repo to Github
+* Fixed: remove ``audsp`` from docstring example
+  as we no longer depend on it
+
+
 Version 0.3.3 (2021-12-30)
 --------------------------
 
