@@ -1,0 +1,540 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>audonnx.core.model &mdash; audonnx Documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/audeering.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/audeering.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/jupyter-sphinx.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/thebelab.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    
+  
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          <a href="../../../index.html">
+          
+            <img src="../../../_static/images/audeering.png" class="logo" alt="audEERING"/>
+          
+          
+            <span> audonnx</span>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v0.4.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">audonnx</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../genindex.html">Index</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">audonnx</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>audonnx.core.model</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for audonnx.core.model</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">typing</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">onnxruntime</span>
+
+<span class="kn">import</span> <span class="nn">audeer</span>
+<span class="kn">import</span> <span class="nn">audiofile</span>
+<span class="kn">import</span> <span class="nn">audobject</span>
+<span class="kn">import</span> <span class="nn">yaml</span>
+
+<span class="kn">from</span> <span class="nn">audonnx.core.node</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">InputNode</span><span class="p">,</span>
+    <span class="n">OutputNode</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">audonnx.core.typing</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Labels</span><span class="p">,</span>
+    <span class="n">Transform</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="Model"><a class="viewcode-back" href="../../../api.html#audonnx.Model">[docs]</a><span class="k">class</span> <span class="nc">Model</span><span class="p">(</span><span class="n">audobject</span><span class="o">.</span><span class="n">Object</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Model with multiple input and output nodes.</span>
+
+<span class="sd">    For input nodes an optional transform can be given</span>
+<span class="sd">    that transforms the raw signal into the desired representation,</span>
+<span class="sd">    otherwise the raw signal is used as input.</span>
+<span class="sd">    Use dictionary to assign transform objects to specific nodes</span>
+<span class="sd">    if model has multiple input nodes.</span>
+
+<span class="sd">    For output nodes an optional list of labels can be given,</span>
+<span class="sd">    where each label corresponds to a dimension in the output,</span>
+<span class="sd">    i.e. the number of labels must match the dimension of the output node.</span>
+<span class="sd">    Use dictionary to assign labels to specific nodes</span>
+<span class="sd">    if model has multiple output nodes.</span>
+
+<span class="sd">    :class:`Model` inherites from :class:`audobject.Object`,</span>
+<span class="sd">    which means you can seralize to</span>
+<span class="sd">    and instantiate the class</span>
+<span class="sd">    from a YAML file.</span>
+<span class="sd">    Have a look at :class:`audobject.Object`</span>
+<span class="sd">    to see all available methods.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path: path to model file</span>
+<span class="sd">        labels: list of labels or dictionary with labels</span>
+<span class="sd">        transform: callable object or a dictionary of callable objects</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nd">@audobject</span><span class="o">.</span><span class="n">init_decorator</span><span class="p">(</span>
+        <span class="n">borrow</span><span class="o">=</span><span class="p">{</span>
+            <span class="s1">&#39;labels&#39;</span><span class="p">:</span> <span class="s1">&#39;_original_args&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;transform&#39;</span><span class="p">:</span> <span class="s1">&#39;_original_args&#39;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="n">resolvers</span><span class="o">=</span><span class="p">{</span>
+            <span class="s1">&#39;path&#39;</span><span class="p">:</span> <span class="n">audobject</span><span class="o">.</span><span class="n">resolver</span><span class="o">.</span><span class="n">FilePath</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="o">*</span><span class="p">,</span>
+            <span class="n">labels</span><span class="p">:</span> <span class="n">Labels</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">transform</span><span class="p">:</span> <span class="n">Transform</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="c1"># keep original arguments to store them</span>
+        <span class="c1"># when object is serialized</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_original_args</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;labels&#39;</span><span class="p">:</span> <span class="n">labels</span><span class="p">,</span>
+            <span class="s1">&#39;transform&#39;</span><span class="p">:</span> <span class="n">transform</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">safe_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Model path&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">sess</span> <span class="o">=</span> <span class="n">onnxruntime</span><span class="o">.</span><span class="n">InferenceSession</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Interference session&quot;&quot;&quot;</span>
+
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sess</span><span class="o">.</span><span class="n">get_inputs</span><span class="p">()</span>
+        <span class="n">outputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sess</span><span class="o">.</span><span class="n">get_outputs</span><span class="p">()</span>
+
+        <span class="n">transform</span> <span class="o">=</span> <span class="n">transform</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">transform</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="nb">input</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="nb">input</span> <span class="ow">in</span> <span class="n">inputs</span><span class="p">]</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;Model has multiple input nodes. &#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;Please use a dictionary to assign &#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;transform object to one of &#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">names</span><span class="si">}</span><span class="s1">.&#39;</span>
+                <span class="p">)</span>
+            <span class="n">transform</span> <span class="o">=</span> <span class="p">{</span><span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">transform</span><span class="p">}</span>
+
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">labels</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">outputs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="n">output</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">output</span> <span class="ow">in</span> <span class="n">outputs</span><span class="p">]</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;Model has multiple output nodes. &#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;Please use a dictionary to assign &#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;labels to one of &#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">names</span><span class="si">}</span><span class="s1">.&#39;</span>
+                <span class="p">)</span>
+            <span class="n">labels</span> <span class="o">=</span> <span class="p">{</span><span class="n">outputs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">labels</span><span class="p">}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Input nodes&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="nb">input</span> <span class="ow">in</span> <span class="n">inputs</span><span class="p">:</span>
+            <span class="n">trans</span> <span class="o">=</span> <span class="n">transform</span><span class="p">[</span><span class="nb">input</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="k">if</span> <span class="nb">input</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">transform</span> <span class="k">else</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="nb">input</span><span class="o">.</span><span class="n">name</span><span class="p">)]</span> <span class="o">=</span> <span class="n">InputNode</span><span class="p">(</span>
+                <span class="p">[</span><span class="o">-</span><span class="mi">1</span> <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="s1">&#39;time&#39;</span> <span class="k">else</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">input</span><span class="o">.</span><span class="n">shape</span><span class="p">],</span>
+                <span class="nb">input</span><span class="o">.</span><span class="n">type</span><span class="p">,</span>
+                <span class="n">trans</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">outputs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Output nodes&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">output</span> <span class="ow">in</span> <span class="n">outputs</span><span class="p">:</span>
+            <span class="n">shape</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">shape</span> <span class="ow">or</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">dim</span> <span class="o">=</span> <span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">output</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">:</span>
+                <span class="n">lab</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">output</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lab</span><span class="p">)</span> <span class="o">!=</span> <span class="n">dim</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Cannot assign &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">lab</span><span class="p">)</span><span class="si">}</span><span class="s2"> &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;labels to output &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">output</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;with dimension &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dim</span><span class="si">}</span><span class="s2">.&quot;</span>
+                    <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">dim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">lab</span> <span class="o">=</span> <span class="p">[</span><span class="n">output</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">lab</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">output</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim</span><span class="p">)]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">outputs</span><span class="p">[</span><span class="n">output</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">OutputNode</span><span class="p">(</span>
+                <span class="n">shape</span><span class="p">,</span>
+                <span class="n">output</span><span class="o">.</span><span class="n">type</span><span class="p">,</span>
+                <span class="n">lab</span><span class="p">,</span>
+            <span class="p">)</span>
+
+<div class="viewcode-block" id="Model.__call__"><a class="viewcode-back" href="../../../api.html#audonnx.Model.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">signal</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+            <span class="n">sampling_rate</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+            <span class="o">*</span><span class="p">,</span>
+            <span class="n">output_names</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+    <span class="p">]:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Compute output for one or more nodes.</span>
+
+<span class="sd">        If ``output_names`` is a plain string,</span>
+<span class="sd">        the output of the according node is returned.</span>
+
+<span class="sd">        If ``output_names`` is a list of strings,</span>
+<span class="sd">        a dictionary with according nodes as keys and</span>
+<span class="sd">        their outputs as values is returned.</span>
+
+<span class="sd">        If ``output_names`` is not set</span>
+<span class="sd">        and the model has a single output node,</span>
+<span class="sd">        the output of that node is returned.</span>
+<span class="sd">        Otherwise a dictionary with outputs of all nodes is returned.</span>
+
+<span class="sd">        Use :attr:`audonnx.Model.output_names` to get a list of available</span>
+<span class="sd">        output nodes.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            signal: input signal</span>
+<span class="sd">            sampling_rate: sampling rate in Hz</span>
+<span class="sd">            output_names: name of output or list with output names</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            model output</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; audio_path = os.path.join(&#39;tests&#39;, &#39;test.wav&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; signal, sampling_rate = audiofile.read(audio_path)</span>
+<span class="sd">            &gt;&gt;&gt; model_path = os.path.join(&#39;tests&#39;, &#39;model.yaml&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; import audobject</span>
+<span class="sd">            &gt;&gt;&gt; model = audobject.from_yaml(model_path)</span>
+<span class="sd">            &gt;&gt;&gt; model(</span>
+<span class="sd">            ...     signal,</span>
+<span class="sd">            ...     sampling_rate,</span>
+<span class="sd">            ...     output_names=&#39;gender&#39;,</span>
+<span class="sd">            ... ).round(2)</span>
+<span class="sd">            array([-195.1 ,   73.28], dtype=float32)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">output_names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">output_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outputs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">output_names</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">output_names</span> <span class="o">=</span> <span class="n">output_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">y</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="nb">input</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">input</span><span class="o">.</span><span class="n">transform</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">sampling_rate</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">signal</span>
+            <span class="n">y</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+        <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+            <span class="n">audeer</span><span class="o">.</span><span class="n">to_list</span><span class="p">(</span><span class="n">output_names</span><span class="p">),</span>
+            <span class="n">y</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">output_names</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">z</span> <span class="o">=</span> <span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">z</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">name</span><span class="p">:</span> <span class="n">values</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">output_names</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+            <span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">z</span></div>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+
+        <span class="n">d</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;Input&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="n">name</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">_dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="p">},</span>
+            <span class="s1">&#39;Output&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="n">name</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">_dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">default_flow_style</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Model.to_yaml"><a class="viewcode-back" href="../../../api.html#audonnx.Model.to_yaml">[docs]</a>    <span class="k">def</span> <span class="nf">to_yaml</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="o">*</span><span class="p">,</span>
+            <span class="n">include_version</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Save model to YAML file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path: file path, must end on ``.yaml``</span>
+<span class="sd">            include_version: add version to class name</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: if file path does not end on ``.yaml``</span>
+
+<span class="sd">       &quot;&quot;&quot;</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">safe_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">audeer</span><span class="o">.</span><span class="n">file_extension</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;yaml&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Model path </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> does not end on &#39;.yaml&#39;&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">to_yaml</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">include_version</span><span class="o">=</span><span class="n">include_version</span><span class="p">)</span></div>
+
+    <span class="c1"># deprecated</span>
+
+    <span class="nd">@audeer</span><span class="o">.</span><span class="n">deprecated</span><span class="p">(</span>
+        <span class="n">removal_version</span><span class="o">=</span><span class="s1">&#39;0.4.0&#39;</span><span class="p">,</span>
+        <span class="n">alternative</span><span class="o">=</span><span class="s1">&#39;__call__&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">signal</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+            <span class="n">sampling_rate</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+            <span class="o">*</span><span class="p">,</span>
+            <span class="n">output_names</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+    <span class="p">]:</span>  <span class="c1"># pragma: no cover</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">sampling_rate</span><span class="p">,</span> <span class="n">output_names</span><span class="o">=</span><span class="n">output_names</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@audeer</span><span class="o">.</span><span class="n">deprecated</span><span class="p">(</span>
+        <span class="n">removal_version</span><span class="o">=</span><span class="s1">&#39;0.4.0&#39;</span><span class="p">,</span>
+        <span class="n">alternative</span><span class="o">=</span><span class="s1">&#39;outputs[name].labels&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">def</span> <span class="nf">labels</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">:</span>  <span class="c1"># pragma: no cover:</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="n">name</span><span class="p">:</span> <span class="n">output</span><span class="o">.</span><span class="n">labels</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">output</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">}</span>
+
+    <span class="nd">@audeer</span><span class="o">.</span><span class="n">deprecated</span><span class="p">(</span>
+        <span class="n">removal_version</span><span class="o">=</span><span class="s1">&#39;0.4.0&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">signal</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+            <span class="n">sampling_rate</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+            <span class="o">*</span><span class="p">,</span>
+            <span class="n">output_names</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span>
+        <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+        <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span>
+    <span class="p">]:</span>  <span class="c1"># pragma: no cover</span>
+        <span class="k">if</span> <span class="n">output_names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">output_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outputs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">output_names</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+                <span class="n">output_names</span> <span class="o">=</span> <span class="n">output_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="p">(</span>
+            <span class="n">signal</span><span class="p">,</span>
+            <span class="n">sampling_rate</span><span class="p">,</span>
+            <span class="n">output_names</span><span class="o">=</span><span class="n">audeer</span><span class="o">.</span><span class="n">to_list</span><span class="p">(</span><span class="n">output_names</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">y</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">y</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">argmax</span><span class="p">()</span>
+            <span class="n">y</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="n">y</span><span class="p">[</span><span class="n">name</span><span class="p">]]</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">output_names</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">output_names</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">y</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@audeer</span><span class="o">.</span><span class="n">deprecated</span><span class="p">(</span>
+        <span class="n">removal_version</span><span class="o">=</span><span class="s1">&#39;0.4.0&#39;</span><span class="p">,</span>
+        <span class="n">alternative</span><span class="o">=</span><span class="s1">&#39;inputs[name].transform&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">:</span>  <span class="c1"># pragma: no cover:</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="n">name</span><span class="p">:</span> <span class="nb">input</span><span class="o">.</span><span class="n">transform</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="nb">input</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">}</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div>
+    <p>
+        
+        
+        
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/01/10 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+        
+    </p>
+  </div>
+
+  <div role="contentinfo">
+    <p>
+        
+      &copy; 2021-2022 audEERING GmbH
+    </p>
+  </div> 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/thebelab-helper.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
