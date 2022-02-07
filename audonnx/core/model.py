@@ -45,7 +45,7 @@ class Model(audobject.Object):
         path: path to model file
         labels: list of labels or dictionary with labels
         transform: callable object or a dictionary of callable objects
-        device_or_providers: set device (`'cpu'` or `'cuda'`)
+        device_or_providers: set device (``'cpu'`` or ``'cuda'``)
             or a list of providers_
 
     .. _providers: https://onnxruntime.ai/docs/execution-providers/
