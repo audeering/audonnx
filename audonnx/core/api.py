@@ -40,7 +40,7 @@ def load(
             In legacy mode path to model ONNX file
         labels_file: YAML file with labels
         transform_file: YAML file with transformation
-        device_or_providers: set device 
+        device_or_providers: set device
             (``'cpu'``, ``'cuda'``, or ``'cuda:<id>'``)
             or a list of providers_
 
