@@ -129,10 +129,6 @@ def test_call(model, output_names, expected):
         'CPUExecutionProvider',
         'cuda',
         'cuda:0',
-        pytest.param(
-            'cuda:999',  # invalid device ID
-            marks=pytest.mark.xfail(raises=RuntimeError),
-        ),
         [
             'CUDAExecutionProvider',
             'CPUExecutionProvider',
