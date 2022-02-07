@@ -40,7 +40,7 @@ def load(
         labels_file: YAML file with labels
         transform_file: YAML file with transformation
         device_or_providers: set device (`'cpu'` or `'cuda'`)
-            or a list of providers_        
+            or a list of providers_
 
     Returns:
         model
@@ -75,8 +75,12 @@ def load(
         with open(model_file_yaml) as f:
             first_line = f.readline()
         if first_line.startswith('$audonnx'):  # ensure correct object
-            return audobject.from_yaml(model_file_yaml)
-
+            return audobject.from_yaml(
+                model_file_yaml,
+                override_args={
+                    'device_or_providers': device_or_providers,
+                },
+            )
     # LEGACY support
     # Otherwise create object from ONNX file
 

@@ -206,8 +206,8 @@ class Model(audobject.Object):
             ...     signal,
             ...     sampling_rate,
             ...     output_names='gender',
-            ... ).round(2)
-            array([-195.1 ,   73.28], dtype=float32)
+            ... ).round(1)
+            array([-195.1,   73.3], dtype=float32)
 
         """
         if output_names is None:
