@@ -419,8 +419,11 @@ we can do:
     import audonnx
 
     os.environ['CUDA_VISIBLE_DEVICES']='2'  # make cuda:2 default device
-    model = audonnx.load(...)               # load model
-    model(...)                              # run on cuda:2
+    model = audonnx.load(                   # load model
+        ...,
+        device_or_providers='cuda',         # set device to cuda
+    )
+    model(...)                              # runs on cuda:2
 
 
 .. _audformat: https://audeering.github.io/audformat/

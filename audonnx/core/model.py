@@ -45,6 +45,10 @@ class Model(audobject.Object):
         path: path to model file
         labels: list of labels or dictionary with labels
         transform: callable object or a dictionary of callable objects
+        device_or_providers: set device (`'cpu'` or `'cuda'`)
+            or a list of providers_
+
+    .. _providers: https://onnxruntime.ai/docs/execution-providers/
 
     """
     @audobject.init_decorator(
@@ -55,6 +59,9 @@ class Model(audobject.Object):
         resolvers={
             'path': audobject.resolver.FilePath,
         },
+        hide=[
+            'device_or_providers',
+        ]
     )
     def __init__(
             self,
@@ -62,6 +69,10 @@ class Model(audobject.Object):
             *,
             labels: Labels = None,
             transform: Transform = None,
+            device_or_providers: typing.Union[
+                str,
+                typing.Sequence[str],
+            ] = 'cpu',
     ):
         # keep original arguments to store them
         # when object is serialized
@@ -73,7 +84,18 @@ class Model(audobject.Object):
         self.path = audeer.safe_path(path)
         r"""Model path"""
 
-        self.sess = onnxruntime.InferenceSession(self.path)
+        providers = device_or_providers
+        if isinstance(providers, str):
+            if device_or_providers == 'cpu':
+                providers = ['CPUExecutionProvider']
+            elif device_or_providers.startswith('cuda'):
+                providers = ['CUDAExecutionProvider']
+            else:
+                providers = [device_or_providers]
+        self.sess = onnxruntime.InferenceSession(
+            self.path,
+            providers=providers,
+        )
         r"""Interference session"""
 
         inputs = self.sess.get_inputs()

@@ -123,6 +123,33 @@ def test_call(model, output_names, expected):
 
 
 @pytest.mark.parametrize(
+    'device_or_providers',
+    [
+        'cpu',
+        'CPUExecutionProvider',
+        'cuda',
+        'CUDAExecutionProvider',
+        [
+            'CUDAExecutionProvider',
+            'CPUExecutionProvider',
+        ]
+    ]
+)
+def test_device_or_providers(device_or_providers):
+    model = audonnx.Model(
+        pytest.MODEL_SINGLE_PATH,
+        transform=pytest.FEATURE,
+        device_or_providers=device_or_providers,
+    )
+    y = model(
+        pytest.SIGNAL,
+        pytest.SAMPLING_RATE,
+    )
+    expected = np.array([-195.1, 73.28], np.float32)
+    np.testing.assert_almost_equal(y, expected, decimal=2)
+
+
+@pytest.mark.parametrize(
     'path, labels, transform',
     [
         (

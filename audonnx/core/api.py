@@ -1,4 +1,5 @@
 import os
+import typing
 
 import oyaml as yaml
 
@@ -14,6 +15,10 @@ def load(
         model_file: str = 'model.yaml',
         labels_file: str = 'labels.yaml',
         transform_file: str = 'transform.yaml',
+        device_or_providers: typing.Union[
+            str,
+            typing.Sequence[str],
+        ] = 'cpu',
 ) -> Model:
     r"""Load model from folder.
 
@@ -34,6 +39,8 @@ def load(
             In legacy mode path to model ONNX file
         labels_file: YAML file with labels
         transform_file: YAML file with transformation
+        device_or_providers: set device (`'cpu'` or `'cuda'`)
+            or a list of providers_        
 
     Returns:
         model
@@ -89,6 +96,7 @@ def load(
         model_file_onnx,
         labels=labels,
         transform=transform,
+        device_or_providers=device_or_providers,
     )
 
     return model

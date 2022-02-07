@@ -1,4 +1,4 @@
-opensmile >=2.3.0
+opensmile >=2.4.0
 jupyter
 jupyter-sphinx
 onnx
