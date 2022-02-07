@@ -1,4 +1,5 @@
 import os
+import re
 import typing
 
 import numpy as np
@@ -45,7 +46,8 @@ class Model(audobject.Object):
         path: path to model file
         labels: list of labels or dictionary with labels
         transform: callable object or a dictionary of callable objects
-        device_or_providers: set device (``'cpu'`` or ``'cuda'``)
+        device_or_providers: set device
+            (``'cpu'``, ``'cuda'``, or ``'cuda:<id>'``)
             or a list of providers_
 
     .. _providers: https://onnxruntime.ai/docs/execution-providers/
@@ -72,6 +74,7 @@ class Model(audobject.Object):
             device_or_providers: typing.Union[
                 str,
                 typing.Sequence[str],
+                typing.Sequence[typing.Tuple[str, typing.Dict]],
             ] = 'cpu',
     ):
         # keep original arguments to store them
@@ -89,7 +92,18 @@ class Model(audobject.Object):
             if device_or_providers == 'cpu':
                 providers = ['CPUExecutionProvider']
             elif device_or_providers.startswith('cuda'):
-                providers = ['CUDAExecutionProvider']
+                match = re.search(r'^cuda:(\d+)$', device_or_providers)
+                if match:
+                    device_id = match.group(1)
+                    providers = [
+                        (
+                            'CUDAExecutionProvider', {
+                                'device_id': device_id,
+                            }
+                        ),
+                    ]
+                else:
+                    providers = ['CUDAExecutionProvider']
             else:
                 providers = [device_or_providers]
         self.sess = onnxruntime.InferenceSession(

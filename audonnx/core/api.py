@@ -18,6 +18,7 @@ def load(
         device_or_providers: typing.Union[
             str,
             typing.Sequence[str],
+            typing.Sequence[typing.Tuple[str, typing.Dict]],
         ] = 'cpu',
 ) -> Model:
     r"""Load model from folder.
@@ -39,7 +40,8 @@ def load(
             In legacy mode path to model ONNX file
         labels_file: YAML file with labels
         transform_file: YAML file with transformation
-        device_or_providers: set device (``'cpu'`` or ``'cuda'``)
+        device_or_providers: set device 
+            (``'cpu'``, ``'cuda'``, or ``'cuda:<id>'``)
             or a list of providers_
 
     Returns:

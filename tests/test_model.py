@@ -128,6 +128,7 @@ def test_call(model, output_names, expected):
         'cpu',
         'CPUExecutionProvider',
         'cuda',
+        'cuda:0',
         'CUDAExecutionProvider',
         [
             'CUDAExecutionProvider',
