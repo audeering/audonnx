@@ -47,7 +47,7 @@ def test_labels(path, transform, labels, expected):
                 transform=pytest.FEATURE,
             ),
             None,
-            np.array([-195.1, 73.28], np.float32),
+            np.array([-195.1, 73.3], np.float32),
         ),
         (
             audonnx.Model(
@@ -55,7 +55,7 @@ def test_labels(path, transform, labels, expected):
                 transform=pytest.FEATURE,
             ),
             'gender',
-            np.array([-195.1, 73.28], np.float32),
+            np.array([-195.1, 73.3], np.float32),
         ),
         (
             audonnx.Model(
@@ -63,7 +63,7 @@ def test_labels(path, transform, labels, expected):
                 transform=pytest.FEATURE,
             ),
             ['gender'],
-            {'gender': np.array([-195.1, 73.28], np.float32)},
+            {'gender': np.array([-195.1, 73.3], np.float32)},
         ),
         (
             audonnx.Model(
@@ -117,9 +117,51 @@ def test_call(model, output_names, expected):
     )
     if isinstance(y, dict):
         for key, values in y.items():
-            np.testing.assert_almost_equal(y[key], expected[key], decimal=2)
+            np.testing.assert_almost_equal(y[key], expected[key], decimal=1)
     else:
-        np.testing.assert_almost_equal(y, expected, decimal=2)
+        np.testing.assert_almost_equal(y, expected, decimal=1)
+
+
+@pytest.mark.parametrize(
+    'device',
+    [
+        'cpu',
+        'CPUExecutionProvider',
+        'cuda',
+        'cuda:0',
+        (
+            'CUDAExecutionProvider',
+            {
+                'device_id': 0,
+            },
+        ),
+        [
+            'CUDAExecutionProvider',
+            'CPUExecutionProvider',
+        ],
+        [
+            (
+                'CUDAExecutionProvider',
+                {
+                    'device_id': 0,
+                },
+            ),
+            'CPUExecutionProvider',
+        ],
+    ]
+)
+def test_device_or_providers(device):
+    model = audonnx.Model(
+        pytest.MODEL_SINGLE_PATH,
+        transform=pytest.FEATURE,
+        device=device,
+    )
+    y = model(
+        pytest.SIGNAL,
+        pytest.SAMPLING_RATE,
+    )
+    expected = np.array([-195.1, 73.3], np.float32)
+    np.testing.assert_almost_equal(y, expected, decimal=1)
 
 
 @pytest.mark.parametrize(

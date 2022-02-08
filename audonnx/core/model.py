@@ -1,4 +1,5 @@
 import os
+import re
 import typing
 
 import numpy as np
@@ -45,6 +46,11 @@ class Model(audobject.Object):
         path: path to model file
         labels: list of labels or dictionary with labels
         transform: callable object or a dictionary of callable objects
+        device: set device
+            (``'cpu'``, ``'cuda'``, or ``'cuda:<id>'``)
+            or a (list of) provider(s)_
+
+    .. _provider(s): https://onnxruntime.ai/docs/execution-providers/
 
     """
     @audobject.init_decorator(
@@ -55,6 +61,9 @@ class Model(audobject.Object):
         resolvers={
             'path': audobject.resolver.FilePath,
         },
+        hide=[
+            'device',
+        ],
     )
     def __init__(
             self,
@@ -62,6 +71,12 @@ class Model(audobject.Object):
             *,
             labels: Labels = None,
             transform: Transform = None,
+            device: typing.Union[
+                str,
+                typing.Tuple[str, typing.Dict],
+                typing.Sequence[
+                    typing.Union[str, typing.Tuple[str, typing.Dict]]],
+            ] = 'cpu',
     ):
         # keep original arguments to store them
         # when object is serialized
@@ -73,7 +88,11 @@ class Model(audobject.Object):
         self.path = audeer.safe_path(path)
         r"""Model path"""
 
-        self.sess = onnxruntime.InferenceSession(self.path)
+        providers = _device_to_providers(device)
+        self.sess = onnxruntime.InferenceSession(
+            self.path,
+            providers=providers,
+        )
         r"""Interference session"""
 
         inputs = self.sess.get_inputs()
@@ -184,8 +203,8 @@ class Model(audobject.Object):
             ...     signal,
             ...     sampling_rate,
             ...     output_names='gender',
-            ... ).round(2)
-            array([-195.1 ,   73.28], dtype=float32)
+            ... ).round(1)
+            array([-195.1,   73.3], dtype=float32)
 
         """
         if output_names is None:
@@ -322,3 +341,36 @@ class Model(audobject.Object):
         return {
             name: input.transform for name, input in self.inputs.items()
         }
+
+
+def _device_to_providers(
+        device: typing.Union[
+            str,
+            typing.Tuple[str, typing.Dict],
+            typing.Sequence[typing.Union[str, typing.Tuple[str, typing.Dict]]],
+        ],
+) -> typing.Sequence[typing.Union[str, typing.Tuple[str, typing.Dict]]]:
+    r"""Converts device into a list of providers."""
+    if isinstance(device, str):
+        if device == 'cpu':
+            providers = ['CPUExecutionProvider']
+        elif device.startswith('cuda'):
+            match = re.search(r'^cuda:(\d+)$', device)
+            if match:
+                device_id = match.group(1)
+                providers = [
+                    (
+                        'CUDAExecutionProvider', {
+                            'device_id': device_id,
+                        }
+                    ),
+                ]
+            else:
+                providers = ['CUDAExecutionProvider']
+        else:
+            providers = [device]
+    elif isinstance(device, tuple):
+        providers = [device]
+    else:
+        providers = device
+    return providers

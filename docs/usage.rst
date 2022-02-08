@@ -408,19 +408,14 @@ To run a model on the GPU install ``onnxruntime-gpu``.
 Note that the version has to fit the CUDA installation.
 We can get the information from this table_.
 
-By default,
-it uses the first GPU device it finds.
-To select a specific CUDA device,
-we can do:
+Then select CUDA device when loading the model:
 
 .. code-block:: python
 
     import os
     import audonnx
 
-    os.environ['CUDA_VISIBLE_DEVICES']='2'  # make cuda:2 default device
-    model = audonnx.load(...)               # load model
-    model(...)                              # run on cuda:2
+    model = audonnx.load(..., device='cuda:2')
 
 
 .. _audformat: https://audeering.github.io/audformat/

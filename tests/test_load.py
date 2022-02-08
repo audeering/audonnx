@@ -18,7 +18,7 @@ import audonnx
             {
                 'gender': ['female', 'male'],
             },
-            np.array([-195.1, 73.28], np.float32),
+            np.array([-195.1, 73.3], np.float32),
         ),
     ]
 )
@@ -43,7 +43,7 @@ def test_load_legacy(tmpdir, path, transform, labels, expected):
     )
     y = model(pytest.SIGNAL, pytest.SAMPLING_RATE)
 
-    np.testing.assert_almost_equal(y, expected, decimal=2)
+    np.testing.assert_almost_equal(y, expected, decimal=1)
     for key, values in labels.items():
         assert model.outputs[key].labels == labels[key]
 
@@ -55,7 +55,7 @@ def test_load_legacy(tmpdir, path, transform, labels, expected):
     )
     y = model(pytest.SIGNAL, pytest.SAMPLING_RATE)
 
-    np.testing.assert_almost_equal(y, expected, decimal=2)
+    np.testing.assert_almost_equal(y, expected, decimal=1)
     for key, values in labels.items():
         assert model.outputs[key].labels == labels[key]
 
@@ -82,6 +82,6 @@ def test_load_legacy(tmpdir, path, transform, labels, expected):
     model = audonnx.load(tmpdir)
     y = model(pytest.SIGNAL, pytest.SAMPLING_RATE)
 
-    np.testing.assert_almost_equal(y, expected, decimal=2)
+    np.testing.assert_almost_equal(y, expected, decimal=1)
     for key, values in labels.items():
         assert model.outputs[key].labels == labels[key]
