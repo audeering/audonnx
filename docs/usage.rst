@@ -415,11 +415,7 @@ Then select CUDA device when loading the model:
     import os
     import audonnx
 
-    model = audonnx.load(              # load model
-        ...,
-        device_or_providers='cuda:2',  # set cuda device
-    )
-    model(...)                         # runs on GPU
+    model = audonnx.load(..., device='cuda:2')
 
 
 .. _audformat: https://audeering.github.io/audformat/

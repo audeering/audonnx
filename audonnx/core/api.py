@@ -15,10 +15,10 @@ def load(
         model_file: str = 'model.yaml',
         labels_file: str = 'labels.yaml',
         transform_file: str = 'transform.yaml',
-        device_or_providers: typing.Union[
+        device: typing.Union[
             str,
-            typing.Sequence[str],
-            typing.Sequence[typing.Tuple[str, typing.Dict]],
+            typing.Tuple[str, typing.Dict],
+            typing.Sequence[typing.Union[str, typing.Tuple[str, typing.Dict]]],
         ] = 'cpu',
 ) -> Model:
     r"""Load model from folder.
@@ -40,9 +40,11 @@ def load(
             In legacy mode path to model ONNX file
         labels_file: YAML file with labels
         transform_file: YAML file with transformation
-        device_or_providers: set device
+        device: set device
             (``'cpu'``, ``'cuda'``, or ``'cuda:<id>'``)
-            or a list of providers_
+            or a (list of) provider_
+
+    .. _provider: https://onnxruntime.ai/docs/execution-providers/
 
     Returns:
         model
@@ -80,7 +82,7 @@ def load(
             return audobject.from_yaml(
                 model_file_yaml,
                 override_args={
-                    'device_or_providers': device_or_providers,
+                    'device': device,
                 },
             )
     # LEGACY support
@@ -102,7 +104,7 @@ def load(
         model_file_onnx,
         labels=labels,
         transform=transform,
-        device_or_providers=device_or_providers,
+        device=device,
     )
 
     return model

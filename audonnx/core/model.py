@@ -46,11 +46,11 @@ class Model(audobject.Object):
         path: path to model file
         labels: list of labels or dictionary with labels
         transform: callable object or a dictionary of callable objects
-        device_or_providers: set device
+        device: set device
             (``'cpu'``, ``'cuda'``, or ``'cuda:<id>'``)
-            or a list of providers_
+            or a (list of) provider(s)_
 
-    .. _providers: https://onnxruntime.ai/docs/execution-providers/
+    .. _provider(s): https://onnxruntime.ai/docs/execution-providers/
 
     """
     @audobject.init_decorator(
@@ -62,8 +62,8 @@ class Model(audobject.Object):
             'path': audobject.resolver.FilePath,
         },
         hide=[
-            'device_or_providers',
-        ]
+            'device',
+        ],
     )
     def __init__(
             self,
@@ -71,10 +71,11 @@ class Model(audobject.Object):
             *,
             labels: Labels = None,
             transform: Transform = None,
-            device_or_providers: typing.Union[
+            device: typing.Union[
                 str,
-                typing.Sequence[str],
-                typing.Sequence[typing.Tuple[str, typing.Dict]],
+                typing.Tuple[str, typing.Dict],
+                typing.Sequence[
+                    typing.Union[str, typing.Tuple[str, typing.Dict]]],
             ] = 'cpu',
     ):
         # keep original arguments to store them
@@ -87,25 +88,7 @@ class Model(audobject.Object):
         self.path = audeer.safe_path(path)
         r"""Model path"""
 
-        providers = device_or_providers
-        if isinstance(providers, str):
-            if device_or_providers == 'cpu':
-                providers = ['CPUExecutionProvider']
-            elif device_or_providers.startswith('cuda'):
-                match = re.search(r'^cuda:(\d+)$', device_or_providers)
-                if match:
-                    device_id = match.group(1)
-                    providers = [
-                        (
-                            'CUDAExecutionProvider', {
-                                'device_id': device_id,
-                            }
-                        ),
-                    ]
-                else:
-                    providers = ['CUDAExecutionProvider']
-            else:
-                providers = [device_or_providers]
+        providers = _device_to_providers(device)
         self.sess = onnxruntime.InferenceSession(
             self.path,
             providers=providers,
@@ -358,3 +341,36 @@ class Model(audobject.Object):
         return {
             name: input.transform for name, input in self.inputs.items()
         }
+
+
+def _device_to_providers(
+        device: typing.Union[
+            str,
+            typing.Tuple[str, typing.Dict],
+            typing.Sequence[typing.Union[str, typing.Tuple[str, typing.Dict]]],
+        ],
+) -> typing.Sequence[typing.Union[str, typing.Tuple[str, typing.Dict]]]:
+    r"""Converts device into a list of providers."""
+    if isinstance(device, str):
+        if device == 'cpu':
+            providers = ['CPUExecutionProvider']
+        elif device.startswith('cuda'):
+            match = re.search(r'^cuda:(\d+)$', device)
+            if match:
+                device_id = match.group(1)
+                providers = [
+                    (
+                        'CUDAExecutionProvider', {
+                            'device_id': device_id,
+                        }
+                    ),
+                ]
+            else:
+                providers = ['CUDAExecutionProvider']
+        else:
+            providers = [device]
+    elif isinstance(device, tuple):
+        providers = [device]
+    else:
+        providers = device
+    return providers

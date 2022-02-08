@@ -123,23 +123,38 @@ def test_call(model, output_names, expected):
 
 
 @pytest.mark.parametrize(
-    'device_or_providers',
+    'device',
     [
         'cpu',
         'CPUExecutionProvider',
         'cuda',
         'cuda:0',
+        (
+            'CUDAExecutionProvider',
+            {
+                'device_id': 0,
+            },
+        ),
         [
             'CUDAExecutionProvider',
             'CPUExecutionProvider',
-        ]
+        ],
+        [
+            (
+                'CUDAExecutionProvider',
+                {
+                    'device_id': 0,
+                },
+            ),
+            'CPUExecutionProvider',
+        ],
     ]
 )
-def test_device_or_providers(device_or_providers):
+def test_device_or_providers(device):
     model = audonnx.Model(
         pytest.MODEL_SINGLE_PATH,
         transform=pytest.FEATURE,
-        device_or_providers=device_or_providers,
+        device=device,
     )
     y = model(
         pytest.SIGNAL,
