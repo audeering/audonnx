@@ -6,7 +6,6 @@ import numpy as np
 import onnxruntime
 
 import audeer
-import audiofile
 import audobject
 import yaml
 
@@ -194,6 +193,7 @@ class Model(audobject.Object):
             model output
 
         Examples:
+            >>> import audiofile
             >>> audio_path = os.path.join('tests', 'test.wav')
             >>> signal, sampling_rate = audiofile.read(audio_path)
             >>> model_path = os.path.join('tests', 'model.yaml')
