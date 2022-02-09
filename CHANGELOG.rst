@@ -7,6 +7,19 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.5.0 (2022-02-09)
+--------------------------
+
+* Added: argument ``device``
+* Changed: use CPU by default
+* Changed: require ``onnxruntime>=1.8.0``
+* Removed:
+  ``Model.forward()``
+  ``Model.labels``,
+  ``Model.predict()``,
+  ``Model.transform``
+
+
 Version 0.4.3 (2022-01-10)
 --------------------------
 
