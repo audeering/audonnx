@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                v0.4.3
+                v0.5.0
               </div>
             
           
@@ -145,13 +145,13 @@
             
   <h1>Source code for audonnx.core.model</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">typing</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">onnxruntime</span>
 
 <span class="kn">import</span> <span class="nn">audeer</span>
-<span class="kn">import</span> <span class="nn">audiofile</span>
 <span class="kn">import</span> <span class="nn">audobject</span>
 <span class="kn">import</span> <span class="nn">yaml</span>
 
@@ -191,6 +191,11 @@
 <span class="sd">        path: path to model file</span>
 <span class="sd">        labels: list of labels or dictionary with labels</span>
 <span class="sd">        transform: callable object or a dictionary of callable objects</span>
+<span class="sd">        device: set device</span>
+<span class="sd">            (``&#39;cpu&#39;``, ``&#39;cuda&#39;``, or ``&#39;cuda:&lt;id&gt;&#39;``)</span>
+<span class="sd">            or a (list of) provider(s)_</span>
+
+<span class="sd">    .. _provider(s): https://onnxruntime.ai/docs/execution-providers/</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nd">@audobject</span><span class="o">.</span><span class="n">init_decorator</span><span class="p">(</span>
@@ -201,6 +206,9 @@
         <span class="n">resolvers</span><span class="o">=</span><span class="p">{</span>
             <span class="s1">&#39;path&#39;</span><span class="p">:</span> <span class="n">audobject</span><span class="o">.</span><span class="n">resolver</span><span class="o">.</span><span class="n">FilePath</span><span class="p">,</span>
         <span class="p">},</span>
+        <span class="n">hide</span><span class="o">=</span><span class="p">[</span>
+            <span class="s1">&#39;device&#39;</span><span class="p">,</span>
+        <span class="p">],</span>
     <span class="p">)</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
@@ -208,6 +216,12 @@
             <span class="o">*</span><span class="p">,</span>
             <span class="n">labels</span><span class="p">:</span> <span class="n">Labels</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">transform</span><span class="p">:</span> <span class="n">Transform</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">device</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span>
+                <span class="nb">str</span><span class="p">,</span>
+                <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">],</span>
+                <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span>
+                    <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">]]],</span>
+            <span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;cpu&#39;</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="c1"># keep original arguments to store them</span>
         <span class="c1"># when object is serialized</span>
@@ -219,7 +233,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">safe_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Model path&quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">sess</span> <span class="o">=</span> <span class="n">onnxruntime</span><span class="o">.</span><span class="n">InferenceSession</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">providers</span> <span class="o">=</span> <span class="n">_device_to_providers</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sess</span> <span class="o">=</span> <span class="n">onnxruntime</span><span class="o">.</span><span class="n">InferenceSession</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
+            <span class="n">providers</span><span class="o">=</span><span class="n">providers</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Interference session&quot;&quot;&quot;</span>
 
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sess</span><span class="o">.</span><span class="n">get_inputs</span><span class="p">()</span>
@@ -321,6 +339,7 @@
 <span class="sd">            model output</span>
 
 <span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; import audiofile</span>
 <span class="sd">            &gt;&gt;&gt; audio_path = os.path.join(&#39;tests&#39;, &#39;test.wav&#39;)</span>
 <span class="sd">            &gt;&gt;&gt; signal, sampling_rate = audiofile.read(audio_path)</span>
 <span class="sd">            &gt;&gt;&gt; model_path = os.path.join(&#39;tests&#39;, &#39;model.yaml&#39;)</span>
@@ -330,8 +349,8 @@
 <span class="sd">            ...     signal,</span>
 <span class="sd">            ...     sampling_rate,</span>
 <span class="sd">            ...     output_names=&#39;gender&#39;,</span>
-<span class="sd">            ... ).round(2)</span>
-<span class="sd">            array([-195.1 ,   73.28], dtype=float32)</span>
+<span class="sd">            ... ).round(1)</span>
+<span class="sd">            array([-195.1,   73.3], dtype=float32)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">output_names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -397,77 +416,40 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">audeer</span><span class="o">.</span><span class="n">file_extension</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;yaml&#39;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Model path </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> does not end on &#39;.yaml&#39;&quot;</span><span class="p">)</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
-            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">to_yaml</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">include_version</span><span class="o">=</span><span class="n">include_version</span><span class="p">)</span></div>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">to_yaml</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">include_version</span><span class="o">=</span><span class="n">include_version</span><span class="p">)</span></div></div>
 
-    <span class="c1"># deprecated</span>
 
-    <span class="nd">@audeer</span><span class="o">.</span><span class="n">deprecated</span><span class="p">(</span>
-        <span class="n">removal_version</span><span class="o">=</span><span class="s1">&#39;0.4.0&#39;</span><span class="p">,</span>
-        <span class="n">alternative</span><span class="o">=</span><span class="s1">&#39;__call__&#39;</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">signal</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-            <span class="n">sampling_rate</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-            <span class="o">*</span><span class="p">,</span>
-            <span class="n">output_names</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span>
-        <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-        <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
-    <span class="p">]:</span>  <span class="c1"># pragma: no cover</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">sampling_rate</span><span class="p">,</span> <span class="n">output_names</span><span class="o">=</span><span class="n">output_names</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="nd">@audeer</span><span class="o">.</span><span class="n">deprecated</span><span class="p">(</span>
-        <span class="n">removal_version</span><span class="o">=</span><span class="s1">&#39;0.4.0&#39;</span><span class="p">,</span>
-        <span class="n">alternative</span><span class="o">=</span><span class="s1">&#39;outputs[name].labels&#39;</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="k">def</span> <span class="nf">labels</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">:</span>  <span class="c1"># pragma: no cover:</span>
-        <span class="k">return</span> <span class="p">{</span>
-            <span class="n">name</span><span class="p">:</span> <span class="n">output</span><span class="o">.</span><span class="n">labels</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">output</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-        <span class="p">}</span>
-
-    <span class="nd">@audeer</span><span class="o">.</span><span class="n">deprecated</span><span class="p">(</span>
-        <span class="n">removal_version</span><span class="o">=</span><span class="s1">&#39;0.4.0&#39;</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">signal</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-            <span class="n">sampling_rate</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-            <span class="o">*</span><span class="p">,</span>
-            <span class="n">output_names</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span>
-        <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
-        <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span>
-    <span class="p">]:</span>  <span class="c1"># pragma: no cover</span>
-        <span class="k">if</span> <span class="n">output_names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">output_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outputs</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">output_names</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-                <span class="n">output_names</span> <span class="o">=</span> <span class="n">output_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-
-        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="p">(</span>
-            <span class="n">signal</span><span class="p">,</span>
-            <span class="n">sampling_rate</span><span class="p">,</span>
-            <span class="n">output_names</span><span class="o">=</span><span class="n">audeer</span><span class="o">.</span><span class="n">to_list</span><span class="p">(</span><span class="n">output_names</span><span class="p">),</span>
-        <span class="p">)</span>
-        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">y</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">y</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">argmax</span><span class="p">()</span>
-            <span class="n">y</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="n">y</span><span class="p">[</span><span class="n">name</span><span class="p">]]</span>
-
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">output_names</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">output_names</span><span class="p">]</span>
-
-        <span class="k">return</span> <span class="n">y</span>
-
-    <span class="nd">@property</span>
-    <span class="nd">@audeer</span><span class="o">.</span><span class="n">deprecated</span><span class="p">(</span>
-        <span class="n">removal_version</span><span class="o">=</span><span class="s1">&#39;0.4.0&#39;</span><span class="p">,</span>
-        <span class="n">alternative</span><span class="o">=</span><span class="s1">&#39;inputs[name].transform&#39;</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">:</span>  <span class="c1"># pragma: no cover:</span>
-        <span class="k">return</span> <span class="p">{</span>
-            <span class="n">name</span><span class="p">:</span> <span class="nb">input</span><span class="o">.</span><span class="n">transform</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="nb">input</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-        <span class="p">}</span></div>
+<span class="k">def</span> <span class="nf">_device_to_providers</span><span class="p">(</span>
+        <span class="n">device</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span>
+            <span class="nb">str</span><span class="p">,</span>
+            <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">],</span>
+            <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">]]],</span>
+        <span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">]]]:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Converts device into a list of providers.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">device</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">device</span> <span class="o">==</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
+            <span class="n">providers</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;CPUExecutionProvider&#39;</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">device</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;cuda&#39;</span><span class="p">):</span>
+            <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^cuda:(\d+)$&#39;</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
+                <span class="n">device_id</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">providers</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="p">(</span>
+                        <span class="s1">&#39;CUDAExecutionProvider&#39;</span><span class="p">,</span> <span class="p">{</span>
+                            <span class="s1">&#39;device_id&#39;</span><span class="p">:</span> <span class="n">device_id</span><span class="p">,</span>
+                        <span class="p">}</span>
+                    <span class="p">),</span>
+                <span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">providers</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;CUDAExecutionProvider&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">providers</span> <span class="o">=</span> <span class="p">[</span><span class="n">device</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">device</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="n">providers</span> <span class="o">=</span> <span class="p">[</span><span class="n">device</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">providers</span> <span class="o">=</span> <span class="n">device</span>
+    <span class="k">return</span> <span class="n">providers</span>
 </pre></div>
 
            </div>
@@ -483,7 +465,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/01/10 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/02/09 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

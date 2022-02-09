@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                v0.4.3
+                v0.5.0
               </div>
             
           
@@ -145,6 +145,7 @@
             
   <h1>Source code for audonnx.core.api</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">typing</span>
 
 <span class="kn">import</span> <span class="nn">oyaml</span> <span class="k">as</span> <span class="nn">yaml</span>
 
@@ -160,6 +161,11 @@
         <span class="n">model_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;model.yaml&#39;</span><span class="p">,</span>
         <span class="n">labels_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;labels.yaml&#39;</span><span class="p">,</span>
         <span class="n">transform_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;transform.yaml&#39;</span><span class="p">,</span>
+        <span class="n">device</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span>
+            <span class="nb">str</span><span class="p">,</span>
+            <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">],</span>
+            <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">]]],</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;cpu&#39;</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Model</span><span class="p">:</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Load model from folder.</span>
 
@@ -180,6 +186,11 @@
 <span class="sd">            In legacy mode path to model ONNX file</span>
 <span class="sd">        labels_file: YAML file with labels</span>
 <span class="sd">        transform_file: YAML file with transformation</span>
+<span class="sd">        device: set device</span>
+<span class="sd">            (``&#39;cpu&#39;``, ``&#39;cuda&#39;``, or ``&#39;cuda:&lt;id&gt;&#39;``)</span>
+<span class="sd">            or a (list of) provider_</span>
+
+<span class="sd">    .. _provider: https://onnxruntime.ai/docs/execution-providers/</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        model</span>
@@ -214,8 +225,12 @@
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">model_file_yaml</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">first_line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">first_line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;$audonnx&#39;</span><span class="p">):</span>  <span class="c1"># ensure correct object</span>
-            <span class="k">return</span> <span class="n">audobject</span><span class="o">.</span><span class="n">from_yaml</span><span class="p">(</span><span class="n">model_file_yaml</span><span class="p">)</span>
-
+            <span class="k">return</span> <span class="n">audobject</span><span class="o">.</span><span class="n">from_yaml</span><span class="p">(</span>
+                <span class="n">model_file_yaml</span><span class="p">,</span>
+                <span class="n">override_args</span><span class="o">=</span><span class="p">{</span>
+                    <span class="s1">&#39;device&#39;</span><span class="p">:</span> <span class="n">device</span><span class="p">,</span>
+                <span class="p">},</span>
+            <span class="p">)</span>
     <span class="c1"># LEGACY support</span>
     <span class="c1"># Otherwise create object from ONNX file</span>
 
@@ -235,6 +250,7 @@
         <span class="n">model_file_onnx</span><span class="p">,</span>
         <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span>
         <span class="n">transform</span><span class="o">=</span><span class="n">transform</span><span class="p">,</span>
+        <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">model</span></div>
@@ -253,7 +269,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/01/10 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/02/09 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

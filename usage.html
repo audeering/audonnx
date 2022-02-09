@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                v0.4.3
+                v0.5.0
               </div>
             
           
@@ -259,7 +259,7 @@ raw audio signal to a sequence of low-level descriptors.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>tensor([-151.6403, -211.2196])
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>tensor([-593.3336, -310.5511])
 </pre></div>
 </div>
 </div>
@@ -404,7 +404,7 @@ Output:
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([-151.64026, -211.21968], dtype=float32)
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([-593.3336 , -310.55106], dtype=float32)
 </pre></div>
 </div>
 </div>
@@ -465,14 +465,14 @@ but we can use <a class="reference external" href="http://tools.pp.audeering.com
       <th rowspan="2" valign="top">./docs/_static/test.wav</th>
       <th>0 days 00:00:00</th>
       <th>0 days 00:00:03</th>
-      <td>-153.272324</td>
-      <td>-214.324005</td>
+      <td>-595.463928</td>
+      <td>-308.328217</td>
     </tr>
     <tr>
       <th>0 days 00:00:03</th>
       <th>0 days 00:00:05</th>
-      <td>-150.459183</td>
-      <td>-202.934937</td>
+      <td>-593.786560</td>
+      <td>-309.126007</td>
     </tr>
   </tbody>
 </table>
@@ -520,12 +520,12 @@ but we can use <a class="reference external" href="http://tools.pp.audeering.com
       <th rowspan="2" valign="top">./docs/_static/test.wav</th>
       <th>0 days 00:00:00</th>
       <th>0 days 00:00:03</th>
-      <td>female</td>
+      <td>male</td>
     </tr>
     <tr>
       <th>0 days 00:00:03</th>
       <th>0 days 00:00:05</th>
-      <td>female</td>
+      <td>male</td>
     </tr>
   </tbody>
 </table>
@@ -547,13 +547,13 @@ but we can use <a class="reference external" href="http://tools.pp.audeering.com
 </div>
 <div class="jupyter_cell docutils container">
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>$audonnx.core.model.Model==0.4.3:
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>$audonnx.core.model.Model==0.5.0:
   path: model.onnx
   labels:
   - female
   - male
   transform:
-    $opensmile.core.smile.Smile==2.3.0:
+    $opensmile.core.smile.Smile==2.4.1:
       feature_set: GeMAPSv01b
       feature_level: LowLevelDescriptors
       options: {}
@@ -578,7 +578,7 @@ but we can use <a class="reference external" href="http://tools.pp.audeering.com
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([-151.64026, -211.21968], dtype=float32)
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([-593.3336 , -310.55106], dtype=float32)
 </pre></div>
 </div>
 </div>
@@ -592,7 +592,7 @@ but we can use <a class="reference external" href="http://tools.pp.audeering.com
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([-151.64026, -211.21968], dtype=float32)
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([-593.3336 , -310.55106], dtype=float32)
 </pre></div>
 </div>
 </div>
@@ -638,7 +638,7 @@ as well as
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([-153.15924, -205.32909], dtype=float32)
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([-592.70386, -311.714  ], dtype=float32)
 </pre></div>
 </div>
 </div>
@@ -763,11 +763,11 @@ returns a dictionary with output for every node.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>{&#39;hidden&#39;: array([-6.5102160e-01,  6.6968668e-01, -6.9106901e-01, -7.6012707e-01,
-        -1.8962334e+02,  3.1182373e+02,  4.0678070e+02, -8.1333813e+02],
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>{&#39;hidden&#39;: array([-6.1632439e-02, -1.2233413e-01, -4.5634091e-01, -9.3846565e-01,
+        -8.0700836e+02,  4.2872968e+02,  2.8165399e+02, -6.9160236e+02],
        dtype=float32),
- &#39;gender&#39;: array([145.79619, -82.55982], dtype=float32),
- &#39;confidence&#39;: array(-123.995346, dtype=float32)}
+ &#39;gender&#39;: array([-215.46864, -114.36928], dtype=float32),
+ &#39;confidence&#39;: array(-118.71151, dtype=float32)}
 </pre></div>
 </div>
 </div>
@@ -784,8 +784,8 @@ returns a dictionary with output for every node.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>{&#39;gender&#39;: array([145.79619, -82.55982], dtype=float32),
- &#39;confidence&#39;: array(-123.995346, dtype=float32)}
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>{&#39;gender&#39;: array([-215.46864, -114.36928], dtype=float32),
+ &#39;confidence&#39;: array(-118.71151, dtype=float32)}
 </pre></div>
 </div>
 </div>
@@ -802,7 +802,7 @@ returns a dictionary with output for every node.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([145.79619, -82.55982], dtype=float32)
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([-215.46864, -114.36928], dtype=float32)
 </pre></div>
 </div>
 </div>
@@ -856,8 +856,8 @@ returns a dictionary with output for every node.</p>
       <th>./docs/_static/test.wav</th>
       <th>0 days</th>
       <th>0 days 00:00:05.247687500</th>
-      <td>-151.640259</td>
-      <td>-211.219681</td>
+      <td>-593.333618</td>
+      <td>-310.551056</td>
     </tr>
   </tbody>
 </table>
@@ -869,16 +869,11 @@ returns a dictionary with output for every node.</p>
 <p>To run a model on the GPU install <code class="docutils literal notranslate"><span class="pre">onnxruntime-gpu</span></code>.
 Note that the version has to fit the CUDA installation.
 We can get the information from this <a class="reference external" href="https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html#requirements">table</a>.</p>
-<p>By default,
-it uses the first GPU device it finds.
-To select a specific CUDA device,
-we can do:</p>
+<p>Then select CUDA device when loading the model:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">audonnx</span>
 
-<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;CUDA_VISIBLE_DEVICES&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;2&#39;</span>  <span class="c1"># make cuda:2 default device</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">audonnx</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>               <span class="c1"># load model</span>
-<span class="n">model</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>                              <span class="c1"># run on cuda:2</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">audonnx</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cuda:2&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -907,7 +902,7 @@ we can do:</p>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/01/10 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/02/09 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
