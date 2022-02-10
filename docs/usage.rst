@@ -418,7 +418,7 @@ Then select CUDA device when loading the model:
     model = audonnx.load(..., device='cuda:2')
 
 With
-``onnxruntime-gpu<1.8.0``
+``onnxruntime-gpu<1.8``
 it is not possible to directly specify an ID.
 In that case do:
 
