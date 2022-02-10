@@ -417,6 +417,16 @@ Then select CUDA device when loading the model:
 
     model = audonnx.load(..., device='cuda:2')
 
+If you use
+``onnxruntime-gpu<1.8.0``
+is not possible to directly specify an ID.
+In that case do:
+
+.. code-block:: python
+
+    os.environ['CUDA_VISIBLE_DEVICES'] = '2'
+    model = audonnx.load(..., device='cuda')
+
 
 .. _audformat: https://audeering.github.io/audformat/
 .. _audinterface: http://tools.pp.audeering.com/audinterface/
