@@ -20,6 +20,7 @@ def load(
             typing.Tuple[str, typing.Dict],
             typing.Sequence[typing.Union[str, typing.Tuple[str, typing.Dict]]],
         ] = 'cpu',
+        auto_install: bool = False,
 ) -> Model:
     r"""Load model from folder.
 
@@ -43,6 +44,7 @@ def load(
         device: set device
             (``'cpu'``, ``'cuda'``, or ``'cuda:<id>'``)
             or a (list of) provider_
+        auto_install: install missing packages needed to create the object
 
     .. _provider: https://onnxruntime.ai/docs/execution-providers/
 
@@ -81,6 +83,7 @@ def load(
         if first_line.startswith('$audonnx'):  # ensure correct object
             return audobject.from_yaml(
                 model_file_yaml,
+                auto_install=auto_install,
                 override_args={
                     'device': device,
                 },
@@ -98,7 +101,10 @@ def load(
 
     transform = None
     if os.path.exists(transform_file):
-        transform = audobject.from_yaml(transform_file)
+        transform = audobject.from_yaml(
+            transform_file,
+            auto_install=auto_install,
+        )
 
     model = Model(
         model_file_onnx,
