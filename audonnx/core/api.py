@@ -88,7 +88,7 @@ def load(
                     'device': device,
                 },
             )
-        
+
     # LEGACY support
     # Otherwise create object from ONNX file
 
