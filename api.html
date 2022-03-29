@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                v0.5.0
+                v0.5.1
               </div>
             
           
@@ -157,7 +157,7 @@
 <h2>load<a class="headerlink" href="#load" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="audonnx.load">
-<span class="sig-prename descclassname"><span class="pre">audonnx.</span></span><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'model.yaml'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'labels.yaml'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'transform.yaml'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audonnx/core/api.html#load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audonnx.load" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">audonnx.</span></span><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'model.yaml'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'labels.yaml'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'transform.yaml'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_install</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audonnx/core/api.html#load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audonnx.load" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load model from folder.</p>
 <p>Tries to load model from YAML file.</p>
 <p>Otherwise creates object from ONNX file (legacy mode).
@@ -179,6 +179,7 @@ In legacy mode path to model ONNX file</p></li>
 <li><p><strong>device</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>]]]]) – set device
 (<code class="docutils literal notranslate"><span class="pre">'cpu'</span></code>, <code class="docutils literal notranslate"><span class="pre">'cuda'</span></code>, or <code class="docutils literal notranslate"><span class="pre">'cuda:&lt;id&gt;'</span></code>)
 or a (list of) <a class="reference external" href="https://onnxruntime.ai/docs/execution-providers/">provider</a></p></li>
+<li><p><strong>auto_install</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – install missing packages needed to create the object</p></li>
 </ul>
 </dd>
 </dl>
@@ -224,11 +225,11 @@ where each label corresponds to a dimension in the output,
 i.e. the number of labels must match the dimension of the output node.
 Use dictionary to assign labels to specific nodes
 if model has multiple output nodes.</p>
-<p><a class="reference internal" href="#audonnx.Model" title="audonnx.Model"><code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></a> inherites from <a class="reference external" href="https://audeering.github.io/audobject/api.html#audobject.Object" title="(in audobject vv0.6.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">audobject.Object</span></code></a>,
+<p><a class="reference internal" href="#audonnx.Model" title="audonnx.Model"><code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></a> inherites from <a class="reference external" href="https://audeering.github.io/audobject/api.html#audobject.Object" title="(in audobject vv0.7.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">audobject.Object</span></code></a>,
 which means you can seralize to
 and instantiate the class
 from a YAML file.
-Have a look at <a class="reference external" href="https://audeering.github.io/audobject/api.html#audobject.Object" title="(in audobject vv0.6.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">audobject.Object</span></code></a>
+Have a look at <a class="reference external" href="https://audeering.github.io/audobject/api.html#audobject.Object" title="(in audobject vv0.7.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">audobject.Object</span></code></a>
 to see all available methods.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -431,7 +432,7 @@ into the desired representation</p></li>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/02/09 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/03/29 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -471,7 +472,7 @@ into the desired representation</p></li>
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
     
 
   
