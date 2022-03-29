@@ -1,4 +1,5 @@
 opensmile >=2.3.0
+audobject >=0.7.1
 torch
 pytest
 pytest-flake8
