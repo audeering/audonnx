@@ -125,8 +125,9 @@ class Model(audobject.Object):
         r"""Input nodes"""
         for input in inputs:
             trans = transform[input.name] if input.name in transform else None
+            shape = _shape(input.shape)
             self.inputs[str(input.name)] = InputNode(
-                [-1 if x == 'time' else x for x in input.shape],
+                shape,
                 input.type,
                 trans,
             )
@@ -135,6 +136,7 @@ class Model(audobject.Object):
         r"""Output nodes"""
         for output in outputs:
             shape = output.shape or [1]
+            shape = _shape(shape)
             dim = shape[-1]
             if output.name in labels:
                 lab = labels[output.name]
@@ -304,3 +306,10 @@ def _device_to_providers(
     else:
         providers = device
     return providers
+
+
+def _shape(
+        shape: typing.List[typing.Union[int, str]],
+) -> typing.List[int]:
+    r"""Replace dynamic axis names with -1."""
+    return [-1 if isinstance(x, str) else x for x in shape]

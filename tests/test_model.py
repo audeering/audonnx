@@ -173,6 +173,11 @@ def test_device_or_providers(device):
             pytest.FEATURE,
         ),
         (
+            pytest.MODEL_DYNAMIC_PATH,
+            None,
+            pytest.FEATURE,
+        ),
+        (
             pytest.MODEL_MULTI_PATH,
             {
                 'gender': ['female', 'male'],
@@ -209,14 +214,16 @@ def test_nodes(path, labels, transform):
     for idx, (name, node) in enumerate(model.inputs.items()):
         assert name == inputs[idx].name
         assert node.shape == [
-            -1 if x == 'time' else x for x in inputs[idx].shape
+            -1 if isinstance(x, str) else x for x in inputs[idx].shape
         ]
         assert node.dtype == inputs[idx].type
 
     for idx, (name, node) in enumerate(model.outputs.items()):
         assert name == outputs[idx].name
         if outputs[idx].shape:
-            assert node.shape == outputs[idx].shape
+            assert node.shape == [
+                -1 if isinstance(x, str) else x for x in outputs[idx].shape
+            ]
         else:
             assert node.shape == [1]
         assert node.dtype == outputs[idx].type
