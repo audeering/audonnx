@@ -312,4 +312,4 @@ def _shape(
         shape: typing.List[typing.Union[int, str]],
 ) -> typing.List[int]:
     r"""Replace 'time' with -1."""
-    return [-1 if x == 'time' else x for x in shape]
+    return [-1 if isinstance(x, str) else x for x in shape]

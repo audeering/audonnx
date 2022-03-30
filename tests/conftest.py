@@ -151,8 +151,8 @@ torch.onnx.export(
     input_names=['input'],
     output_names=['output'],
     dynamic_axes={
-        'input': {1: 'time'},
-        'output': {1: 'time'},
+        'input': {1: 'dynamic'},
+        'output': {1: 'dynamic'},
     },
     opset_version=12,
 )
