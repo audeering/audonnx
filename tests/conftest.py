@@ -130,6 +130,34 @@ torch.onnx.export(
 )
 
 
+# create model with dynamic input / output node
+
+class TorchModelDynamic(torch.nn.Module):
+
+    def __init__(
+        self,
+    ):
+        super().__init__()
+
+    def forward(self, x: torch.Tensor):
+        return x
+
+
+pytest.MODEL_DYNAMIC_PATH = os.path.join(pytest.TMP, 'dynamic.onnx')
+torch.onnx.export(
+    TorchModelDynamic(),
+    torch.randn(pytest.FEATURE_SHAPE),
+    pytest.MODEL_DYNAMIC_PATH,
+    input_names=['input'],
+    output_names=['output'],
+    dynamic_axes={
+        'input': {1: 'time'},
+        'output': {1: 'time'},
+    },
+    opset_version=12,
+)
+
+
 # clean up
 
 @pytest.fixture(scope='session', autouse=True)
