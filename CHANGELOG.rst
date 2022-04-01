@@ -11,7 +11,7 @@ Version 0.5.2 (2022-04-01)
 --------------------------
 
 * Fixed: always replace dynamic axis names with ``-1``
-  in input and output shapes of models
+  in input and output shapes of model nodes
 
 
 Version 0.5.1 (2022-03-29)
