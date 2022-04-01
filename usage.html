@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                v0.5.1
+                v0.5.2
               </div>
             
           
@@ -259,7 +259,7 @@ raw audio signal to a sequence of low-level descriptors.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>tensor([ -67.2479, -135.0049])
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>tensor([ 79.7445, 346.3988])
 </pre></div>
 </div>
 </div>
@@ -404,7 +404,7 @@ Output:
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([ -67.24793, -135.00487], dtype=float32)
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([ 79.744446, 346.39877 ], dtype=float32)
 </pre></div>
 </div>
 </div>
@@ -465,14 +465,14 @@ but we can use <a class="reference external" href="http://tools.pp.audeering.com
       <th rowspan="2" valign="top">./docs/_static/test.wav</th>
       <th>0 days 00:00:00</th>
       <th>0 days 00:00:03</th>
-      <td>-67.702049</td>
-      <td>-135.929810</td>
+      <td>81.009178</td>
+      <td>348.218231</td>
     </tr>
     <tr>
       <th>0 days 00:00:03</th>
       <th>0 days 00:00:05</th>
-      <td>-63.966869</td>
-      <td>-139.168549</td>
+      <td>80.500847</td>
+      <td>346.489716</td>
     </tr>
   </tbody>
 </table>
@@ -520,12 +520,12 @@ but we can use <a class="reference external" href="http://tools.pp.audeering.com
       <th rowspan="2" valign="top">./docs/_static/test.wav</th>
       <th>0 days 00:00:00</th>
       <th>0 days 00:00:03</th>
-      <td>female</td>
+      <td>male</td>
     </tr>
     <tr>
       <th>0 days 00:00:03</th>
       <th>0 days 00:00:05</th>
-      <td>female</td>
+      <td>male</td>
     </tr>
   </tbody>
 </table>
@@ -547,7 +547,7 @@ but we can use <a class="reference external" href="http://tools.pp.audeering.com
 </div>
 <div class="jupyter_cell docutils container">
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>$audonnx.core.model.Model==0.5.1:
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>$audonnx.core.model.Model==0.5.2:
   path: model.onnx
   labels:
   - female
@@ -578,7 +578,7 @@ but we can use <a class="reference external" href="http://tools.pp.audeering.com
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([ -67.24793, -135.00487], dtype=float32)
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([ 79.744446, 346.39877 ], dtype=float32)
 </pre></div>
 </div>
 </div>
@@ -592,7 +592,7 @@ but we can use <a class="reference external" href="http://tools.pp.audeering.com
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([ -67.24793, -135.00487], dtype=float32)
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([ 79.744446, 346.39877 ], dtype=float32)
 </pre></div>
 </div>
 </div>
@@ -638,7 +638,7 @@ as well as
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([ -66.62002, -137.86989], dtype=float32)
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([ 80.37695, 347.60336], dtype=float32)
 </pre></div>
 </div>
 </div>
@@ -763,11 +763,11 @@ returns a dictionary with output for every node.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>{&#39;hidden&#39;: array([-7.1888721e-01, -2.6240879e-01, -1.7042130e-02, -8.7678480e-01,
-         1.0290228e+02, -4.2681366e+02,  3.0251740e+02, -2.7701965e+02],
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>{&#39;hidden&#39;: array([-9.9846476e-01,  2.0065961e-02, -8.0386972e-01,  9.6180660e-01,
+        -1.5792043e+02, -3.1488457e+01,  4.6908939e+02,  1.4579869e+02],
        dtype=float32),
- &#39;gender&#39;: array([-102.66124 ,  -58.418068], dtype=float32),
- &#39;confidence&#39;: array(-56.45515, dtype=float32)}
+ &#39;gender&#39;: array([  60.456116, -174.41574 ], dtype=float32),
+ &#39;confidence&#39;: array(-155.2872, dtype=float32)}
 </pre></div>
 </div>
 </div>
@@ -784,8 +784,8 @@ returns a dictionary with output for every node.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>{&#39;gender&#39;: array([-102.66124 ,  -58.418068], dtype=float32),
- &#39;confidence&#39;: array(-56.45515, dtype=float32)}
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>{&#39;gender&#39;: array([  60.456116, -174.41574 ], dtype=float32),
+ &#39;confidence&#39;: array(-155.2872, dtype=float32)}
 </pre></div>
 </div>
 </div>
@@ -802,7 +802,7 @@ returns a dictionary with output for every node.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([-102.66124 ,  -58.418068], dtype=float32)
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([  60.456116, -174.41574 ], dtype=float32)
 </pre></div>
 </div>
 </div>
@@ -856,8 +856,8 @@ returns a dictionary with output for every node.</p>
       <th>./docs/_static/test.wav</th>
       <th>0 days</th>
       <th>0 days 00:00:05.247687500</th>
-      <td>-67.247932</td>
-      <td>-135.004868</td>
+      <td>79.744446</td>
+      <td>346.398773</td>
     </tr>
   </tbody>
 </table>
@@ -910,7 +910,7 @@ In that case do:</p>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/03/29 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/04/01 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
