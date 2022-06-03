@@ -28,9 +28,13 @@ class Model(audobject.Object):
     Use dictionary to assign transform objects to specific nodes
     if model has multiple input nodes.
 
-    For output nodes an optional list of labels can be given,
-    where each label corresponds to a dimension in the output,
-    i.e. the number of labels must match the dimension of the output node.
+    For output nodes an optional list of labels can be given
+    to assign names to the last non-dynamic dimension.
+    E.g. if the shape of the output node is
+    ``(1, 3, -1)``
+    three labels can be assigned to the second dimension.
+    By default,
+    labels are generated from the name of the node.
     Use dictionary to assign labels to specific nodes
     if model has multiple output nodes.
 
@@ -137,7 +141,7 @@ class Model(audobject.Object):
         for output in outputs:
             shape = output.shape or [1]
             shape = _shape(shape)
-            dim = shape[-1]
+            dim = _last_static_dim(shape)
             if output.name in labels:
                 lab = labels[output.name]
                 if len(lab) != dim:
@@ -308,8 +312,16 @@ def _device_to_providers(
     return providers
 
 
+def _last_static_dim(
+        shape: typing.List[int],
+) -> int:
+    r"""Return index of last static dimension."""
+    shape = list(filter((-1).__ne__, shape))
+    return shape[-1] if len(shape) else 0
+
+
 def _shape(
         shape: typing.List[typing.Union[int, str]],
 ) -> typing.List[int]:
-    r"""Replace dynamic axis names with -1."""
+    r"""Replace dynamic dimension names with -1."""
     return [-1 if isinstance(x, str) else x for x in shape]

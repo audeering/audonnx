@@ -178,6 +178,11 @@ def test_device_or_providers(device):
             pytest.FEATURE,
         ),
         (
+            pytest.MODEL_DYNAMIC_PATH,
+            pytest.FEATURE.feature_names,
+            pytest.FEATURE,
+        ),
+        (
             pytest.MODEL_MULTI_PATH,
             {
                 'gender': ['female', 'male'],
