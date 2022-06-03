@@ -141,22 +141,22 @@ class Model(audobject.Object):
         for output in outputs:
             shape = output.shape or [1]
             shape = _shape(shape)
-            dim = _last_static_dim(shape)
+            dim_size = _last_static_dim_size(shape)
             if output.name in labels:
                 lab = labels[output.name]
-                if len(lab) != dim:
+                if len(lab) != dim_size:
                     raise ValueError(
                         f"Cannot assign "
                         f"{len(lab)} "
-                        f"labels to output "
+                        f"labels to output node "
                         f"'{output.name}' "
-                        f"with dimension "
-                        f"{dim}."
+                        f"when last non-dynamic dimension has size "
+                        f"{dim_size}."
                     )
-            elif dim == 1:
+            elif dim_size == 1:
                 lab = [output.name]
             else:
-                lab = [f'{output.name}-{idx}' for idx in range(dim)]
+                lab = [f'{output.name}-{idx}' for idx in range(dim_size)]
             self.outputs[output.name] = OutputNode(
                 shape,
                 output.type,
@@ -312,7 +312,7 @@ def _device_to_providers(
     return providers
 
 
-def _last_static_dim(
+def _last_static_dim_size(
         shape: typing.List[int],
 ) -> int:
     r"""Return index of last static dimension."""
