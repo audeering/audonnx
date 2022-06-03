@@ -156,7 +156,8 @@ class Model(audobject.Object):
             elif dim_size == 1:
                 lab = [output.name]
             else:
-                lab = [f'{output.name}-{idx}' for idx in range(dim_size)]
+                lab = [f'{output.name}-{idx}'
+                       for idx in range(dim_size)]
             self.outputs[output.name] = OutputNode(
                 shape,
                 output.type,
@@ -315,7 +316,7 @@ def _device_to_providers(
 def _last_static_dim_size(
         shape: typing.List[int],
 ) -> int:
-    r"""Return index of last static dimension."""
+    r"""Return size of last static dimension."""
     shape = list(filter((-1).__ne__, shape))
     return shape[-1] if len(shape) else 0
 
