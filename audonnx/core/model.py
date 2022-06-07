@@ -28,9 +28,13 @@ class Model(audobject.Object):
     Use dictionary to assign transform objects to specific nodes
     if model has multiple input nodes.
 
-    For output nodes an optional list of labels can be given,
-    where each label corresponds to a dimension in the output,
-    i.e. the number of labels must match the dimension of the output node.
+    For output nodes an optional list of labels can be given
+    to assign names to the last non-dynamic dimension.
+    E.g. if the shape of the output node is
+    ``(1, 3, -1)``
+    three labels can be assigned to the second dimension.
+    By default,
+    labels are generated from the name of the node.
     Use dictionary to assign labels to specific nodes
     if model has multiple output nodes.
 
@@ -137,22 +141,23 @@ class Model(audobject.Object):
         for output in outputs:
             shape = output.shape or [1]
             shape = _shape(shape)
-            dim = shape[-1]
+            dim_size = _last_static_dim_size(shape)
             if output.name in labels:
                 lab = labels[output.name]
-                if len(lab) != dim:
+                if len(lab) != dim_size:
                     raise ValueError(
                         f"Cannot assign "
                         f"{len(lab)} "
-                        f"labels to output "
+                        f"labels to output node "
                         f"'{output.name}' "
-                        f"with dimension "
-                        f"{dim}."
+                        f"when last non-dynamic dimension has size "
+                        f"{dim_size}."
                     )
-            elif dim == 1:
+            elif dim_size == 1:
                 lab = [output.name]
             else:
-                lab = [f'{output.name}-{idx}' for idx in range(dim)]
+                lab = [f'{output.name}-{idx}'
+                       for idx in range(dim_size)]
             self.outputs[output.name] = OutputNode(
                 shape,
                 output.type,
@@ -308,8 +313,16 @@ def _device_to_providers(
     return providers
 
 
+def _last_static_dim_size(
+        shape: typing.List[int],
+) -> int:
+    r"""Return size of last static dimension."""
+    shape = list(filter((-1).__ne__, shape))
+    return shape[-1] if len(shape) else 0
+
+
 def _shape(
         shape: typing.List[typing.Union[int, str]],
 ) -> typing.List[int]:
-    r"""Replace dynamic axis names with -1."""
+    r"""Replace dynamic dimension names with -1."""
     return [-1 if isinstance(x, str) else x for x in shape]

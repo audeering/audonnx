@@ -2,6 +2,7 @@ opensmile >=2.4.0
 jupyter
 jupyter-sphinx
 onnx
+protobuf <=3.20.1  # avoid TypeError: Descriptors cannot not be created directly
 torch
 sphinx
 sphinx-audeering-theme >=1.0.14

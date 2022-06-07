@@ -59,7 +59,7 @@ class OutputNode:
     Args:
         shape: list with dimensions
         dtype: data type
-        labels: list with names of output dimensions
+        labels: list with names of last non-dynamic output dimension
 
     """
     def __init__(
@@ -75,7 +75,7 @@ class OutputNode:
         r"""Data type of node"""
 
         self.labels = labels
-        r"""Names of output dimensions."""
+        r"""Labels of last non-dynamic output dimension."""
 
     def _dict(self) -> typing.Dict:
 
