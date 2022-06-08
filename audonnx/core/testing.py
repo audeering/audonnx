@@ -36,7 +36,7 @@ def create_model(
         model object
 
     Example:
-        >>> shapes = [[3], [1, None, 2]]
+        >>> shapes = [[3], [1, -1, 2]]
         >>> model = audonnx.testing.create_model('test', shapes)
         >>> model
         Input:
@@ -157,5 +157,6 @@ def _identity_graph(
 def _shape_func(signal, _, shape, value):
     r"""Return array with zeros of given shape."""
     import numpy as np  # noqa: F811
-    shape = [signal.shape[-1] if not isinstance(s, int) else s for s in shape]
+    shape = [signal.shape[-1] if not isinstance(s, int) or s < 0
+             else s for s in shape]
     return (np.ones(shape) * value).astype(signal.dtype)
