@@ -313,7 +313,7 @@ with librosa_.
 
 As long as the function is self-contained
 (i.e. does not depend on external variables or imports)
-we can turn it into serializable object.
+we can turn it into a serializable object.
 
 .. jupyter-execute::
 
