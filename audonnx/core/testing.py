@@ -26,9 +26,6 @@ def create_model(
     define a dynamic axis.
     Per node,
     one dynamic axis is allowed.
-    The model is stored under ``root``
-    and can be loaded with
-    :func:`audonnx.load`.
 
     Args:
         root: folder where model is stored
