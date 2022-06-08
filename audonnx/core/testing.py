@@ -13,6 +13,7 @@ def create_model(
         shapes: typing.Sequence[typing.Sequence[int]],
         *,
         value: float = 0.,
+        dtype: int = onnx.TensorProto.FLOAT,
         opset_version: int = 14,
 ) -> audonnx.Model:
     r"""Create test model.
@@ -28,6 +29,8 @@ def create_model(
     Args:
         root: folder where model is stored
         shapes: list with model shapes
+        value: fill value
+        dtype: data type, see `supported data types`_
         opset_version: opset version
 
     Returns:
@@ -55,7 +58,7 @@ def create_model(
             shape: [1, -1, 2]
             dtype: tensor(float)
             labels: [output-1-0, output-1-1]
-        >>> signal = np.zeros((1, 5))
+        >>> signal = np.zeros((1, 5), np.float32)
         >>> model(signal, 8000)
         {'output-0': array([0., 0., 0.], dtype=float32), 'output-1': array([[[0., 0.],
                 [0., 0.],
@@ -63,13 +66,15 @@ def create_model(
                 [0., 0.],
                 [0., 0.]]], dtype=float32)}
 
+    .. _`supported data types`: https://onnxruntime.ai/docs/reference/operators/custom-python-operator.html#supported-data-types
+
     """  # noqa: E501
     root = audeer.mkdir(root)
     path = audeer.path(root, 'model.onnx')
 
     # create graph
 
-    graph = _identity_graph(shapes)
+    graph = _identity_graph(shapes, dtype, opset_version)
     onnx.save(graph, path)
 
     # create transform objects
@@ -98,8 +103,8 @@ def create_model(
 
 def _identity_graph(
         shapes: typing.Sequence[typing.Sequence[int]],
-        *,
-        opset_version: int = 14,
+        dtype: int,
+        opset_version: int,
 ) -> onnx.ModelProto:
     r"""Create identity graph."""
 
@@ -113,14 +118,14 @@ def _identity_graph(
 
         input = onnx.helper.make_tensor_value_info(
             f'input-{idx}',
-            onnx.TensorProto.FLOAT,
+            dtype,
             shape,
         )
         inputs.append(input)
 
         output = onnx.helper.make_tensor_value_info(
             f'output-{idx}',
-            onnx.TensorProto.FLOAT,
+            dtype,
             shape,
         )
         outputs.append(output)
@@ -152,5 +157,6 @@ def _identity_graph(
 
 def _shape_func(signal, _, shape, value):
     r"""Return array with zeros of given shape."""
+    import numpy as np  # noqa: F811
     shape = [signal.shape[-1] if not isinstance(s, int) else s for s in shape]
-    return (np.ones(shape) * value).astype(np.float32)
+    return (np.ones(shape) * value).astype(signal.dtype)
