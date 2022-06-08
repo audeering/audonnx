@@ -301,7 +301,7 @@ class Model(audobject.Object):
             raise ValueError(f"Model path {path} does not end on '.yaml'")
 
         if self.path is None:
-            # if model was laod from a byte stream,
+            # if model was loaded from a byte stream,
             # we have to save it first
             self.path = audeer.replace_file_extension(path, 'onnx')
             audeer.mkdir(os.path.dirname(path))
