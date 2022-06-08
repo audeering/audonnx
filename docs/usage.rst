@@ -283,8 +283,65 @@ The output of the quantized model differs slightly.
     onnx_model_4(signal, sampling_rate)
 
 
-Model with multiple nodes
--------------------------
+Custom function
+---------------
+
+So far,
+we have used OpenSMILE_ as feature extractor.
+It derives from audobject_
+and is therefore serializable by default.
+However,
+using
+:class:`audonnx.Function`
+we can turn any function
+into a serializable object.
+For instance,
+we can define a function that extracts
+Mel-frequency cepstral coefficients (MFCCs)
+with librosa_.
+
+.. jupyter-execute::
+
+    def func(x, sr):
+        import librosa  # import here to make function self-contained
+        y = librosa.feature.mfcc(
+            y=x.squeeze(),
+            sr=sr,
+            n_mfcc=18,
+        )
+        return y.reshape(1, 18, -1)
+
+As long as the function is self-contained
+(i.e. does not depend on external variables or imports)
+we can turn it into serializable object.
+
+.. jupyter-execute::
+
+    transform = audonnx.Function(func)
+    print(transform)
+
+And use it to initialize our model.
+
+.. jupyter-execute::
+
+    onnx_model_5 = audonnx.Model(
+        onnx_model_path,
+        labels=['female', 'male'],
+        transform=transform,
+    )
+    onnx_model_5
+
+Then we can save and load the model as before.
+
+.. jupyter-execute::
+
+    onnx_model_5.to_yaml(onnx_meta_path)
+    onnx_model_6 = audonnx.load(onnx_root)
+    onnx_model_6(signal, sampling_rate)
+
+
+Multiple nodes
+--------------
 
 Define a model that takes as input the
 raw audio in addition to the features
@@ -351,7 +408,7 @@ we do not set a transform for it.
         opset_version=12,
     )
 
-    onnx_model_5 = audonnx.Model(
+    onnx_model_7 = audonnx.Model(
         onnx_multi_path,
         labels={
             'gender': ['female', 'male']
@@ -360,20 +417,20 @@ we do not set a transform for it.
             'feature': smile,
         },
     )
-    onnx_model_5
+    onnx_model_7
 
 By default,
 returns a dictionary with output for every node.
 
 .. jupyter-execute::
 
-    onnx_model_5(signal, sampling_rate)
+    onnx_model_7(signal, sampling_rate)
 
 To request specific nodes.
 
 .. jupyter-execute::
 
-    onnx_model_5(
+    onnx_model_7(
         signal,
         sampling_rate,
         output_names=['gender', 'confidence'],
@@ -383,7 +440,7 @@ Or a single node:
 
 .. jupyter-execute::
 
-    onnx_model_5(
+    onnx_model_7(
         signal,
         sampling_rate,
         output_names='gender',
@@ -394,7 +451,7 @@ Create interface and process a file.
 .. jupyter-execute::
 
     interface = audinterface.Feature(
-        feature_names=onnx_model_5.outputs['gender'].labels,
+        feature_names=onnx_model_7.outputs['gender'].labels,
         process_func=onnx_model,
         process_func_args={'output_names': 'gender'},
     )
@@ -431,6 +488,7 @@ In that case do:
 .. _audformat: https://audeering.github.io/audformat/
 .. _audinterface: http://tools.pp.audeering.com/audinterface/
 .. _audobject: http://tools.pp.audeering.com/audobject/
+.. _librosa: https://librosa.org/doc/main/index.html
 .. _ONNX: https://onnx.ai/
 .. _OpenSMILE: https://github.com/audeering/opensmile-python
 .. _table: https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html#requirements
