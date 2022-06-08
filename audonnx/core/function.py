@@ -6,7 +6,7 @@ import audobject
 
 
 class Function(audobject.Object):
-    r"""Turn function into a :class:`audobject.Object`.
+    r"""Turn function into an :class:`audobject.Object`.
 
     Args:
         func: function that expects input signal and sampling rate as
