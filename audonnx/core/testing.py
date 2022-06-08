@@ -21,13 +21,20 @@ def create_model(
     Creates a model that outputs
     arrays filled with ``value``
     of the given ``shapes``.
+    For each entry an output node will be created.
+    ``-1``, ``None`` or strings
+    define a dynamic axis.
+    Per node, 
+    one dynamic axis is allowed.
     The model is stored under ``root``
     and can be loaded with
     :func:`audonnx.load`.
 
     Args:
         root: folder where model is stored
-        shapes: list with model shapes
+        shapes: list with shapes defining the output nodes of the model.
+            The model will have the same number of input nodes, 
+            copying the shapes from the output nodes
         value: fill value
         dtype: data type, see `supported data types`_
         opset_version: opset version
