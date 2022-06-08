@@ -47,7 +47,7 @@ class Model(audobject.Object):
     to see all available methods.
 
     Args:
-        path: ONNX model or path to model file
+        path: ONNX object or path to model file
         labels: list of labels or dictionary with labels
         transform: callable object or a dictionary of callable objects
         device: set device
@@ -55,22 +55,37 @@ class Model(audobject.Object):
             or a (list of) provider(s)_
 
     Example:
-        >>> import audonnx.testing
-        >>> model = audonnx.testing.create_model([[1, -1]])
+        >>> import audiofile
+        >>> import opensmile
+        >>> transform = opensmile.Smile(
+        ...    opensmile.FeatureSet.GeMAPSv01b,
+        ...    opensmile.FeatureLevel.LowLevelDescriptors,
+        ... )
+        >>> path = os.path.join('tests', 'model.onnx')
+        >>> model = Model(
+        ...     path,
+        ...     labels=['female', 'male'],
+        ...     transform=transform,
+        ... )
         >>> model
         Input:
-          input-0:
-            shape: [1, -1]
+          feature:
+            shape: [18, -1]
             dtype: tensor(float)
-            transform: audonnx.core.function.Function
+            transform: opensmile.core.smile.Smile
         Output:
-          output-0:
-            shape: [1, -1]
+          gender:
+            shape: [2]
             dtype: tensor(float)
-            labels: [output-0]
-        >>> signal = np.zeros([1, 5], dtype=np.float32)
-        >>> model(signal, 8000)
-        array([[0., 0., 0., 0., 0.]], dtype=float32)
+            labels: [female, male]
+        >>> path = os.path.join('tests', 'test.wav')
+        >>> signal, sampling_rate = audiofile.read(path)
+        >>> model(
+        ...     signal,
+        ...     sampling_rate,
+        ...     output_names='gender',
+        ... ).round(1)
+        array([-195.1,   73.3], dtype=float32)
 
     .. _provider(s): https://onnxruntime.ai/docs/execution-providers/
 
@@ -217,20 +232,6 @@ class Model(audobject.Object):
 
         Returns:
             model output
-
-        Examples:
-            >>> import audiofile
-            >>> audio_path = os.path.join('tests', 'test.wav')
-            >>> signal, sampling_rate = audiofile.read(audio_path)
-            >>> model_path = os.path.join('tests', 'model.yaml')
-            >>> import audobject
-            >>> model = audobject.from_yaml(model_path)
-            >>> model(
-            ...     signal,
-            ...     sampling_rate,
-            ...     output_names='gender',
-            ... ).round(1)
-            array([-195.1,   73.3], dtype=float32)
 
         """
         if output_names is None:
