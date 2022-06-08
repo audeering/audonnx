@@ -287,8 +287,11 @@ Custom function
 ---------------
 
 So far,
-we have used OpenSMILE_ as feature extractor.
-It derives from audobject_
+we have used
+:class:`opensmile.Smile`
+as feature extractor.
+It derives from
+:class:`audobject.Object`
 and is therefore serializable by default.
 However,
 using
