@@ -54,6 +54,24 @@ class Model(audobject.Object):
             (``'cpu'``, ``'cuda'``, or ``'cuda:<id>'``)
             or a (list of) provider(s)_
 
+    Example:
+        >>> import audonnx.testing
+        >>> model = audonnx.testing.create_model([[1, -1]])
+        >>> model
+        Input:
+          input-0:
+            shape: [1, -1]
+            dtype: tensor(float)
+            transform: audonnx.core.function.Function
+        Output:
+          output-0:
+            shape: [1, -1]
+            dtype: tensor(float)
+            labels: [output-0]
+        >>> signal = np.zeros([1, 5], dtype=np.float32)
+        >>> model(signal, 8000)
+        array([[0., 0., 0., 0., 0.]], dtype=float32)
+
     .. _provider(s): https://onnxruntime.ai/docs/execution-providers/
 
     """
