@@ -3,6 +3,7 @@ import re
 import typing
 
 import numpy as np
+import onnx
 import onnxruntime
 import yaml
 
@@ -46,7 +47,7 @@ class Model(audobject.Object):
     to see all available methods.
 
     Args:
-        path: path to model file
+        path: ONNX model or path to model file
         labels: list of labels or dictionary with labels
         transform: callable object or a dictionary of callable objects
         device: set device
@@ -70,7 +71,7 @@ class Model(audobject.Object):
     )
     def __init__(
             self,
-            path: str,
+            path: typing.Union[str, onnx.ModelProto],
             *,
             labels: Labels = None,
             transform: Transform = None,
@@ -88,12 +89,12 @@ class Model(audobject.Object):
             'transform': transform,
         }
 
-        self.path = audeer.safe_path(path)
+        self.path = audeer.safe_path(path) if isinstance(path, str) else None
         r"""Model path"""
 
         providers = _device_to_providers(device)
         self.sess = onnxruntime.InferenceSession(
-            self.path,
+            self.path if isinstance(path, str) else path.SerializeToString(),
             providers=providers,
         )
         r"""Interference session"""
@@ -265,6 +266,10 @@ class Model(audobject.Object):
     ):
         r"""Save model to YAML file.
 
+        If ONNX model was loaded from a byte stream,
+        it will be saved under the same path
+        with file extension ``.onnx``.
+
         Args:
             path: file path, must end on ``.yaml``
             include_version: add version to class name
@@ -276,6 +281,14 @@ class Model(audobject.Object):
         path = audeer.safe_path(path)
         if not audeer.file_extension(path) == 'yaml':
             raise ValueError(f"Model path {path} does not end on '.yaml'")
+
+        if self.path is None:
+            # if model was laod from a byte stream,
+            # we have to save it first
+            self.path = audeer.replace_file_extension(path, 'onnx')
+            audeer.mkdir(os.path.dirname(path))
+            onnx.save(self.sess._model_bytes, self.path)
+
         with open(path, 'w') as fp:
             super().to_yaml(fp, include_version=include_version)
 
