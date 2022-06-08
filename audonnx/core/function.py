@@ -46,7 +46,7 @@ class Function(audobject.Object):
 
         Args:
             signal: input signal
-            sr: sampling rate in Hz
+            sampling_rate: sampling rate in Hz
 
         Returns:
             transformed signal
