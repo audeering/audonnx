@@ -1,7 +1,8 @@
+import audeer
 import numpy as np
 import pytest
 
-import audonnx
+import audonnx.testing
 
 
 @pytest.mark.parametrize(
@@ -162,6 +163,31 @@ def test_device_or_providers(device):
     )
     expected = np.array([-195.1, 73.3], np.float32)
     np.testing.assert_almost_equal(y, expected, decimal=1)
+
+
+def test_init(tmpdir):
+
+    # create model from ONNX object
+
+    model = audonnx.testing.create_model([[1, -1]])
+    assert model.path is None
+
+    # save model to YAML
+
+    yaml_path = audeer.path(tmpdir, 'model.yaml')
+    model.to_yaml(yaml_path)
+    onnx_path = audeer.replace_file_extension(yaml_path, 'onnx')
+    assert model.path == onnx_path
+
+    # create model from ONNX file
+
+    model_2 = audonnx.Model(onnx_path)
+    assert model_2.path == onnx_path
+
+    # load from YAML
+
+    model_3 = audonnx.load(tmpdir)
+    assert model_3.path == onnx_path
 
 
 @pytest.mark.parametrize(

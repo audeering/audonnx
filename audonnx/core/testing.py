@@ -9,7 +9,6 @@ import audonnx
 
 
 def create_model(
-        root: str,
         shapes: typing.Sequence[typing.Sequence[int]],
         *,
         value: float = 0.,
@@ -28,7 +27,6 @@ def create_model(
     one dynamic axis is allowed.
 
     Args:
-        root: folder where model is stored
         shapes: list with shapes defining the output nodes of the model.
             The model will have the same number of input nodes,
             copying the shapes from the output nodes
@@ -41,7 +39,7 @@ def create_model(
 
     Example:
         >>> shapes = [[3], [1, -1, 2]]
-        >>> model = audonnx.testing.create_model('test', shapes)
+        >>> model = audonnx.testing.create_model(shapes)
         >>> model
         Input:
           input-0:
@@ -72,13 +70,10 @@ def create_model(
     .. _`supported data types`: https://onnxruntime.ai/docs/reference/operators/custom-python-operator.html#supported-data-types
 
     """  # noqa: E501
-    root = audeer.mkdir(root)
-    path = audeer.path(root, 'model.onnx')
 
     # create graph
 
     graph = _identity_graph(shapes, dtype, opset_version)
-    onnx.save(graph, path)
 
     # create transform objects
 
@@ -95,11 +90,9 @@ def create_model(
     # create model
 
     model = audonnx.Model(
-        path,
+        graph,
         transform=transform,
     )
-    path = audeer.path(root, 'model.yaml')
-    model.to_yaml(path)
 
     return model
 
