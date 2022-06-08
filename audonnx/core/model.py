@@ -285,7 +285,8 @@ class Model(audobject.Object):
         r"""Save model to YAML file.
 
         If ONNX model was loaded from a byte stream,
-        it will be saved under the same path
+        it will be saved in addition to the YAML file
+        under the same path
         with file extension ``.onnx``.
 
         Args:
