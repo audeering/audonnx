@@ -4,10 +4,10 @@ import typing
 
 import numpy as np
 import onnxruntime
+import yaml
 
 import audeer
 import audobject
-import yaml
 
 from audonnx.core.node import (
     InputNode,
@@ -324,5 +324,5 @@ def _last_static_dim_size(
 def _shape(
         shape: typing.List[typing.Union[int, str]],
 ) -> typing.List[int]:
-    r"""Replace dynamic dimension names with -1."""
-    return [-1 if isinstance(x, str) else x for x in shape]
+    r"""Replace dynamic dimensions with -1."""
+    return [-1 if not isinstance(x, int) else x for x in shape]
