@@ -20,11 +20,10 @@ def create_model(
 
     Creates a model that outputs
     arrays filled with ``value``
-    of the given ``shapes``.
-    The model is stored as
-    ``root/model.onnx``
-    and
-    ``root/model.yaml``.
+    of the given ``shapes``.    
+    The model is stored under ``root``
+    and can be loaded with
+    :func:`audonnx.load`.
 
     Args:
         root: folder where model is stored
