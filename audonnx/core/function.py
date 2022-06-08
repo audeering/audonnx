@@ -9,9 +9,9 @@ class Function(audobject.Object):
     r"""Wrap function as object.
 
     Args:
-        func: function that expects input signal and sampling rate as the
+        func: function that expects input signal and sampling rate as
             first two arguments
-        func_args: optional function arguments
+        func_args: additional arguments that will be passed to the function
 
     Example:
         >>> object = Function(lambda x, sr: x.mean())

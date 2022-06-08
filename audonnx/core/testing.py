@@ -20,7 +20,7 @@ def create_model(
 
     Creates a model that outputs
     arrays filled with ``value``
-    of the given ``shapes``.    
+    of the given ``shapes``.
     The model is stored under ``root``
     and can be loaded with
     :func:`audonnx.load`.
