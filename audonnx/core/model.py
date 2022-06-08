@@ -4,10 +4,10 @@ import typing
 
 import numpy as np
 import onnxruntime
+import yaml
 
 import audeer
 import audobject
-import yaml
 
 from audonnx.core.node import (
     InputNode,
