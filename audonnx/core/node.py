@@ -3,6 +3,8 @@ import typing
 import numpy as np
 import oyaml as yaml
 
+from audonnx.core.function import Function
+
 
 class InputNode:
     r"""Input node.
@@ -42,6 +44,9 @@ class InputNode:
             transform = f'{self.transform.__class__.__module__}' \
                         f'.' \
                         f'{self.transform.__class__.__name__}'
+
+        if isinstance(self.transform, Function):
+            transform += f'({self.transform.func.__name__})'
 
         return {
             'shape': self.shape,

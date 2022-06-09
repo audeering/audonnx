@@ -45,11 +45,11 @@ def create_model(
           input-0:
             shape: [3]
             dtype: tensor(float)
-            transform: audonnx.core.function.Function
+            transform: audonnx.core.function.Function(reshape)
           input-1:
             shape: [1, -1, 2]
             dtype: tensor(float)
-            transform: audonnx.core.function.Function
+            transform: audonnx.core.function.Function(reshape)
         Output:
           output-0:
             shape: [3]
@@ -80,7 +80,7 @@ def create_model(
     transform = {}
     for idx, shape in enumerate(shapes):
         transform[f'input-{idx}'] = audonnx.Function(
-            _shape_func,
+            reshape,
             func_args={
                 'shape': shape,
                 'value': value,
@@ -151,7 +151,7 @@ def _identity_graph(
     return model
 
 
-def _shape_func(signal, _, shape, value):
+def reshape(signal, _, shape, value):
     r"""Return array with zeros of given shape."""
     import numpy as np  # noqa: F811
     shape = [signal.shape[-1] if not isinstance(s, int) or s < 0
