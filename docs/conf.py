@@ -48,9 +48,10 @@ copybutton_prompt_is_regexp = True
 
 # Mapping to external documentation
 intersphinx_mapping = {
-    'python': ('https://docs.python.org/3/', None),
-    'torch': ('https://pytorch.org/docs/stable/', None),
     'audobject': ('https://audeering.github.io/audobject/', None),
+    'python': ('https://docs.python.org/3/', None),
+    'opensmile': ('https://audeering.github.io/opensmile-python/', None),
+    'torch': ('https://pytorch.org/docs/stable/', None),
 }
 
 # Disable Gitlab as we need to sign in
