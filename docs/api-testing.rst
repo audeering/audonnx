@@ -14,6 +14,12 @@ In order to use it you first have to import it explicitly:
     import audonnx.testing
 
 
+create_graph
+------------
+
+.. autofunction:: create_graph
+
+
 create_model
 ------------
 

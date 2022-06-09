@@ -5,7 +5,10 @@ import onnx
 
 import audeer
 import audobject
-import audonnx
+
+from audonnx.core.function import Function
+from audonnx.core.model import Model
+from audonnx.core.typing import Device
 
 
 def create_model(
@@ -14,7 +17,8 @@ def create_model(
         value: float = 0.,
         dtype: int = onnx.TensorProto.FLOAT,
         opset_version: int = 14,
-) -> audonnx.Model:
+        device: Device = 'cpu',
+) -> Model:
     r"""Create test model.
 
     Creates a model that outputs
@@ -33,13 +37,16 @@ def create_model(
         value: fill value
         dtype: data type, see `supported data types`_
         opset_version: opset version
+        device: set device
+            (``'cpu'``, ``'cuda'``, or ``'cuda:<id>'``)
+            or a (list of) provider(s)_
 
     Returns:
         model object
 
     Example:
         >>> shapes = [[3], [1, -1, 2]]
-        >>> model = audonnx.testing.create_model(shapes)
+        >>> model = create_model(shapes)
         >>> model
         Input:
           input-0:
@@ -73,13 +80,17 @@ def create_model(
 
     # create graph
 
-    graph = _identity_graph(shapes, dtype, opset_version)
+    object = create_onnx_object(
+        shapes,
+        dtype=dtype,
+        opset_version=opset_version,
+    )
 
     # create transform objects
 
     transform = {}
     for idx, shape in enumerate(shapes):
-        transform[f'input-{idx}'] = audonnx.Function(
+        transform[f'input-{idx}'] = Function(
             reshape,
             func_args={
                 'shape': shape,
@@ -89,20 +100,43 @@ def create_model(
 
     # create model
 
-    model = audonnx.Model(
-        graph,
+    model = Model(
+        object,
         transform=transform,
+        device=device,
     )
 
     return model
 
 
-def _identity_graph(
+def create_onnx_object(
         shapes: typing.Sequence[typing.Sequence[int]],
-        dtype: int,
-        opset_version: int,
+        *,
+        dtype: int = onnx.TensorProto.FLOAT,
+        opset_version: int = 14,
 ) -> onnx.ModelProto:
-    r"""Create identity graph."""
+    r"""Create test ONNX object.
+
+    Creates an identity graph
+    with input and output nodes
+    of the given ``shapes``.
+    For each entry an input and output
+    node will be created.
+    ``-1``, ``None`` or strings
+    define a dynamic axis.
+    Per node,
+    one dynamic axis is allowed.
+
+    Args:
+        shapes: list with shapes defining the output nodes of the model.
+            The model will have the same number of input nodes,
+            copying the shapes from the output nodes
+        dtype: data type, see `supported data types`_
+        opset_version: opset version
+
+    Returns:
+
+    """
 
     # nodes
 
@@ -111,7 +145,6 @@ def _identity_graph(
     nodes = []
 
     for idx, shape in enumerate(shapes):
-
         input = onnx.helper.make_tensor_value_info(
             f'input-{idx}',
             dtype,
