@@ -135,6 +135,50 @@ def create_onnx_object(
         opset_version: opset version
 
     Returns:
+        ONNX object
+
+    Example:
+        >>> create_onnx_object([[2]])
+        ir_version: 8
+        producer_name: "test"
+        graph {
+          node {
+            input: "input-0"
+            output: "output-0"
+            op_type: "Identity"
+          }
+          name: "test"
+          input {
+            name: "input-0"
+            type {
+              tensor_type {
+                elem_type: 1
+                shape {
+                  dim {
+                    dim_value: 2
+                  }
+                }
+              }
+            }
+          }
+          output {
+            name: "output-0"
+            type {
+              tensor_type {
+                elem_type: 1
+                shape {
+                  dim {
+                    dim_value: 2
+                  }
+                }
+              }
+            }
+          }
+        }
+        opset_import {
+          version: 14
+        }
+        <BLANKLINE>
 
     """
 

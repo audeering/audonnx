@@ -14,13 +14,13 @@ In order to use it you first have to import it explicitly:
     import audonnx.testing
 
 
-create_graph
-------------
-
-.. autofunction:: create_graph
-
-
 create_model
 ------------
 
 .. autofunction:: create_model
+
+
+create_onnx_object
+------------------
+
+.. autofunction:: create_onnx_object
