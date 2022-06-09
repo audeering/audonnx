@@ -47,7 +47,7 @@ class Model(audobject.Object):
     to see all available methods.
 
     Args:
-        path: ONNX object or path to model file
+        path: ONNX model object or path to ONNX file
         labels: list of labels or dictionary with labels
         transform: callable object or a dictionary of callable objects
         device: set device
