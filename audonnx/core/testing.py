@@ -128,9 +128,8 @@ def create_onnx_object(
     one dynamic axis is allowed.
 
     Args:
-        shapes: list with shapes defining the output nodes of the model.
-            The model will have the same number of input nodes,
-            copying the shapes from the output nodes
+        shapes: list with shapes defining the input and
+            output nodes of the graph
         dtype: data type, see `supported data types`_
         opset_version: opset version
 
