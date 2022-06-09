@@ -305,7 +305,7 @@ with librosa_.
 
 .. jupyter-execute::
 
-    def func(x, sr):
+    def mfcc(x, sr):
         import librosa  # import here to make function self-contained
         y = librosa.feature.mfcc(
             y=x.squeeze(),
