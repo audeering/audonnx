@@ -320,7 +320,7 @@ we can turn it into a serializable object.
 
 .. jupyter-execute::
 
-    transform = audonnx.Function(func)
+    transform = audonnx.Function(mfcc)
     print(transform)
 
 And use it to initialize our model.
