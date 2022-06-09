@@ -13,7 +13,7 @@ import audonnx
     'path, transform, labels, expected',
     [
         (
-            pytest.MODEL_SINGLE_PATH,
+            pytest.MODEL_PATH,
             pytest.FEATURE,
             {
                 'gender': ['female', 'male'],

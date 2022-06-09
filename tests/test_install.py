@@ -34,7 +34,7 @@ def uninstall(
 def test(tmpdir):
 
     model = audonnx.Model(
-        pytest.MODEL_SINGLE_PATH,
+        pytest.MODEL_PATH,
         transform=pytest.FEATURE,
     )
     model_path = os.path.join(tmpdir, 'model.yaml')
