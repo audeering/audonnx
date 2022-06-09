@@ -126,7 +126,8 @@ def test_init(tmpdir):
 
     # create model from ONNX object
 
-    model = audonnx.testing.create_model([[1, -1]])
+    object = audonnx.testing.create_onnx_object([[1, -1]])
+    model = audonnx.Model(object)
     assert model.path is None
 
     # save model to YAML
