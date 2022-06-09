@@ -283,8 +283,8 @@ The output of the quantized model differs slightly.
     onnx_model_4(signal, sampling_rate)
 
 
-Custom function
----------------
+Custom transform
+----------------
 
 So far,
 we have used
