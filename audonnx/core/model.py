@@ -3,6 +3,7 @@ import re
 import typing
 
 import numpy as np
+import onnx
 import onnxruntime
 import yaml
 
@@ -46,12 +47,45 @@ class Model(audobject.Object):
     to see all available methods.
 
     Args:
-        path: path to model file
+        path: ONNX model object or path to ONNX file
         labels: list of labels or dictionary with labels
         transform: callable object or a dictionary of callable objects
         device: set device
             (``'cpu'``, ``'cuda'``, or ``'cuda:<id>'``)
             or a (list of) provider(s)_
+
+    Example:
+        >>> import audiofile
+        >>> import opensmile
+        >>> transform = opensmile.Smile(
+        ...    opensmile.FeatureSet.GeMAPSv01b,
+        ...    opensmile.FeatureLevel.LowLevelDescriptors,
+        ... )
+        >>> path = os.path.join('tests', 'model.onnx')
+        >>> model = Model(
+        ...     path,
+        ...     labels=['female', 'male'],
+        ...     transform=transform,
+        ... )
+        >>> model
+        Input:
+          feature:
+            shape: [18, -1]
+            dtype: tensor(float)
+            transform: opensmile.core.smile.Smile
+        Output:
+          gender:
+            shape: [2]
+            dtype: tensor(float)
+            labels: [female, male]
+        >>> path = os.path.join('tests', 'test.wav')
+        >>> signal, sampling_rate = audiofile.read(path)
+        >>> model(
+        ...     signal,
+        ...     sampling_rate,
+        ...     output_names='gender',
+        ... ).round(1)
+        array([-195.1,   73.3], dtype=float32)
 
     .. _provider(s): https://onnxruntime.ai/docs/execution-providers/
 
@@ -70,7 +104,7 @@ class Model(audobject.Object):
     )
     def __init__(
             self,
-            path: str,
+            path: typing.Union[str, onnx.ModelProto],
             *,
             labels: Labels = None,
             transform: Transform = None,
@@ -88,12 +122,12 @@ class Model(audobject.Object):
             'transform': transform,
         }
 
-        self.path = audeer.safe_path(path)
+        self.path = audeer.safe_path(path) if isinstance(path, str) else None
         r"""Model path"""
 
         providers = _device_to_providers(device)
         self.sess = onnxruntime.InferenceSession(
-            self.path,
+            self.path if isinstance(path, str) else path.SerializeToString(),
             providers=providers,
         )
         r"""Interference session"""
@@ -199,20 +233,6 @@ class Model(audobject.Object):
         Returns:
             model output
 
-        Examples:
-            >>> import audiofile
-            >>> audio_path = os.path.join('tests', 'test.wav')
-            >>> signal, sampling_rate = audiofile.read(audio_path)
-            >>> model_path = os.path.join('tests', 'model.yaml')
-            >>> import audobject
-            >>> model = audobject.from_yaml(model_path)
-            >>> model(
-            ...     signal,
-            ...     sampling_rate,
-            ...     output_names='gender',
-            ... ).round(1)
-            array([-195.1,   73.3], dtype=float32)
-
         """
         if output_names is None:
             output_names = list(self.outputs)
@@ -265,6 +285,11 @@ class Model(audobject.Object):
     ):
         r"""Save model to YAML file.
 
+        If ONNX model was loaded from a byte stream,
+        it will be saved in addition to the YAML file
+        under the same path
+        with file extension ``.onnx``.
+
         Args:
             path: file path, must end on ``.yaml``
             include_version: add version to class name
@@ -276,6 +301,14 @@ class Model(audobject.Object):
         path = audeer.safe_path(path)
         if not audeer.file_extension(path) == 'yaml':
             raise ValueError(f"Model path {path} does not end on '.yaml'")
+
+        if self.path is None:
+            # if model was loaded from a byte stream,
+            # we have to save it first
+            self.path = audeer.replace_file_extension(path, 'onnx')
+            audeer.mkdir(os.path.dirname(path))
+            onnx.save(self.sess._model_bytes, self.path)
+
         with open(path, 'w') as fp:
             super().to_yaml(fp, include_version=include_version)
 
