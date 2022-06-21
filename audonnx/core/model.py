@@ -122,7 +122,7 @@ class Model(audobject.Object):
             'transform': transform,
         }
 
-        self.path = audeer.safe_path(path) if isinstance(path, str) else None
+        self.path = audeer.path(path) if isinstance(path, str) else None
         r"""Model path"""
 
         providers = _device_to_providers(device)
@@ -298,7 +298,7 @@ class Model(audobject.Object):
             ValueError: if file path does not end on ``.yaml``
 
        """
-        path = audeer.safe_path(path)
+        path = audeer.path(path)
         if not audeer.file_extension(path) == 'yaml':
             raise ValueError(f"Model path {path} does not end on '.yaml'")
 
