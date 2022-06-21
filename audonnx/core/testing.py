@@ -126,6 +126,8 @@ def create_onnx_object(
     define a dynamic axis.
     Per node,
     one dynamic axis is allowed.
+    The identity graph can be used as ``path`` argument
+    of :class:`audonnx.Model`.
 
     Args:
         shapes: list with shapes defining the input and
