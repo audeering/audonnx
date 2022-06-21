@@ -1,114 +1,75 @@
-import audeer
 import numpy as np
 import pytest
+
+import audeer
 
 import audonnx.testing
 
 
-@pytest.mark.parametrize(
-    'path, transform, labels, expected',
-    [
-        (
-            pytest.MODEL_SINGLE_PATH,
-            pytest.FEATURE,
-            None,
-            {'gender': ['gender-0', 'gender-1']},
-        ),
-        (
-            pytest.MODEL_SINGLE_PATH,
-            pytest.FEATURE,
-            ['female', 'male'],
-            {'gender': ['female', 'male']},
-        ),
-        pytest.param(
-            pytest.MODEL_SINGLE_PATH,
-            None,
-            ['too', 'many', 'labels'],
-            None,
-            marks=pytest.mark.xfail(raises=ValueError),
-        ),
-    ]
-)
-def test_labels(path, transform, labels, expected):
-    model = audonnx.Model(
-        path,
-        labels=labels,
-        transform=transform,
-    )
-    for name, l in expected.items():
-        assert model.outputs[name].labels == l
+def min_max(x, sr):
+    return [x.min(), x.max()]
 
 
 @pytest.mark.parametrize(
     'model, output_names, expected',
     [
         (
-            audonnx.Model(
-                pytest.MODEL_SINGLE_PATH,
-                transform=pytest.FEATURE,
-            ),
+            audonnx.Model(audonnx.testing.create_model_proto([[1, -1]])),
             None,
-            np.array([-195.1, 73.3], np.float32),
+            pytest.SIGNAL,
         ),
         (
-            audonnx.Model(
-                pytest.MODEL_SINGLE_PATH,
-                transform=pytest.FEATURE,
-            ),
-            'gender',
-            np.array([-195.1, 73.3], np.float32),
+            audonnx.testing.create_model([[2]]),
+            None,
+            np.array([0.0, 0.0], np.float32),
         ),
         (
-            audonnx.Model(
-                pytest.MODEL_SINGLE_PATH,
-                transform=pytest.FEATURE,
-            ),
-            ['gender'],
-            {'gender': np.array([-195.1, 73.3], np.float32)},
+            audonnx.testing.create_model([[2]]),
+            'output-0',
+            np.array([0.0, 0.0], np.float32),
         ),
         (
-            audonnx.Model(
-                pytest.MODEL_MULTI_PATH,
-                transform={
-                    'feature': pytest.FEATURE,
-                }
-            ),
+            audonnx.testing.create_model([[2]]),
+            ['output-0'],
+            {'output-0': np.array([0.0, 0.0], np.float32)},
+        ),
+        (
+            audonnx.testing.create_model([[2], [1, 3]]),
             None,
             {
-                'hidden': np.array([
-                    1.3299127e-01, 2.1280064e-01,
-                    -4.7600174e-01, -3.7167081e-01,
-                    6.6870685e+02, -4.2869656e+02,
-                    -4.5552551e+02, 8.6153650e+02,
-                ], np.float32),
-                'gender': np.array([224.83, -12.72], np.float32),
-                'confidence': np.array(-311.88, np.float32),
+                'output-0': np.array([0.0, 0.0], np.float32),
+                'output-1': np.array([[0.0, 0.0, 0.0]], np.float32),
             },
         ),
         (
-            audonnx.Model(
-                pytest.MODEL_MULTI_PATH,
-                transform={
-                    'feature': pytest.FEATURE,
-                }
-            ),
-            ['confidence', 'gender'],
+            audonnx.testing.create_model([[2], [1, 3]]),
+            'output-1',
+            np.array([[0.0, 0.0, 0.0]], np.float32),
+        ),
+        (
+            audonnx.testing.create_model([[2], [1, 3]]),
+            ['output-1'],
             {
-                'confidence': np.array(-311.88, np.float32),
-                'gender': np.array([224.83, -12.72], np.float32),
+                'output-1': np.array([[0.0, 0.0, 0.0]], np.float32),
             },
         ),
         (
-            audonnx.Model(
-                pytest.MODEL_MULTI_PATH,
-                transform={
-                    'feature': pytest.FEATURE,
-                }
-            ),
-            'confidence',
-            np.array(-311.88, np.float32),
+            audonnx.testing.create_model([[2], [1, 3]]),
+            ['output-1', 'output-0'],
+            {
+                'output-1': np.array([[0.0, 0.0, 0.0]], np.float32),
+                'output-0': np.array([0.0, 0.0], np.float32),
+            },
         ),
-    ],
+        (
+            audonnx.testing.create_model([[2], [1, 3]]),
+            ['output-1', 'output-0', 'output-1'],
+            {
+                'output-1': np.array([[0.0, 0.0, 0.0]], np.float32),
+                'output-0': np.array([0.0, 0.0], np.float32),
+            },
+        ),
+    ]
 )
 def test_call(model, output_names, expected):
     y = model(
@@ -118,9 +79,9 @@ def test_call(model, output_names, expected):
     )
     if isinstance(y, dict):
         for key, values in y.items():
-            np.testing.assert_almost_equal(y[key], expected[key], decimal=1)
+            np.testing.assert_equal(y[key], expected[key])
     else:
-        np.testing.assert_almost_equal(y, expected, decimal=1)
+        np.testing.assert_equal(y, expected)
 
 
 @pytest.mark.parametrize(
@@ -152,24 +113,21 @@ def test_call(model, output_names, expected):
     ]
 )
 def test_device_or_providers(device):
-    model = audonnx.Model(
-        pytest.MODEL_SINGLE_PATH,
-        transform=pytest.FEATURE,
-        device=device,
-    )
+    model = audonnx.testing.create_model([[2]], device=device)
     y = model(
         pytest.SIGNAL,
         pytest.SAMPLING_RATE,
     )
-    expected = np.array([-195.1, 73.3], np.float32)
-    np.testing.assert_almost_equal(y, expected, decimal=1)
+    expected = np.array([0.0, 0.0], np.float32)
+    np.testing.assert_equal(y, expected)
 
 
 def test_init(tmpdir):
 
     # create model from ONNX object
 
-    model = audonnx.testing.create_model([[1, -1]])
+    object = audonnx.testing.create_model_proto([[1, -1]])
+    model = audonnx.Model(object)
     assert model.path is None
 
     # save model to YAML
@@ -191,50 +149,121 @@ def test_init(tmpdir):
 
 
 @pytest.mark.parametrize(
-    'path, labels, transform',
+    'object, transform, labels, expected',
     [
         (
-            pytest.MODEL_SINGLE_PATH,
+            audonnx.testing.create_model_proto([[1, -1]]),
             None,
-            pytest.FEATURE,
-        ),
-        (
-            pytest.MODEL_DYNAMIC_PATH,
             None,
-            pytest.FEATURE,
+            {'output-0': ['output-0']},
         ),
         (
-            pytest.MODEL_DYNAMIC_PATH,
-            pytest.FEATURE.feature_names,
-            pytest.FEATURE,
+            audonnx.testing.create_model_proto([[2]]),
+            min_max,
+            None,
+            {'output-0': ['output-0-0', 'output-0-1']},
         ),
         (
-            pytest.MODEL_MULTI_PATH,
+            audonnx.testing.create_model_proto([[2]]),
+            min_max,
+            ['min', 'max'],
+            {'output-0': ['min', 'max']},
+        ),
+        (
+            audonnx.testing.create_model_proto([[1, -1], [2]]),
+            {'input-1': min_max},
+            None,
             {
-                'gender': ['female', 'male'],
+                'output-0': ['output-0'],
+                'output-1': ['output-1-0', 'output-1-1'],
             },
-            {
-                'feature': pytest.FEATURE,
-            }
         ),
-        pytest.param(  # list of labels but multiple output nodes
-            pytest.MODEL_MULTI_PATH,
-            ['female', 'male'],
+        (
+            audonnx.testing.create_model_proto([[1, -1], [2]]),
+            {'input-1': min_max},
+            {'output-1': ['min', 'max']},
+            {
+                'output-0': ['output-0'],
+                'output-1': ['min', 'max'],
+            },
+        ),
+        pytest.param(
+            audonnx.testing.create_model_proto([[2]]),
+            min_max,
+            ['too', 'many', 'labels'],
             None,
             marks=pytest.mark.xfail(raises=ValueError),
         ),
-        pytest.param(  # transform object but multiple input nodes
-            pytest.MODEL_MULTI_PATH,
+    ]
+)
+def test_labels(object, transform, labels, expected):
+    model = audonnx.Model(
+        object,
+        labels=labels,
+        transform=transform,
+    )
+    assert list(expected) == list(model.outputs)
+    for name, l in expected.items():
+        assert model.outputs[name].labels == l
+
+
+@pytest.mark.parametrize(
+    'object, labels, transform',
+    [
+        (
+            audonnx.testing.create_model_proto([[1, -1]]),
             None,
-            pytest.FEATURE,
+            None,
+        ),
+        (
+            audonnx.testing.create_model_proto([[1, -1]]),
+            ['signal'],
+            None,
+        ),
+        (
+            audonnx.testing.create_model_proto([[1, -1]]),
+            ['signal'],
+            lambda x, sr: x.T,
+        ),
+        (
+            audonnx.testing.create_model_proto([[1, -1]]),
+            ['signal'],
+            lambda x, sr: np.atleast_3d(),
+        ),
+        (
+            audonnx.testing.create_model_proto([[2]]),
+            ['min', 'max'],
+            min_max,
+        ),
+        (
+            audonnx.testing.create_model_proto([[2], [1, -1]]),
+            {
+                'input-0': ['min', 'max'],
+                'input-1': None,
+            },
+            {
+                'output-0': min_max,
+                'output-1': None,
+            },
+        ),
+        pytest.param(  # plain list of labels but multiple output nodes
+            audonnx.testing.create_model_proto([[2], [1, -1]]),
+            ['min', 'max'],
+            None,
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(  # single transform object but multiple input nodes
+            audonnx.testing.create_model_proto([[2], [1, -1]]),
+            None,
+            min_max,
             marks=pytest.mark.xfail(raises=ValueError),
         ),
     ],
 )
-def test_nodes(path, labels, transform):
+def test_nodes(object, labels, transform):
 
     model = audonnx.Model(
-        path,
+        object,
         labels=labels,
         transform=transform,
     )
@@ -245,7 +274,7 @@ def test_nodes(path, labels, transform):
     for idx, (name, node) in enumerate(model.inputs.items()):
         assert name == inputs[idx].name
         assert node.shape == [
-            -1 if isinstance(x, str) else x for x in inputs[idx].shape
+            -1 if not isinstance(x, int) else x for x in inputs[idx].shape
         ]
         assert node.dtype == inputs[idx].type
 
@@ -253,7 +282,7 @@ def test_nodes(path, labels, transform):
         assert name == outputs[idx].name
         if outputs[idx].shape:
             assert node.shape == [
-                -1 if isinstance(x, str) else x for x in outputs[idx].shape
+                -1 if not isinstance(x, int) else x for x in outputs[idx].shape
             ]
         else:
             assert node.shape == [1]
@@ -265,48 +294,104 @@ def test_nodes(path, labels, transform):
     [
         (
             audonnx.Model(
-                pytest.MODEL_SINGLE_PATH,
-                labels=['female', 'male'],
-                transform=pytest.FEATURE,
+                audonnx.testing.create_model_proto([[1, -1]]),
             ), r'''Input:
-  feature:
-    shape: [18, -1]
-    dtype: tensor(float)
-    transform: opensmile.core.smile.Smile
-Output:
-  gender:
-    shape: [2]
-    dtype: tensor(float)
-    labels: [female, male]'''
-        ),
-        (
-            audonnx.Model(
-                pytest.MODEL_MULTI_PATH,
-                transform={
-                    'feature': pytest.FEATURE,
-                }
-            ), r'''Input:
-  signal:
+  input-0:
     shape: [1, -1]
     dtype: tensor(float)
     transform: None
-  feature:
-    shape: [18, -1]
-    dtype: tensor(float)
-    transform: opensmile.core.smile.Smile
 Output:
-  hidden:
-    shape: [8]
+  output-0:
+    shape: [1, -1]
     dtype: tensor(float)
-    labels: [hidden-0, hidden-1, hidden-2, (...), hidden-5, hidden-6, hidden-7]
-  gender:
+    labels: [output-0]'''
+        ),
+        (
+            audonnx.Model(
+                audonnx.testing.create_model_proto([[2]]),
+                labels=['min', 'max'],
+                transform=lambda x, sr: [x.min(), x.max()],
+            ), r'''Input:
+  input-0:
     shape: [2]
     dtype: tensor(float)
-    labels: [gender-0, gender-1]
-  confidence:
-    shape: [1]
+    transform: builtins.function
+Output:
+  output-0:
+    shape: [2]
     dtype: tensor(float)
-    labels: [confidence]'''  # noqa
+    labels: [min, max]'''
+        ),
+        (
+            audonnx.Model(
+                audonnx.testing.create_model_proto([[2]]),
+                labels=['min', 'max'],
+                transform=audonnx.Function(lambda x, sr: [x.min(), x.max()]),
+            ), r'''Input:
+  input-0:
+    shape: [2]
+    dtype: tensor(float)
+    transform: audonnx.core.function.Function(<lambda>)
+Output:
+  output-0:
+    shape: [2]
+    dtype: tensor(float)
+    labels: [min, max]'''
+        ),
+        (
+            audonnx.Model(
+                audonnx.testing.create_model_proto([[2]]),
+                labels=['min', 'max'],
+                transform=audonnx.Function(min_max),
+            ), r'''Input:
+  input-0:
+    shape: [2]
+    dtype: tensor(float)
+    transform: audonnx.core.function.Function(min_max)
+Output:
+  output-0:
+    shape: [2]
+    dtype: tensor(float)
+    labels: [min, max]'''
+        ),
+        (
+            audonnx.testing.create_model(
+                [[2], [None], [1, -1, 3], [99, 'time']],
+            ), r'''Input:
+  input-0:
+    shape: [2]
+    dtype: tensor(float)
+    transform: audonnx.core.function.Function(reshape)
+  input-1:
+    shape: [-1]
+    dtype: tensor(float)
+    transform: audonnx.core.function.Function(reshape)
+  input-2:
+    shape: [1, -1, 3]
+    dtype: tensor(float)
+    transform: audonnx.core.function.Function(reshape)
+  input-3:
+    shape: [99, -1]
+    dtype: tensor(float)
+    transform: audonnx.core.function.Function(reshape)
+Output:
+  output-0:
+    shape: [2]
+    dtype: tensor(float)
+    labels: [output-0-0, output-0-1]
+  output-1:
+    shape: [-1]
+    dtype: tensor(float)
+    labels: []
+  output-2:
+    shape: [1, -1, 3]
+    dtype: tensor(float)
+    labels: [output-2-0, output-2-1, output-2-2]
+  output-3:
+    shape: [99, -1]
+    dtype: tensor(float)
+    labels: [output-3-0, output-3-1, output-3-2, (...), output-3-96, output-3-97,
+      output-3-98]'''  # noqa: E501
         )
     ],
 )

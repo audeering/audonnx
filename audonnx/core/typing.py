@@ -4,6 +4,14 @@ import typing
 import numpy as np
 
 
+Device = typing.Union[
+    str,
+    typing.Tuple[str, typing.Dict],
+    typing.Sequence[
+        typing.Union[str, typing.Tuple[str, typing.Dict]]],
+]
+
+
 Labels = typing.Union[
     typing.Sequence[str],
     typing.Dict[

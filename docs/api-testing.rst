@@ -18,3 +18,9 @@ create_model
 ------------
 
 .. autofunction:: create_model
+
+
+create_model_proto
+------------------
+
+.. autofunction:: create_model_proto

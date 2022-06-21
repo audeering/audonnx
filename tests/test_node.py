@@ -3,6 +3,10 @@ import pytest
 import audonnx
 
 
+def mean(x, sr):
+    return x.mean(axis=1)
+
+
 @pytest.mark.parametrize(
     'node, expected',
     [
@@ -22,6 +26,24 @@ import audonnx
             ),
             "{shape: [18, -1], dtype: tensor(float), "
             "transform: opensmile.core.smile.Smile}"
+        ),
+        (
+            audonnx.InputNode(
+                [1],
+                'tensor(float)',
+                audonnx.Function(lambda x, sr: x.mean(axis=1)),
+            ),
+            "{shape: [1], dtype: tensor(float), "
+            "transform: audonnx.core.function.Function(<lambda>)}"
+        ),
+        (
+            audonnx.InputNode(
+                [1],
+                'tensor(float)',
+                audonnx.Function(mean),
+            ),
+            "{shape: [1], dtype: tensor(float), "
+            "transform: audonnx.core.function.Function(mean)}"
         ),
         (
             audonnx.OutputNode(

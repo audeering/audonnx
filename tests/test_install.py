@@ -5,7 +5,7 @@ import sys
 
 import pytest
 
-import audonnx
+import audonnx.testing
 
 
 def uninstall(
@@ -33,8 +33,9 @@ def uninstall(
 
 def test(tmpdir):
 
+    object = audonnx.testing.create_model_proto([pytest.FEATURE_SHAPE])
     model = audonnx.Model(
-        pytest.MODEL_SINGLE_PATH,
+        object,
         transform=pytest.FEATURE,
     )
     model_path = os.path.join(tmpdir, 'model.yaml')

@@ -1,30 +1,38 @@
 import os
 
-import audeer
 import numpy as np
+import onnx
 import oyaml as yaml
 import pytest
 
+import audeer
+
 import audobject
-import audonnx
+import audonnx.testing
+
+
+def min_max(x, sr):
+    import numpy as np
+    return np.array([x.min(), x.max()], np.float32)
 
 
 @pytest.mark.parametrize(
-    'path, transform, labels, expected',
+    'object, transform, labels, expected',
     [
         (
-            pytest.MODEL_SINGLE_PATH,
-            pytest.FEATURE,
-            {
-                'gender': ['female', 'male'],
-            },
-            np.array([-195.1, 73.3], np.float32),
+            audonnx.testing.create_model_proto([[2]]),
+            audonnx.Function(min_max),
+            {'output-0': ['min', 'max']},
+            min_max(pytest.SIGNAL, pytest.SAMPLING_RATE),
         ),
     ]
 )
-def test_load_legacy(tmpdir, path, transform, labels, expected):
+def test_load_legacy(tmpdir, object, transform, labels, expected):
 
-    root = os.path.dirname(path)
+    root = tmpdir
+
+    onnx_path = os.path.join(root, 'model.onnx')
+    onnx.save(object, onnx_path)
 
     # create from onnx
 
@@ -37,7 +45,7 @@ def test_load_legacy(tmpdir, path, transform, labels, expected):
 
     model = audonnx.load(
         root,
-        model_file=os.path.basename(path),
+        model_file=os.path.basename(onnx_path),
         transform_file=os.path.basename(transform_path),
         labels_file=os.path.basename(labels_path),
     )
@@ -51,7 +59,7 @@ def test_load_legacy(tmpdir, path, transform, labels, expected):
 
     model = audonnx.load(
         root,
-        model_file=audeer.replace_file_extension(path, 'yaml'),
+        model_file=audeer.replace_file_extension(onnx_path, 'yaml'),
     )
     y = model(pytest.SIGNAL, pytest.SAMPLING_RATE)
 
@@ -65,7 +73,7 @@ def test_load_legacy(tmpdir, path, transform, labels, expected):
     audobject.Object().to_yaml(model_path)
     model = audonnx.load(
         root,
-        model_file=os.path.basename(path),
+        model_file=os.path.basename(onnx_path),
     )
 
     # file extension does not end on '.yaml'
@@ -82,6 +90,6 @@ def test_load_legacy(tmpdir, path, transform, labels, expected):
     model = audonnx.load(tmpdir)
     y = model(pytest.SIGNAL, pytest.SAMPLING_RATE)
 
-    np.testing.assert_almost_equal(y, expected, decimal=1)
+    np.testing.assert_equal(y, expected)
     for key, values in labels.items():
         assert model.outputs[key].labels == labels[key]

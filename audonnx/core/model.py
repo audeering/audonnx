@@ -15,6 +15,7 @@ from audonnx.core.node import (
     OutputNode,
 )
 from audonnx.core.typing import (
+    Device,
     Labels,
     Transform,
 )
@@ -47,7 +48,7 @@ class Model(audobject.Object):
     to see all available methods.
 
     Args:
-        path: ONNX model object or path to ONNX file
+        path: ONNX proto object or path to ONNX file
         labels: list of labels or dictionary with labels
         transform: callable object or a dictionary of callable objects
         device: set device
@@ -108,12 +109,7 @@ class Model(audobject.Object):
             *,
             labels: Labels = None,
             transform: Transform = None,
-            device: typing.Union[
-                str,
-                typing.Tuple[str, typing.Dict],
-                typing.Sequence[
-                    typing.Union[str, typing.Tuple[str, typing.Dict]]],
-            ] = 'cpu',
+            device: Device = 'cpu',
     ):
         # keep original arguments to store them
         # when object is serialized
