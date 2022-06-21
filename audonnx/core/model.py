@@ -84,7 +84,7 @@ class Model(audobject.Object):
         >>> model(
         ...     signal,
         ...     sampling_rate,
-        ...     output_names='gender',
+        ...     outputs='gender',
         ... ).round(1)
         array([-195.1,   73.3], dtype=float32)
 
@@ -211,19 +211,19 @@ class Model(audobject.Object):
     ]:
         r"""Compute output for one or more nodes.
 
-        If ``output_names`` is a plain string,
+        If ``outputs`` is a plain string,
         the output of the according node is returned.
 
-        If ``output_names`` is a list of strings,
+        If ``outputs`` is a list of strings,
         a dictionary with according nodes as keys and
         their outputs as values is returned.
 
-        If ``output_names`` is not set
+        If ``outputs`` is not set
         and the model has a single output node,
         the output of that node is returned.
         Otherwise a dictionary with outputs of all nodes is returned.
 
-        Use :attr:`audonnx.Model.output_names` to get a list of available
+        Use :attr:`audonnx.Model.outputs` to get a list of available
         output nodes.
 
         Args:
