@@ -20,7 +20,7 @@ create_model
 .. autofunction:: create_model
 
 
-create_onnx_object
+create_model_proto
 ------------------
 
-.. autofunction:: create_onnx_object
+.. autofunction:: create_model_proto

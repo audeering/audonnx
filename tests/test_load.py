@@ -20,7 +20,7 @@ def min_max(x, sr):
     'object, transform, labels, expected',
     [
         (
-            audonnx.testing.create_onnx_object([[2]]),
+            audonnx.testing.create_model_proto([[2]]),
             audonnx.Function(min_max),
             {'output-0': ['min', 'max']},
             min_max(pytest.SIGNAL, pytest.SAMPLING_RATE),

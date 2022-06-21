@@ -33,7 +33,7 @@ def uninstall(
 
 def test(tmpdir):
 
-    object = audonnx.testing.create_onnx_object([pytest.FEATURE_SHAPE])
+    object = audonnx.testing.create_model_proto([pytest.FEATURE_SHAPE])
     model = audonnx.Model(
         object,
         transform=pytest.FEATURE,

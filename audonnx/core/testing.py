@@ -80,7 +80,7 @@ def create_model(
 
     # create graph
 
-    object = create_onnx_object(
+    object = create_model_proto(
         shapes,
         dtype=dtype,
         opset_version=opset_version,
@@ -109,13 +109,13 @@ def create_model(
     return model
 
 
-def create_onnx_object(
+def create_model_proto(
         shapes: typing.Sequence[typing.Sequence[int]],
         *,
         dtype: int = onnx.TensorProto.FLOAT,
         opset_version: int = 14,
 ) -> onnx.ModelProto:
-    r"""Create test ONNX object.
+    r"""Create test ONNX proto object.
 
     Creates an identity graph
     with input and output nodes
@@ -139,7 +139,7 @@ def create_onnx_object(
         ONNX object
 
     Example:
-        >>> create_onnx_object([[2]])
+        >>> create_model_proto([[2]])
         ir_version: 8
         producer_name: "test"
         graph {

@@ -14,7 +14,7 @@ def min_max(x, sr):
     'model, output_names, expected',
     [
         (
-            audonnx.Model(audonnx.testing.create_onnx_object([[1, -1]])),
+            audonnx.Model(audonnx.testing.create_model_proto([[1, -1]])),
             None,
             pytest.SIGNAL,
         ),
@@ -126,7 +126,7 @@ def test_init(tmpdir):
 
     # create model from ONNX object
 
-    object = audonnx.testing.create_onnx_object([[1, -1]])
+    object = audonnx.testing.create_model_proto([[1, -1]])
     model = audonnx.Model(object)
     assert model.path is None
 
@@ -152,25 +152,25 @@ def test_init(tmpdir):
     'object, transform, labels, expected',
     [
         (
-            audonnx.testing.create_onnx_object([[1, -1]]),
+            audonnx.testing.create_model_proto([[1, -1]]),
             None,
             None,
             {'output-0': ['output-0']},
         ),
         (
-            audonnx.testing.create_onnx_object([[2]]),
+            audonnx.testing.create_model_proto([[2]]),
             min_max,
             None,
             {'output-0': ['output-0-0', 'output-0-1']},
         ),
         (
-            audonnx.testing.create_onnx_object([[2]]),
+            audonnx.testing.create_model_proto([[2]]),
             min_max,
             ['min', 'max'],
             {'output-0': ['min', 'max']},
         ),
         (
-            audonnx.testing.create_onnx_object([[1, -1], [2]]),
+            audonnx.testing.create_model_proto([[1, -1], [2]]),
             {'input-1': min_max},
             None,
             {
@@ -179,7 +179,7 @@ def test_init(tmpdir):
             },
         ),
         (
-            audonnx.testing.create_onnx_object([[1, -1], [2]]),
+            audonnx.testing.create_model_proto([[1, -1], [2]]),
             {'input-1': min_max},
             {'output-1': ['min', 'max']},
             {
@@ -188,7 +188,7 @@ def test_init(tmpdir):
             },
         ),
         pytest.param(
-            audonnx.testing.create_onnx_object([[2]]),
+            audonnx.testing.create_model_proto([[2]]),
             min_max,
             ['too', 'many', 'labels'],
             None,
@@ -211,32 +211,32 @@ def test_labels(object, transform, labels, expected):
     'object, labels, transform',
     [
         (
-            audonnx.testing.create_onnx_object([[1, -1]]),
+            audonnx.testing.create_model_proto([[1, -1]]),
             None,
             None,
         ),
         (
-            audonnx.testing.create_onnx_object([[1, -1]]),
+            audonnx.testing.create_model_proto([[1, -1]]),
             ['signal'],
             None,
         ),
         (
-            audonnx.testing.create_onnx_object([[1, -1]]),
+            audonnx.testing.create_model_proto([[1, -1]]),
             ['signal'],
             lambda x, sr: x.T,
         ),
         (
-            audonnx.testing.create_onnx_object([[1, -1]]),
+            audonnx.testing.create_model_proto([[1, -1]]),
             ['signal'],
             lambda x, sr: np.atleast_3d(),
         ),
         (
-            audonnx.testing.create_onnx_object([[2]]),
+            audonnx.testing.create_model_proto([[2]]),
             ['min', 'max'],
             min_max,
         ),
         (
-            audonnx.testing.create_onnx_object([[2], [1, -1]]),
+            audonnx.testing.create_model_proto([[2], [1, -1]]),
             {
                 'input-0': ['min', 'max'],
                 'input-1': None,
@@ -247,13 +247,13 @@ def test_labels(object, transform, labels, expected):
             },
         ),
         pytest.param(  # plain list of labels but multiple output nodes
-            audonnx.testing.create_onnx_object([[2], [1, -1]]),
+            audonnx.testing.create_model_proto([[2], [1, -1]]),
             ['min', 'max'],
             None,
             marks=pytest.mark.xfail(raises=ValueError),
         ),
         pytest.param(  # single transform object but multiple input nodes
-            audonnx.testing.create_onnx_object([[2], [1, -1]]),
+            audonnx.testing.create_model_proto([[2], [1, -1]]),
             None,
             min_max,
             marks=pytest.mark.xfail(raises=ValueError),
@@ -294,7 +294,7 @@ def test_nodes(object, labels, transform):
     [
         (
             audonnx.Model(
-                audonnx.testing.create_onnx_object([[1, -1]]),
+                audonnx.testing.create_model_proto([[1, -1]]),
             ), r'''Input:
   input-0:
     shape: [1, -1]
@@ -308,7 +308,7 @@ Output:
         ),
         (
             audonnx.Model(
-                audonnx.testing.create_onnx_object([[2]]),
+                audonnx.testing.create_model_proto([[2]]),
                 labels=['min', 'max'],
                 transform=lambda x, sr: [x.min(), x.max()],
             ), r'''Input:
@@ -324,7 +324,7 @@ Output:
         ),
         (
             audonnx.Model(
-                audonnx.testing.create_onnx_object([[2]]),
+                audonnx.testing.create_model_proto([[2]]),
                 labels=['min', 'max'],
                 transform=audonnx.Function(lambda x, sr: [x.min(), x.max()]),
             ), r'''Input:
@@ -340,7 +340,7 @@ Output:
         ),
         (
             audonnx.Model(
-                audonnx.testing.create_onnx_object([[2]]),
+                audonnx.testing.create_model_proto([[2]]),
                 labels=['min', 'max'],
                 transform=audonnx.Function(min_max),
             ), r'''Input:
