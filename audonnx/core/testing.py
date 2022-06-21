@@ -31,9 +31,8 @@ def create_model(
     one dynamic axis is allowed.
 
     Args:
-        shapes: list with shapes defining the output nodes of the model.
-            The model will have the same number of input nodes,
-            copying the shapes from the output nodes
+        shapes: list with shapes defining the identical
+            input and output nodes of the model graph
         value: fill value
         dtype: data type, see `supported data types`_
         opset_version: opset version
@@ -130,8 +129,8 @@ def create_model_proto(
     of :class:`audonnx.Model`.
 
     Args:
-        shapes: list with shapes defining the input and
-            output nodes of the graph
+        shapes: list with shapes defining the identical
+            input and output nodes of the model graph
         dtype: data type, see `supported data types`_
         opset_version: opset version
 
