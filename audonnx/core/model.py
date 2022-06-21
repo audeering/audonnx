@@ -194,12 +194,17 @@ class Model(audobject.Object):
                 lab,
             )
 
+    @audeer.deprecated_keyword_argument(
+        deprecated_argument='output_names',
+        removal_version='1.2.0',
+        new_argument='outputs',
+    )
     def __call__(
             self,
             signal: np.ndarray,
             sampling_rate: int,
             *,
-            output_names: typing.Union[str, typing.Sequence[str]] = None,
+            outputs: typing.Union[str, typing.Sequence[str]] = None,
     ) -> typing.Union[
         np.ndarray,
         typing.Dict[str, np.ndarray],
@@ -224,16 +229,16 @@ class Model(audobject.Object):
         Args:
             signal: input signal
             sampling_rate: sampling rate in Hz
-            output_names: name of output or list with output names
+            outputs: name of output or list with output names
 
         Returns:
             model output
 
         """
-        if output_names is None:
-            output_names = list(self.outputs)
-            if len(output_names) == 1:
-                output_names = output_names[0]
+        if outputs is None:
+            outputs = list(self.outputs)
+            if len(outputs) == 1:
+                outputs = outputs[0]
 
         y = {}
         for name, input in self.inputs.items():
@@ -244,15 +249,15 @@ class Model(audobject.Object):
             y[name] = x.reshape(self.inputs[name].shape)
 
         z = self.sess.run(
-            audeer.to_list(output_names),
+            audeer.to_list(outputs),
             y,
         )
 
-        if isinstance(output_names, str):
+        if isinstance(outputs, str):
             z = z[0]
         else:
             z = {
-                name: values for name, values in zip(output_names, z)
+                name: values for name, values in zip(outputs, z)
             }
 
         return z

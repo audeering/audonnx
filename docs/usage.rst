@@ -436,7 +436,7 @@ To request specific nodes.
     onnx_model_7(
         signal,
         sampling_rate,
-        output_names=['gender', 'confidence'],
+        outputs=['gender', 'confidence'],
     )
 
 Or a single node:
@@ -446,7 +446,7 @@ Or a single node:
     onnx_model_7(
         signal,
         sampling_rate,
-        output_names='gender',
+        outputs='gender',
     )
 
 Create interface and process a file.
@@ -456,7 +456,7 @@ Create interface and process a file.
     interface = audinterface.Feature(
         feature_names=onnx_model_7.outputs['gender'].labels,
         process_func=onnx_model,
-        process_func_args={'output_names': 'gender'},
+        process_func_args={'outputs': 'gender'},
     )
     interface.process_file(file)
 

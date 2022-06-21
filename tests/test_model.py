@@ -11,7 +11,7 @@ def min_max(x, sr):
 
 
 @pytest.mark.parametrize(
-    'model, output_names, expected',
+    'model, outputs, expected',
     [
         (
             audonnx.Model(audonnx.testing.create_model_proto([[1, -1]])),
@@ -71,11 +71,11 @@ def min_max(x, sr):
         ),
     ]
 )
-def test_call(model, output_names, expected):
+def test_call(model, outputs, expected):
     y = model(
         pytest.SIGNAL,
         pytest.SAMPLING_RATE,
-        output_names=output_names,
+        outputs=outputs,
     )
     if isinstance(y, dict):
         for key, values in y.items():
