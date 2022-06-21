@@ -14,7 +14,7 @@ import audiofile
 import audobject
 
 
-pytest.ROOT = audeer.safe_path(
+pytest.ROOT = audeer.path(
     os.path.dirname(os.path.realpath(__file__))
 )
 pytest.TMP = audeer.mkdir(

@@ -67,7 +67,7 @@ def load(
 
     """  # noqa: E501
 
-    root = audeer.safe_path(root)
+    root = audeer.path(root)
     model_file = os.path.join(root, model_file)
     model_file_yaml = audeer.replace_file_extension(model_file, 'yaml')
     if audeer.file_extension(model_file) == 'yaml':
