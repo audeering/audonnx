@@ -205,7 +205,7 @@ class Model(audobject.Object):
             sampling_rate: int,
             *,
             outputs: typing.Union[str, typing.Sequence[str]] = None,
-            flatten: bool = False,
+            concat: bool = False,
     ) -> typing.Union[
         np.ndarray,
         typing.Dict[str, np.ndarray],
@@ -224,7 +224,7 @@ class Model(audobject.Object):
         the output of that node is returned.
         Otherwise a dictionary with outputs of all nodes is returned.
 
-        If ``flatten`` is set to ``True``,
+        If ``concat`` is set to ``True``,
         the output of the requested nodes is concatenated
         and a single array is returned.
         This requires that the number of dimensions,
@@ -239,14 +239,14 @@ class Model(audobject.Object):
             signal: input signal
             sampling_rate: sampling rate in Hz
             outputs: name of output or list with output names
-            flatten: if ``True``,
+            concat: if ``True``,
                 concatenate output of the requested nodes
 
         Returns:
             model output
 
         Raises:
-            RuntimeError: if ``flatten`` is ``True``,
+            RuntimeError: if ``concat`` is ``True``,
                 but output of requested nodes cannot be concatenated
 
         """
@@ -274,9 +274,9 @@ class Model(audobject.Object):
             z = {
                 name: values for name, values in zip(outputs, z)
             }
-            if flatten:
+            if concat:
                 shapes = [self.outputs[node].shape for node in outputs]
-                z = _flatten(z, shapes)
+                z = _concat(z, shapes)
 
         return z
 
@@ -365,6 +365,33 @@ def _device_to_providers(
     return providers
 
 
+def _concat(
+        y: typing.Dict[str, np.ndarray],
+        shapes: typing.Sequence[typing.List[int]],
+):
+    r"""Flatten dictionary by concatenating values."""
+
+    y = list(y.values())
+
+    # special case if all shapes are [-1]
+    if all(map([-1].__eq__, shapes)):
+        return np.stack(y)
+
+    axis = _concat_axis(shapes)
+    if axis == -1:
+        raise RuntimeError(
+            f'To concatenate outputs '
+            f'number of dimensions, '
+            f'position of dynamic axis, '
+            f'and all dimensions except the last non-dynamic axis '
+            f'must match. '
+            f'This does not apply to: '
+            f'{shapes}'
+        )
+
+    return np.concatenate(y, axis=axis)
+
+
 def _concat_axis(shapes: typing.Sequence[int]) -> int:
     r"""Return concat dimension or -1 if not possible."""
 
@@ -394,33 +421,6 @@ def _dynamic_axis(shape: typing.Sequence[int]) -> int:
         if dim == -1:
             return idx
     return -1
-
-
-def _flatten(
-        y: typing.Dict[str, np.ndarray],
-        shapes: typing.Sequence[typing.List[int]],
-):
-    r"""Flatten dictionary by concatenating values."""
-
-    y = list(y.values())
-
-    # special case if all shapes are [-1]
-    if all(map([-1].__eq__, shapes)):
-        return np.stack(y)
-
-    axis = _concat_axis(shapes)
-    if axis == -1:
-        raise RuntimeError(
-            f'To concatenate outputs '
-            f'number of dimensions, '
-            f'position of dynamic axis, '
-            f'and all dimensions except the last non-dynamic axis '
-            f'must match. '
-            f'This does not apply to: '
-            f'{shapes}'
-        )
-
-    return np.concatenate(y, axis=axis)
 
 
 def _last_static_dim_size(

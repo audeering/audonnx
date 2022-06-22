@@ -205,12 +205,12 @@ def test_call_deprecated(model, output_names):
         ),
     ]
 )
-def test_call_flatten(model, outputs, expected):
+def test_call_concat(model, outputs, expected):
     y = model(
         pytest.SIGNAL,
         pytest.SAMPLING_RATE,
         outputs=outputs,
-        flatten=True,
+        concat=True,
     )
     np.testing.assert_equal(y, expected)
 
