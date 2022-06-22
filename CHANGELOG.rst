@@ -7,7 +7,7 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
-Version 0.6.0 (2022-06-22)
+Version 0.6.0 (2022-06-23)
 --------------------------
 
 * Added: ``audonnx.Function``
