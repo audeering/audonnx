@@ -72,16 +72,24 @@ def min_max(x, sr):
     ]
 )
 def test_call(model, outputs, expected):
-    y = model(
-        pytest.SIGNAL,
-        pytest.SAMPLING_RATE,
-        outputs=outputs,
-    )
-    if isinstance(y, dict):
-        for key, values in y.items():
-            np.testing.assert_equal(y[key], expected[key])
-    else:
-        np.testing.assert_equal(y, expected)
+    for squeeze in [False, True]:
+        y = model(
+            pytest.SIGNAL,
+            pytest.SAMPLING_RATE,
+            outputs=outputs,
+            squeeze=squeeze,
+        )
+        if isinstance(y, dict):
+            for key, values in y.items():
+                if squeeze:
+                    np.testing.assert_equal(y[key], expected[key].squeeze())
+                else:
+                    np.testing.assert_equal(y[key], expected[key])
+        else:
+            if squeeze:
+                np.testing.assert_equal(y, expected.squeeze())
+            else:
+                np.testing.assert_equal(y, expected)
 
 
 @pytest.mark.parametrize(
@@ -206,13 +214,18 @@ def test_call_deprecated(model, output_names):
     ]
 )
 def test_call_concat(model, outputs, expected):
-    y = model(
-        pytest.SIGNAL,
-        pytest.SAMPLING_RATE,
-        outputs=outputs,
-        concat=True,
-    )
-    np.testing.assert_equal(y, expected)
+    for squeeze in [False, True]:
+        y = model(
+            pytest.SIGNAL,
+            pytest.SAMPLING_RATE,
+            outputs=outputs,
+            concat=True,
+            squeeze=squeeze,
+        )
+        if squeeze:
+            np.testing.assert_equal(y, expected.squeeze())
+        else:
+            np.testing.assert_equal(y, expected)
 
 
 @pytest.mark.parametrize(

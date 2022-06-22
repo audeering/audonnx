@@ -206,6 +206,7 @@ class Model(audobject.Object):
             *,
             outputs: typing.Union[str, typing.Sequence[str]] = None,
             concat: bool = False,
+            squeeze: bool = False,
     ) -> typing.Union[
         np.ndarray,
         typing.Dict[str, np.ndarray],
@@ -242,6 +243,8 @@ class Model(audobject.Object):
             outputs: name of output or list with output names
             concat: if ``True``,
                 concatenate output of the requested nodes
+            squeeze: if ``True``,
+                remove axes of length one from the output(s)
 
         Returns:
             model output
@@ -278,6 +281,14 @@ class Model(audobject.Object):
             if concat:
                 shapes = [self.outputs[node].shape for node in outputs]
                 z = _concat(z, shapes)
+
+        if squeeze:
+            if isinstance(z, dict):
+                z = {
+                    name: values.squeeze() for name, values in z.items()
+                }
+            else:
+                z = z.squeeze()
 
         return z
 
