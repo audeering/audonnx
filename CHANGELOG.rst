@@ -10,19 +10,19 @@ and this project adheres to `Semantic Versioning`_.
 Version 0.6.0 (2022-06-22)
 --------------------------
 
-* Added: ``Function``
-* Added: ``Model.labels()``
+* Added: ``audonnx.Function``
+* Added: ``audonnx.Model.labels()``
 * Added: arguments
   ``concat``,
   ``outputs``,
   ``squeeze``
-  to ``Model.__call__()``
+  to ``audonnx.Model.__call__()``
 * Added: tests on Windows
-* Added: ``testing`` module
-* Changed: optionally init ``Model`` from proto object instead of ONNX file
-* Changed: dynamic axis can be specified as ``None``
+* Added: ``audonnx.testing`` module
+* Changed: optionally init ``audonnx.Model`` from proto object instead of ONNX file
+* Changed: dynamic axis can be specified as ``None`` in ONNX graph
 * Changed: support output nodes where last dimension is dynamic
-* Deprecated: argument ``output_names`` of ``Model.__call__()``
+* Deprecated: argument ``output_names`` of ``audonnx.Model.__call__()``
 
 
 Version 0.5.2 (2022-04-01)
@@ -45,10 +45,10 @@ Version 0.5.0 (2022-02-09)
 * Changed: use CPU by default
 * Changed: require ``onnxruntime>=1.8.0``
 * Removed:
-  ``Model.forward()``
-  ``Model.labels``,
-  ``Model.predict()``,
-  ``Model.transform``
+  ``audonnx.Model.forward()``
+  ``audonnx.Model.labels``,
+  ``audonnx.Model.predict()``,
+  ``audonnx.Model.transform``
 
 
 Version 0.4.3 (2022-01-10)
@@ -121,27 +121,27 @@ Version 0.2.0 (2021-07-20)
 --------------------------
 
 * Added:
-  ``InputNode``,
-  ``Model.__call__()``,
-  ``Model.inputs``,
-  ``Model.outputs``,
-  ``OutputNode``
+  ``audonnx.InputNode``,
+  ``audonnx.Model.__call__()``,
+  ``audonnx.Model.inputs``,
+  ``audonnx.Model.outputs``,
+  ``audonnx.OutputNode``
 * Changed: reshape input to expected shape
 * Changed: do not depend on existing models in tests and documentation
 * Changed: support multiple input nodes
-* Changed: make ``Model`` serializable
+* Changed: make ``audonnx.Model`` serializable
 * Deprecated:
-  ``Model.forward()``
-  ``Model.labels``,
-  ``Model.predict()``,
-  ``Model.transform``
+  ``audonnx.Model.forward()``
+  ``audonnx.Model.labels``,
+  ``audonnx.Model.predict()``,
+  ``audonnx.Model.transform``
 * Removed:
-  ``Model.input_node``,
-  ``Model.input_shape``,
-  ``Model.input_type``,
-  ``Model.output_nodes``,
-  ``Model.output_shape``,
-  ``Model.output_type``,
+  ``audonnx.Model.input_node``,
+  ``audonnx.Model.input_shape``,
+  ``audonnx.Model.input_type``,
+  ``audonnx.Model.output_nodes``,
+  ``audonnx.Model.output_shape``,
+  ``audonnx.Model.output_type``,
 
 
 Version 0.1.1 (2021-03-31)
