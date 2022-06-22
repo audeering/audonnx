@@ -205,6 +205,7 @@ class Model(audobject.Object):
             sampling_rate: int,
             *,
             outputs: typing.Union[str, typing.Sequence[str]] = None,
+            flatten: bool = False,
     ) -> typing.Union[
         np.ndarray,
         typing.Dict[str, np.ndarray],
@@ -223,6 +224,14 @@ class Model(audobject.Object):
         the output of that node is returned.
         Otherwise a dictionary with outputs of all nodes is returned.
 
+        If ``flatten`` is set to ``True``,
+        the output of the requested nodes is concatenated
+        and a single array is returned.
+        This requires that the number of dimensions,
+        the position of dynamic axis,
+        and all dimensions except the last non-dynamic axis
+        match for the requested nodes
+
         Use :attr:`audonnx.Model.outputs` to get a list of available
         output nodes.
 
@@ -230,9 +239,15 @@ class Model(audobject.Object):
             signal: input signal
             sampling_rate: sampling rate in Hz
             outputs: name of output or list with output names
+            flatten: if ``True``,
+                concatenate output of the requested nodes
 
         Returns:
             model output
+
+        Raises:
+            RuntimeError: if ``flatten`` is ``True``,
+                but output of requested nodes cannot be concatenated
 
         """
         if outputs is None:
@@ -259,6 +274,9 @@ class Model(audobject.Object):
             z = {
                 name: values for name, values in zip(outputs, z)
             }
+            if flatten:
+                shapes = [self.outputs[node].shape for node in outputs]
+                z = _flatten(z, shapes)
 
         return z
 
@@ -345,6 +363,64 @@ def _device_to_providers(
     else:
         providers = device
     return providers
+
+
+def _concat_axis(shapes: typing.Sequence[int]) -> int:
+    r"""Return concat dimension or -1 if not possible."""
+
+    # number of dimensions do not match
+    if not len(set(map(len, shapes))) == 1:
+        return -1
+
+    # dynamic axis in different positions
+    if not len(set(map(_dynamic_axis, shapes))) == 1:
+        return -1
+
+    axis = len(shapes[0]) - (2 if shapes[0][-1] == -1 else 1)
+
+    # remove concat axis
+    shapes_wo_axis = [shape[:axis] + shape[axis + 1:] for shape in shapes]
+
+    # non-concat dimensions do not match
+    if not all(map(shapes_wo_axis[0].__eq__, shapes_wo_axis)):
+        return -1
+
+    return axis
+
+
+def _dynamic_axis(shape: typing.Sequence[int]) -> int:
+    r"""Return dimension of dynamic axis or -1 if none."""
+    for idx, dim in enumerate(shape):
+        if dim == -1:
+            return idx
+    return -1
+
+
+def _flatten(
+        y: typing.Dict[str, np.ndarray],
+        shapes: typing.Sequence[typing.List[int]],
+):
+    r"""Flatten dictionary by concatenating values."""
+
+    y = list(y.values())
+
+    # special case if all shapes are [-1]
+    if all(map([-1].__eq__, shapes)):
+        return np.stack(y)
+
+    axis = _concat_axis(shapes)
+    if axis == -1:
+        raise RuntimeError(
+            f'To concatenate outputs '
+            f'number of dimensions, '
+            f'position of dynamic axis, '
+            f'and all dimensions except the last non-dynamic axis '
+            f'must match. '
+            f'This does not apply to: '
+            f'{shapes}'
+        )
+
+    return np.concatenate(y, axis=axis)
 
 
 def _last_static_dim_size(
