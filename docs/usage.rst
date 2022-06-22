@@ -465,13 +465,12 @@ Create interface and process a file.
 
 .. jupyter-execute::
 
-    feature_names = onnx_model_7.outputs['gender'].labels + \
-        onnx_model_7.outputs['confidence'].labels
+    outputs = ['gender', 'confidence']
     interface = audinterface.Feature(
-        feature_names=feature_names,
+        feature_names=onnx_model_7.labels(outputs),
         process_func=onnx_model_7,
         process_func_args={
-            'outputs': ['gender', 'confidence'],
+            'outputs': outputs,
             'concat': True,
         },
     )

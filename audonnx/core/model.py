@@ -308,6 +308,29 @@ class Model(audobject.Object):
     def __str__(self) -> str:
         return repr(self)
 
+    def labels(
+            self,
+            outputs: typing.Union[str, typing.Sequence[str]] = None,
+    ) -> typing.Sequence[str]:
+        r"""Collect labels of output nodes.
+
+        Args:
+            outputs: name of output or list with output names.
+                Selects all output nodes by default
+
+        Returns:
+            list with labels
+
+        """
+        if outputs is None:
+            outputs = list(self.outputs)
+        outputs = audeer.to_list(outputs)
+
+        names = [self.outputs[name].labels for name in outputs]
+        names = audeer.flatten_list(names)
+
+        return names
+
     def to_yaml(
             self,
             path: str,
