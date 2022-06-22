@@ -114,6 +114,108 @@ def test_call_deprecated(model, output_names):
 
 
 @pytest.mark.parametrize(
+    'model, outputs, expected',
+    [
+        (
+            audonnx.Model(audonnx.testing.create_model_proto([[1, -1]])),
+            None,
+            pytest.SIGNAL,
+        ),
+        (
+            audonnx.testing.create_model([[-1], [-1]]),
+            None,
+            np.zeros([2, pytest.SIGNAL.shape[1]], dtype=np.float32),
+        ),
+        (
+            audonnx.testing.create_model([[2]]),
+            None,
+            np.array([0, 0], dtype=np.float32),
+        ),
+        (
+            audonnx.testing.create_model([[2], [3]]),
+            None,
+            np.array([0, 0, 0, 0, 0], dtype=np.float32),
+        ),
+        (
+            audonnx.testing.create_model([[1, 2], [1, 3]]),
+            None,
+            np.array([[0, 0, 0, 0, 0]], dtype=np.float32),
+        ),
+        (
+            audonnx.testing.create_model([[2, -1], [3, -1]]),
+            None,
+            np.zeros([5, pytest.SIGNAL.shape[1]], dtype=np.float32),
+        ),
+        (
+            audonnx.testing.create_model([[-1, 2], [-1, 3]]),
+            None,
+            np.zeros([pytest.SIGNAL.shape[1], 5], dtype=np.float32),
+        ),
+        (
+            audonnx.testing.create_model([[1, -1, 2], [1, -1, 3]]),
+            None,
+            np.zeros([1, pytest.SIGNAL.shape[1], 5], dtype=np.float32),
+        ),
+        (
+            audonnx.testing.create_model([[1, 2, -1], [1, 3, -1]]),
+            None,
+            np.zeros([1, 5, pytest.SIGNAL.shape[1]], dtype=np.float32),
+        ),
+        (
+            audonnx.testing.create_model([[1, 3], [2]]),
+            'output-0',
+            np.array([[0, 0, 0]], dtype=np.float32),
+        ),
+        (
+            audonnx.testing.create_model([[1, 3], [2]]),
+            ['output-0'],
+            np.array([[0, 0, 0]], dtype=np.float32),
+        ),
+        (
+            audonnx.testing.create_model([[1, 3], [2], [3]]),
+            ['output-1', 'output-2'],
+            np.array([0, 0, 0, 0, 0], dtype=np.float32),
+        ),
+        # shapes do not match
+        pytest.param(
+            audonnx.testing.create_model([[1, 3], [2]]),
+            None,
+            None,
+            marks=pytest.mark.xfail(raises=RuntimeError),
+        ),
+        # position of dynamic axis does not match
+        pytest.param(
+            audonnx.testing.create_model([[-1, 1, 3], [1, -1, 2]]),
+            None,
+            None,
+            marks=pytest.mark.xfail(raises=RuntimeError),
+        ),
+        pytest.param(
+            audonnx.testing.create_model([[1, 3], [-1, 2]]),
+            None,
+            None,
+            marks=pytest.mark.xfail(raises=RuntimeError),
+        ),
+        # non-concat dimensions do not match
+        pytest.param(
+            audonnx.testing.create_model([[1, 3], [2, 3]]),
+            None,
+            None,
+            marks=pytest.mark.xfail(raises=RuntimeError),
+        ),
+    ]
+)
+def test_call_concat(model, outputs, expected):
+    y = model(
+        pytest.SIGNAL,
+        pytest.SAMPLING_RATE,
+        outputs=outputs,
+        concat=True,
+    )
+    np.testing.assert_equal(y, expected)
+
+
+@pytest.mark.parametrize(
     'device',
     [
         'cpu',
