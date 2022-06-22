@@ -183,7 +183,7 @@ def test_call_deprecated(model, output_names):
             None,
             marks=pytest.mark.xfail(raises=RuntimeError),
         ),
-        # position of dynamic axis do not match
+        # position of dynamic axis does not match
         pytest.param(
             audonnx.testing.create_model([[-1, 1, 3], [1, -1, 2]]),
             None,
