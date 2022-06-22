@@ -293,6 +293,36 @@ def test_init(tmpdir):
 
 
 @pytest.mark.parametrize(
+    'model, outputs, expected',
+    [
+        (
+            audonnx.testing.create_model([[2]]),
+            None,
+            ['output-0-0', 'output-0-1'],
+        ),
+        (
+            audonnx.testing.create_model([[2], [1]]),
+            None,
+            ['output-0-0', 'output-0-1', 'output-1'],
+        ),
+        (
+            audonnx.testing.create_model([[2], [1]]),
+            'output-1',
+            ['output-1'],
+        ),
+        (
+            audonnx.testing.create_model([[2], [1]]),
+            ['output-1', 'output-0'],
+            ['output-1', 'output-0-0', 'output-0-1'],
+        ),
+    ]
+)
+def test_labels(model, outputs, expected):
+    labels = model.labels(outputs=outputs)
+    assert labels == expected
+
+
+@pytest.mark.parametrize(
     'object, transform, labels, expected',
     [
         (
@@ -340,7 +370,7 @@ def test_init(tmpdir):
         ),
     ]
 )
-def test_labels(object, transform, labels, expected):
+def test_outputs(object, transform, labels, expected):
     model = audonnx.Model(
         object,
         labels=labels,
