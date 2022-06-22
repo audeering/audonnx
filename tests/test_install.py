@@ -5,6 +5,8 @@ import sys
 
 import pytest
 
+import opensmile
+
 import audonnx.testing
 
 
@@ -40,6 +42,9 @@ def test(tmpdir):
     )
     model_path = os.path.join(tmpdir, 'model.yaml')
     model.to_yaml(model_path)
+
+    # ensure DLL file is unloaded
+    del opensmile.core.SMILEapi.smileapi
 
     uninstall('opensmile', 'opensmile')
 
