@@ -403,6 +403,7 @@ def _concat_axis(shapes: typing.Sequence[int]) -> int:
     if not len(set(map(_dynamic_axis, shapes))) == 1:
         return -1
 
+    # select last non-dynamic axis
     axis = len(shapes[0]) - (2 if shapes[0][-1] == -1 else 1)
 
     # remove concat axis
