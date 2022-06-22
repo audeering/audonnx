@@ -378,7 +378,7 @@ def _concat(
         return np.stack(y)
 
     axis = _concat_axis(shapes)
-    if axis == -1:
+    if axis is None:
         raise RuntimeError(
             f'To concatenate outputs '
             f'number of dimensions, '
@@ -392,16 +392,16 @@ def _concat(
     return np.concatenate(y, axis=axis)
 
 
-def _concat_axis(shapes: typing.Sequence[int]) -> int:
-    r"""Return concat dimension or -1 if not possible."""
+def _concat_axis(shapes: typing.Sequence[int]) -> typing.Optional[int]:
+    r"""Return concat dimension or None if not possible."""
 
     # number of dimensions do not match
     if not len(set(map(len, shapes))) == 1:
-        return -1
+        return None
 
     # dynamic axis in different positions
     if not len(set(map(_dynamic_axis, shapes))) == 1:
-        return -1
+        return None
 
     # select last non-dynamic axis
     axis = len(shapes[0]) - (2 if shapes[0][-1] == -1 else 1)
@@ -411,17 +411,17 @@ def _concat_axis(shapes: typing.Sequence[int]) -> int:
 
     # non-concat dimensions do not match
     if not all(map(shapes_wo_axis[0].__eq__, shapes_wo_axis)):
-        return -1
+        return None
 
     return axis
 
 
-def _dynamic_axis(shape: typing.Sequence[int]) -> int:
-    r"""Return dimension of dynamic axis or -1 if none."""
+def _dynamic_axis(shape: typing.Sequence[int]) -> typing.Optional[int]:
+    r"""Return dimension of dynamic axis or None if none."""
     for idx, dim in enumerate(shape):
         if dim == -1:
             return idx
-    return -1
+    return None
 
 
 def _last_static_dim_size(
