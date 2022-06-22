@@ -310,14 +310,13 @@ class Model(audobject.Object):
 
     def labels(
             self,
-            *,
             outputs: typing.Union[str, typing.Sequence[str]] = None,
     ) -> typing.Sequence[str]:
         r"""Collect labels of output nodes.
 
         Args:
             outputs: name of output or list with output names.
-                If ``None`` selects all output nodes
+                Selects all output nodes by default
 
         Returns:
             list with labels

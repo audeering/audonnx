@@ -318,7 +318,7 @@ def test_init(tmpdir):
     ]
 )
 def test_labels(model, outputs, expected):
-    labels = model.labels(outputs=outputs)
+    labels = model.labels(outputs)
     assert labels == expected
 
 
