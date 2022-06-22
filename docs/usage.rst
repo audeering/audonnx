@@ -381,7 +381,7 @@ the output from the hidden layer and a confidence value.
             return (
                 y_hidden.squeeze(),
                 y_gender.squeeze(),
-                y_confidence.squeeze(),
+                y_confidence,
             )
 
 Export the new model to ONNX_ format and load it.
@@ -429,17 +429,7 @@ returns a dictionary with output for every node.
 
     onnx_model_7(signal, sampling_rate)
 
-To request specific nodes.
-
-.. jupyter-execute::
-
-    onnx_model_7(
-        signal,
-        sampling_rate,
-        outputs=['gender', 'confidence'],
-    )
-
-Or a single node:
+To request a specific node use the ``outputs`` argument.
 
 .. jupyter-execute::
 
@@ -449,14 +439,41 @@ Or a single node:
         outputs='gender',
     )
 
+Or provide a list of names to request several outputs.
+
+.. jupyter-execute::
+
+    onnx_model_7(
+        signal,
+        sampling_rate,
+        outputs=['gender', 'confidence'],
+    )
+
+To get a concatation of the outputs,
+do:
+
+.. jupyter-execute::
+
+    onnx_model_7(
+        signal,
+        sampling_rate,
+        outputs=['gender', 'confidence'],
+        concat=True,
+    )
+
 Create interface and process a file.
 
 .. jupyter-execute::
 
+    feature_names = onnx_model_7.outputs['gender'].labels + \
+        onnx_model_7.outputs['confidence'].labels
     interface = audinterface.Feature(
-        feature_names=onnx_model_7.outputs['gender'].labels,
-        process_func=onnx_model,
-        process_func_args={'outputs': 'gender'},
+        feature_names=feature_names,
+        process_func=onnx_model_7,
+        process_func_args={
+            'outputs': ['gender', 'confidence'],
+            'concat': True,
+        },
     )
     interface.process_file(file)
 
