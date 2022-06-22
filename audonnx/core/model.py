@@ -84,7 +84,7 @@ class Model(audobject.Object):
         >>> model(
         ...     signal,
         ...     sampling_rate,
-        ...     output_names='gender',
+        ...     outputs='gender',
         ... ).round(1)
         array([-195.1,   73.3], dtype=float32)
 
@@ -194,46 +194,51 @@ class Model(audobject.Object):
                 lab,
             )
 
+    @audeer.deprecated_keyword_argument(
+        deprecated_argument='output_names',
+        removal_version='1.2.0',
+        new_argument='outputs',
+    )
     def __call__(
             self,
             signal: np.ndarray,
             sampling_rate: int,
             *,
-            output_names: typing.Union[str, typing.Sequence[str]] = None,
+            outputs: typing.Union[str, typing.Sequence[str]] = None,
     ) -> typing.Union[
         np.ndarray,
         typing.Dict[str, np.ndarray],
     ]:
         r"""Compute output for one or more nodes.
 
-        If ``output_names`` is a plain string,
+        If ``outputs`` is a plain string,
         the output of the according node is returned.
 
-        If ``output_names`` is a list of strings,
+        If ``outputs`` is a list of strings,
         a dictionary with according nodes as keys and
         their outputs as values is returned.
 
-        If ``output_names`` is not set
+        If ``outputs`` is not set
         and the model has a single output node,
         the output of that node is returned.
         Otherwise a dictionary with outputs of all nodes is returned.
 
-        Use :attr:`audonnx.Model.output_names` to get a list of available
+        Use :attr:`audonnx.Model.outputs` to get a list of available
         output nodes.
 
         Args:
             signal: input signal
             sampling_rate: sampling rate in Hz
-            output_names: name of output or list with output names
+            outputs: name of output or list with output names
 
         Returns:
             model output
 
         """
-        if output_names is None:
-            output_names = list(self.outputs)
-            if len(output_names) == 1:
-                output_names = output_names[0]
+        if outputs is None:
+            outputs = list(self.outputs)
+            if len(outputs) == 1:
+                outputs = outputs[0]
 
         y = {}
         for name, input in self.inputs.items():
@@ -244,15 +249,15 @@ class Model(audobject.Object):
             y[name] = x.reshape(self.inputs[name].shape)
 
         z = self.sess.run(
-            audeer.to_list(output_names),
+            audeer.to_list(outputs),
             y,
         )
 
-        if isinstance(output_names, str):
+        if isinstance(outputs, str):
             z = z[0]
         else:
             z = {
-                name: values for name, values in zip(output_names, z)
+                name: values for name, values in zip(outputs, z)
             }
 
         return z
