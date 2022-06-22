@@ -449,7 +449,7 @@ Or provide a list of names to request several outputs.
         outputs=['gender', 'confidence'],
     )
 
-To get a concatation of the outputs,
+To concatenate the outputs to a single array,
 do:
 
 .. jupyter-execute::
