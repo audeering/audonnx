@@ -7,6 +7,24 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.6.0 (2022-06-22)
+--------------------------
+
+* Added: ``Function``
+* Added: ``Model.labels()``
+* Added: arguments
+  ``concat``,
+  ``outputs``,
+  ``squeeze``
+  to ``Model.__call__()``
+* Added: tests on Windows
+* Added: ``testing`` module
+* Changed: optionally init ``Model`` from proto object instead of ONNX file
+* Changed: dynamic axis can be specified as ``None``
+* Changed: support output nodes where last dimension is dynamic
+* Deprecated: argument ``output_names`` of ``Model.__call__()``
+
+
 Version 0.5.2 (2022-04-01)
 --------------------------
 
