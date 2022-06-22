@@ -85,6 +85,35 @@ def test_call(model, outputs, expected):
 
 
 @pytest.mark.parametrize(
+    'model, output_names',
+    [
+        (
+            audonnx.testing.create_model([[2], [1, 3]]),
+            'output-1',
+        ),
+    ]
+)
+def test_call_deprecated(model, output_names):
+    if (
+            audeer.LooseVersion(audonnx.__version__)
+            < audeer.LooseVersion('1.2.0')
+    ):
+        with pytest.warns(UserWarning, match='is deprecated'):
+            model(
+                pytest.SIGNAL,
+                pytest.SAMPLING_RATE,
+                output_names=output_names,
+            )
+    else:
+        with pytest.raises(TypeError, match='unexpected keyword argument'):
+            model(
+                pytest.SIGNAL,
+                pytest.SAMPLING_RATE,
+                output_names=output_names,
+            )
+
+
+@pytest.mark.parametrize(
     'device',
     [
         'cpu',
