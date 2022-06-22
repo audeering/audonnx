@@ -43,12 +43,12 @@ def test(tmpdir):
     model_path = os.path.join(tmpdir, 'model.yaml')
     model.to_yaml(model_path)
 
-    # ensure DLL file is unloaded
-    del opensmile.core.SMILEapi.smileapi
+    # Removing the package does not work under Windows
+    # as the DLL file cannot be unloaded
+    if not sys.platform == 'win32':
+        uninstall('opensmile', 'opensmile')
 
-    uninstall('opensmile', 'opensmile')
-
-    with pytest.raises(ModuleNotFoundError):
-        audonnx.load(tmpdir)
+        with pytest.raises(ModuleNotFoundError):
+            audonnx.load(tmpdir)
 
     audonnx.load(tmpdir, auto_install=True)
