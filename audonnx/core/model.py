@@ -226,6 +226,7 @@ class Model(audobject.Object):
 
         If ``concat`` is set to ``True``,
         the output of the requested nodes is concatenated
+        along the last non-dynamic axis
         and a single array is returned.
         This requires that the number of dimensions,
         the position of dynamic axis,
