@@ -37,7 +37,7 @@
   <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Index" href="genindex.html" />
+    <link rel="next" title="audonnx.testing" href="api-testing.html" />
     <link rel="prev" title="Usage" href="usage.html" />
     
   
@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                v0.5.2
+                v0.6.0
               </div>
             
           
@@ -104,11 +104,13 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">audonnx</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#load">load</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#function">Function</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#model">Model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#inputnode">InputNode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#outputnode">OutputNode</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="api-testing.html">audonnx.testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="genindex.html">Index</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
@@ -152,9 +154,9 @@
            <div itemprop="articleBody">
             
   <div class="section" id="module-audonnx">
-<span id="audonnx"></span><h1>audonnx<a class="headerlink" href="#module-audonnx" title="Permalink to this headline">¶</a></h1>
+<span id="audonnx"></span><h1>audonnx<a class="headerlink" href="#module-audonnx" title="Permalink to this heading">¶</a></h1>
 <div class="section" id="load">
-<h2>load<a class="headerlink" href="#load" title="Permalink to this headline">¶</a></h2>
+<h2>load<a class="headerlink" href="#load" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="audonnx.load">
 <span class="sig-prename descclassname"><span class="pre">audonnx.</span></span><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'model.yaml'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'labels.yaml'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'transform.yaml'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_install</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audonnx/core/api.html#load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audonnx.load" title="Permalink to this definition">¶</a></dt>
@@ -209,8 +211,66 @@ or a (list of) <a class="reference external" href="https://onnxruntime.ai/docs/e
 </dd></dl>
 
 </div>
+<div class="section" id="function">
+<h2>Function<a class="headerlink" href="#function" title="Permalink to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="audonnx.Function">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">audonnx.</span></span><span class="sig-name descname"><span class="pre">Function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audonnx/core/function.html#Function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audonnx.Function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Turn function into an <a class="reference external" href="https://audeering.github.io/audobject/api.html#audobject.Object" title="(in audobject vv0.7.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">audobject.Object</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>) – function that expects input signal and sampling rate as
+first two arguments</p></li>
+<li><p><strong>func_args</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]]) – additional arguments that will be passed to the function</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">object</span> <span class="o">=</span> <span class="n">Function</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">sr</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">object</span>
+<span class="go">{&#39;$audonnx.core.function.Function&#39;: {&#39;func&#39;: &#39;lambda x, sr: x.mean()&#39;, &#39;func_args&#39;: {}}}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">object</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]),</span> <span class="mi">10</span><span class="p">)</span>
+<span class="go">2.0</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="audonnx.Function.__call__">
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling_rate</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audonnx/core/function.html#Function.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audonnx.Function.__call__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform input signal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>signal</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – input signal</p></li>
+<li><p><strong>sampling_rate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – sampling rate in Hz</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>transformed signal</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="audonnx.Function.func">
+<span class="sig-name descname"><span class="pre">func</span></span><a class="headerlink" href="#audonnx.Function.func" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="audonnx.Function.func_args">
+<span class="sig-name descname"><span class="pre">func_args</span></span><a class="headerlink" href="#audonnx.Function.func_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Additional function arguments</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="model">
-<h2>Model<a class="headerlink" href="#model" title="Permalink to this headline">¶</a></h2>
+<h2>Model<a class="headerlink" href="#model" title="Permalink to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="audonnx.Model">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">audonnx.</span></span><span class="sig-name descname"><span class="pre">Model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audonnx/core/model.html#Model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audonnx.Model" title="Permalink to this definition">¶</a></dt>
@@ -220,9 +280,13 @@ that transforms the raw signal into the desired representation,
 otherwise the raw signal is used as input.
 Use dictionary to assign transform objects to specific nodes
 if model has multiple input nodes.</p>
-<p>For output nodes an optional list of labels can be given,
-where each label corresponds to a dimension in the output,
-i.e. the number of labels must match the dimension of the output node.
+<p>For output nodes an optional list of labels can be given
+to assign names to the last non-dynamic dimension.
+E.g. if the shape of the output node is
+<code class="docutils literal notranslate"><span class="pre">(1,</span> <span class="pre">3,</span> <span class="pre">-1)</span></code>
+three labels can be assigned to the second dimension.
+By default,
+labels are generated from the name of the node.
 Use dictionary to assign labels to specific nodes
 if model has multiple output nodes.</p>
 <p><a class="reference internal" href="#audonnx.Model" title="audonnx.Model"><code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></a> inherites from <a class="reference external" href="https://audeering.github.io/audobject/api.html#audobject.Object" title="(in audobject vv0.7.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">audobject.Object</span></code></a>,
@@ -234,7 +298,7 @@ to see all available methods.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – path to model file</p></li>
+<li><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ModelProto</span></code>]) – ONNX proto object or path to ONNX file</p></li>
 <li><p><strong>labels</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]]], <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]) – list of labels or dictionary with labels</p></li>
 <li><p><strong>transform</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>], <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>], <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]]], <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]) – callable object or a dictionary of callable objects</p></li>
 <li><p><strong>device</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>]]]]) – set device
@@ -243,27 +307,73 @@ or a (list of) provider(s)_</p></li>
 </ul>
 </dd>
 </dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">audiofile</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">opensmile</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">transform</span> <span class="o">=</span> <span class="n">opensmile</span><span class="o">.</span><span class="n">Smile</span><span class="p">(</span>
+<span class="gp">... </span>   <span class="n">opensmile</span><span class="o">.</span><span class="n">FeatureSet</span><span class="o">.</span><span class="n">GeMAPSv01b</span><span class="p">,</span>
+<span class="gp">... </span>   <span class="n">opensmile</span><span class="o">.</span><span class="n">FeatureLevel</span><span class="o">.</span><span class="n">LowLevelDescriptors</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;tests&#39;</span><span class="p">,</span> <span class="s1">&#39;model.onnx&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">path</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;female&#39;</span><span class="p">,</span> <span class="s1">&#39;male&#39;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">transform</span><span class="o">=</span><span class="n">transform</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span>
+<span class="go">Input:</span>
+<span class="go">  feature:</span>
+<span class="go">    shape: [18, -1]</span>
+<span class="go">    dtype: tensor(float)</span>
+<span class="go">    transform: opensmile.core.smile.Smile</span>
+<span class="go">Output:</span>
+<span class="go">  gender:</span>
+<span class="go">    shape: [2]</span>
+<span class="go">    dtype: tensor(float)</span>
+<span class="go">    labels: [female, male]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;tests&#39;</span><span class="p">,</span> <span class="s1">&#39;test.wav&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">signal</span><span class="p">,</span> <span class="n">sampling_rate</span> <span class="o">=</span> <span class="n">audiofile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">signal</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">sampling_rate</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">outputs</span><span class="o">=</span><span class="s1">&#39;gender&#39;</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">array([-195.1,   73.3], dtype=float32)</span>
+</pre></div>
+</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="audonnx.Model.__call__">
-<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling_rate</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audonnx/core/model.html#Model.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audonnx.Model.__call__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling_rate</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">concat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">squeeze</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audonnx/core/model.html#Model.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audonnx.Model.__call__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute output for one or more nodes.</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">output_names</span></code> is a plain string,
+<p>If <code class="docutils literal notranslate"><span class="pre">outputs</span></code> is a plain string,
 the output of the according node is returned.</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">output_names</span></code> is a list of strings,
+<p>If <code class="docutils literal notranslate"><span class="pre">outputs</span></code> is a list of strings,
 a dictionary with according nodes as keys and
 their outputs as values is returned.</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">output_names</span></code> is not set
+<p>If <code class="docutils literal notranslate"><span class="pre">outputs</span></code> is not set
 and the model has a single output node,
 the output of that node is returned.
 Otherwise a dictionary with outputs of all nodes is returned.</p>
-<p>Use <code class="xref py py-attr docutils literal notranslate"><span class="pre">audonnx.Model.output_names</span></code> to get a list of available
+<p>If <code class="docutils literal notranslate"><span class="pre">concat</span></code> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>,
+the output of the requested nodes is concatenated
+along the last non-dynamic axis
+and a single array is returned.
+This requires that the number of dimensions,
+the position of dynamic axis,
+and all dimensions except the last non-dynamic axis
+match for the requested nodes</p>
+<p>Use <a class="reference internal" href="#audonnx.Model.outputs" title="audonnx.Model.outputs"><code class="xref py py-attr docutils literal notranslate"><span class="pre">audonnx.Model.outputs</span></code></a> to get a list of available
 output nodes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>signal</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – input signal</p></li>
 <li><p><strong>sampling_rate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – sampling rate in Hz</p></li>
-<li><p><strong>output_names</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]) – name of output or list with output names</p></li>
+<li><p><strong>outputs</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]) – name of output or list with output names</p></li>
+<li><p><strong>concat</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>,
+concatenate output of the requested nodes</p></li>
+<li><p><strong>squeeze</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>,
+remove axes of length one from the output(s)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -272,28 +382,35 @@ output nodes.</p>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>model output</p>
 </dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><strong>RuntimeError</strong></a> – if <code class="docutils literal notranslate"><span class="pre">concat</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code>,
+    but output of requested nodes cannot be concatenated</p>
+</dd>
 </dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">audiofile</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">audio_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;tests&#39;</span><span class="p">,</span> <span class="s1">&#39;test.wav&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">signal</span><span class="p">,</span> <span class="n">sampling_rate</span> <span class="o">=</span> <span class="n">audiofile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">audio_path</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">model_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;tests&#39;</span><span class="p">,</span> <span class="s1">&#39;model.yaml&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">audobject</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">audobject</span><span class="o">.</span><span class="n">from_yaml</span><span class="p">(</span><span class="n">model_path</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">signal</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">sampling_rate</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">output_names</span><span class="o">=</span><span class="s1">&#39;gender&#39;</span><span class="p">,</span>
-<span class="gp">... </span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="go">array([-195.1,   73.3], dtype=float32)</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="audonnx.Model.inputs">
 <span class="sig-name descname"><span class="pre">inputs</span></span><a class="headerlink" href="#audonnx.Model.inputs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Input nodes</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="audonnx.Model.labels">
+<span class="sig-name descname"><span class="pre">labels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">outputs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audonnx/core/model.html#Model.labels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audonnx.Model.labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Collect labels of output nodes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>outputs</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]) – name of output or list with output names.
+Selects all output nodes by default</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list with labels</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py attribute">
@@ -318,6 +435,10 @@ output nodes.</p>
 <dt class="sig sig-object py" id="audonnx.Model.to_yaml">
 <span class="sig-name descname"><span class="pre">to_yaml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audonnx/core/model.html#Model.to_yaml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audonnx.Model.to_yaml" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save model to YAML file.</p>
+<p>If ONNX model was loaded from a byte stream,
+it will be saved in addition to the YAML file
+under the same path
+with file extension <code class="docutils literal notranslate"><span class="pre">.onnx</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -335,7 +456,7 @@ output nodes.</p>
 
 </div>
 <div class="section" id="inputnode">
-<h2>InputNode<a class="headerlink" href="#inputnode" title="Permalink to this headline">¶</a></h2>
+<h2>InputNode<a class="headerlink" href="#inputnode" title="Permalink to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="audonnx.InputNode">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">audonnx.</span></span><span class="sig-name descname"><span class="pre">InputNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audonnx/core/node.html#InputNode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audonnx.InputNode" title="Permalink to this definition">¶</a></dt>
@@ -372,7 +493,7 @@ into the desired representation</p></li>
 
 </div>
 <div class="section" id="outputnode">
-<h2>OutputNode<a class="headerlink" href="#outputnode" title="Permalink to this headline">¶</a></h2>
+<h2>OutputNode<a class="headerlink" href="#outputnode" title="Permalink to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="audonnx.OutputNode">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">audonnx.</span></span><span class="sig-name descname"><span class="pre">OutputNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audonnx/core/node.html#OutputNode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audonnx.OutputNode" title="Permalink to this definition">¶</a></dt>
@@ -382,7 +503,7 @@ into the desired representation</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>shape</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]) – list with dimensions</p></li>
 <li><p><strong>dtype</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – data type</p></li>
-<li><p><strong>labels</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – list with names of output dimensions</p></li>
+<li><p><strong>labels</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – list with names of last non-dynamic output dimension</p></li>
 </ul>
 </dd>
 </dl>
@@ -395,7 +516,7 @@ into the desired representation</p></li>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="audonnx.OutputNode.labels">
 <span class="sig-name descname"><span class="pre">labels</span></span><a class="headerlink" href="#audonnx.OutputNode.labels" title="Permalink to this definition">¶</a></dt>
-<dd><p>Names of output dimensions.</p>
+<dd><p>Labels of last non-dynamic output dimension.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -417,7 +538,7 @@ into the desired representation</p></li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="genindex.html" class="btn btn-neutral float-right" title="Index" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="api-testing.html" class="btn btn-neutral float-right" title="audonnx.testing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="usage.html" class="btn btn-neutral float-left" title="Usage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -432,7 +553,7 @@ into the desired representation</p></li>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/04/01 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/06/23 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -467,6 +588,7 @@ into the desired representation</p></li>
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/thebelab-helper.js"></script>
         <script src="_static/clipboard.min.js"></script>

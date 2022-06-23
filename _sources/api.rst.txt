@@ -10,6 +10,14 @@ load
 .. autofunction:: load
 
 
+Function
+--------
+
+.. autoclass:: Function
+    :members:
+    :special-members: __call__
+
+
 Model
 -----
 

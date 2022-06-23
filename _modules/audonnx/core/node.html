@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                v0.5.2
+                v0.6.0
               </div>
             
           
@@ -101,6 +101,7 @@
 <p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api.html">audonnx</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-testing.html">audonnx.testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../genindex.html">Index</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
@@ -149,6 +150,8 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">oyaml</span> <span class="k">as</span> <span class="nn">yaml</span>
 
+<span class="kn">from</span> <span class="nn">audonnx.core.function</span> <span class="kn">import</span> <span class="n">Function</span>
+
 
 <div class="viewcode-block" id="InputNode"><a class="viewcode-back" href="../../../api.html#audonnx.InputNode">[docs]</a><span class="k">class</span> <span class="nc">InputNode</span><span class="p">:</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Input node.</span>
@@ -189,6 +192,9 @@
                         <span class="sa">f</span><span class="s1">&#39;.&#39;</span> \
                         <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span>
 
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">,</span> <span class="n">Function</span><span class="p">):</span>
+            <span class="n">transform</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">)&#39;</span>
+
         <span class="k">return</span> <span class="p">{</span>
             <span class="s1">&#39;shape&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
             <span class="s1">&#39;dtype&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
@@ -205,7 +211,7 @@
 <span class="sd">    Args:</span>
 <span class="sd">        shape: list with dimensions</span>
 <span class="sd">        dtype: data type</span>
-<span class="sd">        labels: list with names of output dimensions</span>
+<span class="sd">        labels: list with names of last non-dynamic output dimension</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -221,7 +227,7 @@
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Data type of node&quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="n">labels</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Names of output dimensions.&quot;&quot;&quot;</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Labels of last non-dynamic output dimension.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">:</span>
 
@@ -253,7 +259,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/04/01 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/06/23 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -288,6 +294,7 @@
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/thebelab-helper.js"></script>
         <script src="../../../_static/clipboard.min.js"></script>

@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                v0.5.2
+                v0.6.0
               </div>
             
           
@@ -101,6 +101,7 @@
 <p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="api.html">audonnx</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-testing.html">audonnx.testing</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Index</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
@@ -149,7 +150,9 @@
 <div class="genindex-jumpbox">
  <a href="#_"><strong>_</strong></a>
  | <a href="#A"><strong>A</strong></a>
+ | <a href="#C"><strong>C</strong></a>
  | <a href="#D"><strong>D</strong></a>
+ | <a href="#F"><strong>F</strong></a>
  | <a href="#I"><strong>I</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
@@ -162,8 +165,12 @@
 <h2 id="_">_</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api.html#audonnx.Model.__call__">__call__() (audonnx.Model method)</a>
+      <li><a href="api.html#audonnx.Function.__call__">__call__() (audonnx.Function method)</a>
+
+      <ul>
+        <li><a href="api.html#audonnx.Model.__call__">(audonnx.Model method)</a>
 </li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -178,6 +185,27 @@
 </li>
       </ul></li>
   </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    audonnx.testing
+
+      <ul>
+        <li><a href="api-testing.html#module-audonnx.testing">module</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="C">C</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api-testing.html#audonnx.testing.create_model">create_model() (in module audonnx.testing)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api-testing.html#audonnx.testing.create_model_proto">create_model_proto() (in module audonnx.testing)</a>
+</li>
+  </ul></td>
 </tr></table>
 
 <h2 id="D">D</h2>
@@ -189,6 +217,20 @@
         <li><a href="api.html#audonnx.OutputNode.dtype">(audonnx.OutputNode attribute)</a>
 </li>
       </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="F">F</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#audonnx.Function.func">func (audonnx.Function attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#audonnx.Function.func_args">func_args (audonnx.Function attribute)</a>
+</li>
+      <li><a href="api.html#audonnx.Function">Function (class in audonnx)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -211,6 +253,8 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#audonnx.Model.labels">labels() (audonnx.Model method)</a>
+</li>
       <li><a href="api.html#audonnx.load">load() (in module audonnx)</a>
 </li>
   </ul></td>
@@ -221,13 +265,13 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#audonnx.Model">Model (class in audonnx)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     module
 
       <ul>
         <li><a href="api.html#module-audonnx">audonnx</a>
+</li>
+        <li><a href="api-testing.html#module-audonnx.testing">audonnx.testing</a>
 </li>
       </ul></li>
   </ul></td>
@@ -296,7 +340,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/04/01 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/06/23 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -331,6 +375,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/thebelab-helper.js"></script>
         <script src="_static/clipboard.min.js"></script>

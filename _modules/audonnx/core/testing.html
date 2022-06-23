@@ -1,0 +1,454 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>audonnx.core.testing &mdash; audonnx Documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/audeering.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/audeering.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/jupyter-sphinx.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/thebelab.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    
+  
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          <a href="../../../index.html">
+          
+            <img src="../../../_static/images/audeering.png" class="logo" alt="audEERING"/>
+          
+          
+            <span> audonnx</span>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v0.6.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">audonnx</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-testing.html">audonnx.testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../genindex.html">Index</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">audonnx</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>audonnx.core.testing</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for audonnx.core.testing</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">typing</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">onnx</span>
+
+<span class="kn">import</span> <span class="nn">audeer</span>
+<span class="kn">import</span> <span class="nn">audobject</span>
+
+<span class="kn">from</span> <span class="nn">audonnx.core.function</span> <span class="kn">import</span> <span class="n">Function</span>
+<span class="kn">from</span> <span class="nn">audonnx.core.model</span> <span class="kn">import</span> <span class="n">Model</span>
+<span class="kn">from</span> <span class="nn">audonnx.core.typing</span> <span class="kn">import</span> <span class="n">Device</span>
+
+
+<div class="viewcode-block" id="create_model"><a class="viewcode-back" href="../../../api-testing.html#audonnx.testing.create_model">[docs]</a><span class="k">def</span> <span class="nf">create_model</span><span class="p">(</span>
+        <span class="n">shapes</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">,</span>
+        <span class="n">dtype</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">onnx</span><span class="o">.</span><span class="n">TensorProto</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">,</span>
+        <span class="n">opset_version</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">14</span><span class="p">,</span>
+        <span class="n">device</span><span class="p">:</span> <span class="n">Device</span> <span class="o">=</span> <span class="s1">&#39;cpu&#39;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Model</span><span class="p">:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create test model.</span>
+
+<span class="sd">    Creates a model that outputs</span>
+<span class="sd">    arrays filled with ``value``</span>
+<span class="sd">    of the given ``shapes``.</span>
+<span class="sd">    For each entry an output node will be created.</span>
+<span class="sd">    ``-1``, ``None`` or strings</span>
+<span class="sd">    define a dynamic axis.</span>
+<span class="sd">    Per node,</span>
+<span class="sd">    one dynamic axis is allowed.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        shapes: list with shapes defining the identical</span>
+<span class="sd">            input and output nodes of the model graph</span>
+<span class="sd">        value: fill value</span>
+<span class="sd">        dtype: data type, see `supported data types`_</span>
+<span class="sd">        opset_version: opset version</span>
+<span class="sd">        device: set device</span>
+<span class="sd">            (``&#39;cpu&#39;``, ``&#39;cuda&#39;``, or ``&#39;cuda:&lt;id&gt;&#39;``)</span>
+<span class="sd">            or a (list of) provider(s)_</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        model object</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; shapes = [[3], [1, -1, 2]]</span>
+<span class="sd">        &gt;&gt;&gt; model = create_model(shapes)</span>
+<span class="sd">        &gt;&gt;&gt; model</span>
+<span class="sd">        Input:</span>
+<span class="sd">          input-0:</span>
+<span class="sd">            shape: [3]</span>
+<span class="sd">            dtype: tensor(float)</span>
+<span class="sd">            transform: audonnx.core.function.Function(reshape)</span>
+<span class="sd">          input-1:</span>
+<span class="sd">            shape: [1, -1, 2]</span>
+<span class="sd">            dtype: tensor(float)</span>
+<span class="sd">            transform: audonnx.core.function.Function(reshape)</span>
+<span class="sd">        Output:</span>
+<span class="sd">          output-0:</span>
+<span class="sd">            shape: [3]</span>
+<span class="sd">            dtype: tensor(float)</span>
+<span class="sd">            labels: [output-0-0, output-0-1, output-0-2]</span>
+<span class="sd">          output-1:</span>
+<span class="sd">            shape: [1, -1, 2]</span>
+<span class="sd">            dtype: tensor(float)</span>
+<span class="sd">            labels: [output-1-0, output-1-1]</span>
+<span class="sd">        &gt;&gt;&gt; signal = np.zeros((1, 5), np.float32)</span>
+<span class="sd">        &gt;&gt;&gt; model(signal, 8000)</span>
+<span class="sd">        {&#39;output-0&#39;: array([0., 0., 0.], dtype=float32), &#39;output-1&#39;: array([[[0., 0.],</span>
+<span class="sd">                [0., 0.],</span>
+<span class="sd">                [0., 0.],</span>
+<span class="sd">                [0., 0.],</span>
+<span class="sd">                [0., 0.]]], dtype=float32)}</span>
+
+<span class="sd">    .. _`supported data types`: https://onnxruntime.ai/docs/reference/operators/custom-python-operator.html#supported-data-types</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+
+    <span class="c1"># create graph</span>
+
+    <span class="nb">object</span> <span class="o">=</span> <span class="n">create_model_proto</span><span class="p">(</span>
+        <span class="n">shapes</span><span class="p">,</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span>
+        <span class="n">opset_version</span><span class="o">=</span><span class="n">opset_version</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># create transform objects</span>
+
+    <span class="n">transform</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">shape</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">shapes</span><span class="p">):</span>
+        <span class="n">transform</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;input-</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Function</span><span class="p">(</span>
+            <span class="n">reshape</span><span class="p">,</span>
+            <span class="n">func_args</span><span class="o">=</span><span class="p">{</span>
+                <span class="s1">&#39;shape&#39;</span><span class="p">:</span> <span class="n">shape</span><span class="p">,</span>
+                <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">value</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
+
+    <span class="c1"># create model</span>
+
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span>
+        <span class="nb">object</span><span class="p">,</span>
+        <span class="n">transform</span><span class="o">=</span><span class="n">transform</span><span class="p">,</span>
+        <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">model</span></div>
+
+
+<div class="viewcode-block" id="create_model_proto"><a class="viewcode-back" href="../../../api-testing.html#audonnx.testing.create_model_proto">[docs]</a><span class="k">def</span> <span class="nf">create_model_proto</span><span class="p">(</span>
+        <span class="n">shapes</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">dtype</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">onnx</span><span class="o">.</span><span class="n">TensorProto</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">,</span>
+        <span class="n">opset_version</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">14</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">onnx</span><span class="o">.</span><span class="n">ModelProto</span><span class="p">:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create test ONNX proto object.</span>
+
+<span class="sd">    Creates an identity graph</span>
+<span class="sd">    with input and output nodes</span>
+<span class="sd">    of the given ``shapes``.</span>
+<span class="sd">    For each entry an input and output</span>
+<span class="sd">    node will be created.</span>
+<span class="sd">    ``-1``, ``None`` or strings</span>
+<span class="sd">    define a dynamic axis.</span>
+<span class="sd">    Per node,</span>
+<span class="sd">    one dynamic axis is allowed.</span>
+<span class="sd">    The identity graph can be used as ``path`` argument</span>
+<span class="sd">    of :class:`audonnx.Model`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        shapes: list with shapes defining the identical</span>
+<span class="sd">            input and output nodes of the model graph</span>
+<span class="sd">        dtype: data type, see `supported data types`_</span>
+<span class="sd">        opset_version: opset version</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        ONNX object</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; create_model_proto([[2]])</span>
+<span class="sd">        ir_version: 8</span>
+<span class="sd">        producer_name: &quot;test&quot;</span>
+<span class="sd">        graph {</span>
+<span class="sd">          node {</span>
+<span class="sd">            input: &quot;input-0&quot;</span>
+<span class="sd">            output: &quot;output-0&quot;</span>
+<span class="sd">            op_type: &quot;Identity&quot;</span>
+<span class="sd">          }</span>
+<span class="sd">          name: &quot;test&quot;</span>
+<span class="sd">          input {</span>
+<span class="sd">            name: &quot;input-0&quot;</span>
+<span class="sd">            type {</span>
+<span class="sd">              tensor_type {</span>
+<span class="sd">                elem_type: 1</span>
+<span class="sd">                shape {</span>
+<span class="sd">                  dim {</span>
+<span class="sd">                    dim_value: 2</span>
+<span class="sd">                  }</span>
+<span class="sd">                }</span>
+<span class="sd">              }</span>
+<span class="sd">            }</span>
+<span class="sd">          }</span>
+<span class="sd">          output {</span>
+<span class="sd">            name: &quot;output-0&quot;</span>
+<span class="sd">            type {</span>
+<span class="sd">              tensor_type {</span>
+<span class="sd">                elem_type: 1</span>
+<span class="sd">                shape {</span>
+<span class="sd">                  dim {</span>
+<span class="sd">                    dim_value: 2</span>
+<span class="sd">                  }</span>
+<span class="sd">                }</span>
+<span class="sd">              }</span>
+<span class="sd">            }</span>
+<span class="sd">          }</span>
+<span class="sd">        }</span>
+<span class="sd">        opset_import {</span>
+<span class="sd">          version: 14</span>
+<span class="sd">        }</span>
+<span class="sd">        &lt;BLANKLINE&gt;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># nodes</span>
+
+    <span class="n">inputs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">outputs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">nodes</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">shape</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">shapes</span><span class="p">):</span>
+        <span class="nb">input</span> <span class="o">=</span> <span class="n">onnx</span><span class="o">.</span><span class="n">helper</span><span class="o">.</span><span class="n">make_tensor_value_info</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;input-</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="n">dtype</span><span class="p">,</span>
+            <span class="n">shape</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">inputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
+
+        <span class="n">output</span> <span class="o">=</span> <span class="n">onnx</span><span class="o">.</span><span class="n">helper</span><span class="o">.</span><span class="n">make_tensor_value_info</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;output-</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="n">dtype</span><span class="p">,</span>
+            <span class="n">shape</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+
+        <span class="n">node</span> <span class="o">=</span> <span class="n">onnx</span><span class="o">.</span><span class="n">helper</span><span class="o">.</span><span class="n">make_node</span><span class="p">(</span>
+            <span class="s1">&#39;Identity&#39;</span><span class="p">,</span>
+            <span class="p">[</span><span class="nb">input</span><span class="o">.</span><span class="n">name</span><span class="p">],</span>
+            <span class="p">[</span><span class="n">output</span><span class="o">.</span><span class="n">name</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+
+    <span class="c1"># graph</span>
+
+    <span class="n">graph</span> <span class="o">=</span> <span class="n">onnx</span><span class="o">.</span><span class="n">helper</span><span class="o">.</span><span class="n">make_graph</span><span class="p">(</span>
+        <span class="n">nodes</span><span class="p">,</span>
+        <span class="s1">&#39;test&#39;</span><span class="p">,</span>
+        <span class="n">inputs</span><span class="p">,</span>
+        <span class="n">outputs</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># model</span>
+
+    <span class="n">model</span> <span class="o">=</span> <span class="n">onnx</span><span class="o">.</span><span class="n">helper</span><span class="o">.</span><span class="n">make_model</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">producer_name</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">opset_import</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">version</span> <span class="o">=</span> <span class="n">opset_version</span>
+    <span class="n">onnx</span><span class="o">.</span><span class="n">checker</span><span class="o">.</span><span class="n">check_model</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">model</span></div>
+
+
+<span class="k">def</span> <span class="nf">reshape</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return array with zeros of given shape.&quot;&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>  <span class="c1"># noqa: F811</span>
+    <span class="n">shape</span> <span class="o">=</span> <span class="p">[</span><span class="n">signal</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">s</span> <span class="o">&lt;</span> <span class="mi">0</span>
+             <span class="k">else</span> <span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">shape</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="o">*</span> <span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div>
+    <p>
+        
+        
+        
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/06/23 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+        
+    </p>
+  </div>
+
+  <div role="contentinfo">
+    <p>
+        
+      &copy; 2021-2022 audEERING GmbH
+    </p>
+  </div> 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/thebelab-helper.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

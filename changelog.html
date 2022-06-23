@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                v0.5.2
+                v0.6.0
               </div>
             
           
@@ -102,12 +102,14 @@
 <p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="api.html">audonnx</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-testing.html">audonnx.testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="genindex.html">Index</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#version-0-6-0-2022-06-23">Version 0.6.0 (2022-06-23)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-5-2-2022-04-01">Version 0.5.2 (2022-04-01)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-5-1-2022-03-29">Version 0.5.1 (2022-03-29)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-5-0-2022-02-09">Version 0.5.0 (2022-02-09)</a></li>
@@ -163,56 +165,74 @@
            <div itemprop="articleBody">
             
   <div class="section" id="changelog">
-<h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
+<h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this heading">¶</a></h1>
 <p>All notable changes to this project will be documented in this file.</p>
 <p>The format is based on <a class="reference external" href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>,
 and this project adheres to <a class="reference external" href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
+<div class="section" id="version-0-6-0-2022-06-23">
+<h2>Version 0.6.0 (2022-06-23)<a class="headerlink" href="#version-0-6-0-2022-06-23" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Added: <code class="docutils literal notranslate"><span class="pre">audonnx.Function</span></code></p></li>
+<li><p>Added: <code class="docutils literal notranslate"><span class="pre">audonnx.Model.labels()</span></code></p></li>
+<li><p>Added: arguments
+<code class="docutils literal notranslate"><span class="pre">concat</span></code>,
+<code class="docutils literal notranslate"><span class="pre">outputs</span></code>,
+<code class="docutils literal notranslate"><span class="pre">squeeze</span></code>
+to <code class="docutils literal notranslate"><span class="pre">audonnx.Model.__call__()</span></code></p></li>
+<li><p>Added: tests on Windows</p></li>
+<li><p>Added: <code class="docutils literal notranslate"><span class="pre">audonnx.testing</span></code> module</p></li>
+<li><p>Changed: optionally init <code class="docutils literal notranslate"><span class="pre">audonnx.Model</span></code> from proto object instead of ONNX file</p></li>
+<li><p>Changed: dynamic axis can be specified as <code class="docutils literal notranslate"><span class="pre">None</span></code> in ONNX graph</p></li>
+<li><p>Changed: support output nodes where last dimension is dynamic</p></li>
+<li><p>Deprecated: argument <code class="docutils literal notranslate"><span class="pre">output_names</span></code> of <code class="docutils literal notranslate"><span class="pre">audonnx.Model.__call__()</span></code></p></li>
+</ul>
+</div>
 <div class="section" id="version-0-5-2-2022-04-01">
-<h2>Version 0.5.2 (2022-04-01)<a class="headerlink" href="#version-0-5-2-2022-04-01" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.5.2 (2022-04-01)<a class="headerlink" href="#version-0-5-2-2022-04-01" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Fixed: always replace dynamic axis names with <code class="docutils literal notranslate"><span class="pre">-1</span></code>
 in input and output shapes of model nodes</p></li>
 </ul>
 </div>
 <div class="section" id="version-0-5-1-2022-03-29">
-<h2>Version 0.5.1 (2022-03-29)<a class="headerlink" href="#version-0-5-1-2022-03-29" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.5.1 (2022-03-29)<a class="headerlink" href="#version-0-5-1-2022-03-29" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Added: argument <code class="docutils literal notranslate"><span class="pre">auto_install</span></code> to <code class="docutils literal notranslate"><span class="pre">audonnx.load()</span></code></p></li>
 </ul>
 </div>
 <div class="section" id="version-0-5-0-2022-02-09">
-<h2>Version 0.5.0 (2022-02-09)<a class="headerlink" href="#version-0-5-0-2022-02-09" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.5.0 (2022-02-09)<a class="headerlink" href="#version-0-5-0-2022-02-09" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Added: argument <code class="docutils literal notranslate"><span class="pre">device</span></code></p></li>
 <li><p>Changed: use CPU by default</p></li>
 <li><p>Changed: require <code class="docutils literal notranslate"><span class="pre">onnxruntime&gt;=1.8.0</span></code></p></li>
 <li><p>Removed:
-<code class="docutils literal notranslate"><span class="pre">Model.forward()</span></code>
-<code class="docutils literal notranslate"><span class="pre">Model.labels</span></code>,
-<code class="docutils literal notranslate"><span class="pre">Model.predict()</span></code>,
-<code class="docutils literal notranslate"><span class="pre">Model.transform</span></code></p></li>
+<code class="docutils literal notranslate"><span class="pre">audonnx.Model.forward()</span></code>
+<code class="docutils literal notranslate"><span class="pre">audonnx.Model.labels</span></code>,
+<code class="docutils literal notranslate"><span class="pre">audonnx.Model.predict()</span></code>,
+<code class="docutils literal notranslate"><span class="pre">audonnx.Model.transform</span></code></p></li>
 </ul>
 </div>
 <div class="section" id="version-0-4-3-2022-01-10">
-<h2>Version 0.4.3 (2022-01-10)<a class="headerlink" href="#version-0-4-3-2022-01-10" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.4.3 (2022-01-10)<a class="headerlink" href="#version-0-4-3-2022-01-10" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Fixed: publication of docs failed</p></li>
 </ul>
 </div>
 <div class="section" id="version-0-4-2-2022-01-10">
-<h2>Version 0.4.2 (2022-01-10)<a class="headerlink" href="#version-0-4-2-2022-01-10" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.4.2 (2022-01-10)<a class="headerlink" href="#version-0-4-2-2022-01-10" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Fixed: publication of docs failed</p></li>
 </ul>
 </div>
 <div class="section" id="version-0-4-1-2022-01-10">
-<h2>Version 0.4.1 (2022-01-10)<a class="headerlink" href="#version-0-4-1-2022-01-10" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.4.1 (2022-01-10)<a class="headerlink" href="#version-0-4-1-2022-01-10" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Fixed: author email address in Python package metadata</p></li>
 </ul>
 </div>
 <div class="section" id="version-0-4-0-2022-01-10">
-<h2>Version 0.4.0 (2022-01-10)<a class="headerlink" href="#version-0-4-0-2022-01-10" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.4.0 (2022-01-10)<a class="headerlink" href="#version-0-4-0-2022-01-10" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Added: first public release</p></li>
 <li><p>Changed: switch to MIT license</p></li>
@@ -222,25 +242,25 @@ as we no longer depend on it</p></li>
 </ul>
 </div>
 <div class="section" id="version-0-3-3-2021-12-30">
-<h2>Version 0.3.3 (2021-12-30)<a class="headerlink" href="#version-0-3-3-2021-12-30" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.3.3 (2021-12-30)<a class="headerlink" href="#version-0-3-3-2021-12-30" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Changed: use Python 3.8 as default</p></li>
 </ul>
 </div>
 <div class="section" id="version-0-3-2-2021-11-01">
-<h2>Version 0.3.2 (2021-11-01)<a class="headerlink" href="#version-0-3-2-2021-11-01" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.3.2 (2021-11-01)<a class="headerlink" href="#version-0-3-2-2021-11-01" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Changed: use <code class="docutils literal notranslate"><span class="pre">audobject</span></code> &gt;=0.6.1</p></li>
 </ul>
 </div>
 <div class="section" id="version-0-3-1-2021-10-05">
-<h2>Version 0.3.1 (2021-10-05)<a class="headerlink" href="#version-0-3-1-2021-10-05" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.3.1 (2021-10-05)<a class="headerlink" href="#version-0-3-1-2021-10-05" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Fixed: <code class="docutils literal notranslate"><span class="pre">audonnx.load()</span></code> try to load model from ONNX if YAML does not exist</p></li>
 </ul>
 </div>
 <div class="section" id="version-0-3-0-2021-10-01">
-<h2>Version 0.3.0 (2021-10-01)<a class="headerlink" href="#version-0-3-0-2021-10-01" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.3.0 (2021-10-01)<a class="headerlink" href="#version-0-3-0-2021-10-01" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Changed: audobject &gt;=0.5.0</p></li>
 <li><p>Changed: force <code class="docutils literal notranslate"><span class="pre">.yaml</span></code> extension when model is saved</p></li>
@@ -248,52 +268,52 @@ as we no longer depend on it</p></li>
 </ul>
 </div>
 <div class="section" id="version-0-2-2-2021-09-23">
-<h2>Version 0.2.2 (2021-09-23)<a class="headerlink" href="#version-0-2-2-2021-09-23" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.2.2 (2021-09-23)<a class="headerlink" href="#version-0-2-2-2021-09-23" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Fixed: link to ONNX runtime CUDA mapping table</p></li>
 </ul>
 </div>
 <div class="section" id="version-0-2-1-2021-09-15">
-<h2>Version 0.2.1 (2021-09-15)<a class="headerlink" href="#version-0-2-1-2021-09-15" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.2.1 (2021-09-15)<a class="headerlink" href="#version-0-2-1-2021-09-15" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Fixed: loading of old models that contain a <code class="docutils literal notranslate"><span class="pre">model.yaml</span></code> file</p></li>
 </ul>
 </div>
 <div class="section" id="version-0-2-0-2021-07-20">
-<h2>Version 0.2.0 (2021-07-20)<a class="headerlink" href="#version-0-2-0-2021-07-20" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.2.0 (2021-07-20)<a class="headerlink" href="#version-0-2-0-2021-07-20" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Added:
-<code class="docutils literal notranslate"><span class="pre">InputNode</span></code>,
-<code class="docutils literal notranslate"><span class="pre">Model.__call__()</span></code>,
-<code class="docutils literal notranslate"><span class="pre">Model.inputs</span></code>,
-<code class="docutils literal notranslate"><span class="pre">Model.outputs</span></code>,
-<code class="docutils literal notranslate"><span class="pre">OutputNode</span></code></p></li>
+<code class="docutils literal notranslate"><span class="pre">audonnx.InputNode</span></code>,
+<code class="docutils literal notranslate"><span class="pre">audonnx.Model.__call__()</span></code>,
+<code class="docutils literal notranslate"><span class="pre">audonnx.Model.inputs</span></code>,
+<code class="docutils literal notranslate"><span class="pre">audonnx.Model.outputs</span></code>,
+<code class="docutils literal notranslate"><span class="pre">audonnx.OutputNode</span></code></p></li>
 <li><p>Changed: reshape input to expected shape</p></li>
 <li><p>Changed: do not depend on existing models in tests and documentation</p></li>
 <li><p>Changed: support multiple input nodes</p></li>
-<li><p>Changed: make <code class="docutils literal notranslate"><span class="pre">Model</span></code> serializable</p></li>
+<li><p>Changed: make <code class="docutils literal notranslate"><span class="pre">audonnx.Model</span></code> serializable</p></li>
 <li><p>Deprecated:
-<code class="docutils literal notranslate"><span class="pre">Model.forward()</span></code>
-<code class="docutils literal notranslate"><span class="pre">Model.labels</span></code>,
-<code class="docutils literal notranslate"><span class="pre">Model.predict()</span></code>,
-<code class="docutils literal notranslate"><span class="pre">Model.transform</span></code></p></li>
+<code class="docutils literal notranslate"><span class="pre">audonnx.Model.forward()</span></code>
+<code class="docutils literal notranslate"><span class="pre">audonnx.Model.labels</span></code>,
+<code class="docutils literal notranslate"><span class="pre">audonnx.Model.predict()</span></code>,
+<code class="docutils literal notranslate"><span class="pre">audonnx.Model.transform</span></code></p></li>
 <li><p>Removed:
-<code class="docutils literal notranslate"><span class="pre">Model.input_node</span></code>,
-<code class="docutils literal notranslate"><span class="pre">Model.input_shape</span></code>,
-<code class="docutils literal notranslate"><span class="pre">Model.input_type</span></code>,
-<code class="docutils literal notranslate"><span class="pre">Model.output_nodes</span></code>,
-<code class="docutils literal notranslate"><span class="pre">Model.output_shape</span></code>,
-<code class="docutils literal notranslate"><span class="pre">Model.output_type</span></code>,</p></li>
+<code class="docutils literal notranslate"><span class="pre">audonnx.Model.input_node</span></code>,
+<code class="docutils literal notranslate"><span class="pre">audonnx.Model.input_shape</span></code>,
+<code class="docutils literal notranslate"><span class="pre">audonnx.Model.input_type</span></code>,
+<code class="docutils literal notranslate"><span class="pre">audonnx.Model.output_nodes</span></code>,
+<code class="docutils literal notranslate"><span class="pre">audonnx.Model.output_shape</span></code>,
+<code class="docutils literal notranslate"><span class="pre">audonnx.Model.output_type</span></code>,</p></li>
 </ul>
 </div>
 <div class="section" id="version-0-1-1-2021-03-31">
-<h2>Version 0.1.1 (2021-03-31)<a class="headerlink" href="#version-0-1-1-2021-03-31" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.1.1 (2021-03-31)<a class="headerlink" href="#version-0-1-1-2021-03-31" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Changed: update documentation how to select specific GPU device</p></li>
 </ul>
 </div>
 <div class="section" id="version-0-1-0-2021-03-25">
-<h2>Version 0.1.0 (2021-03-25)<a class="headerlink" href="#version-0-1-0-2021-03-25" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.1.0 (2021-03-25)<a class="headerlink" href="#version-0-1-0-2021-03-25" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Added: initial release</p></li>
 </ul>
@@ -321,7 +341,7 @@ as we no longer depend on it</p></li>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/04/01 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/06/23 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -356,6 +376,7 @@ as we no longer depend on it</p></li>
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/thebelab-helper.js"></script>
         <script src="_static/clipboard.min.js"></script>

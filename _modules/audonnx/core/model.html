@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                v0.5.2
+                v0.6.0
               </div>
             
           
@@ -101,6 +101,7 @@
 <p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api.html">audonnx</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-testing.html">audonnx.testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../genindex.html">Index</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
@@ -149,17 +150,19 @@
 <span class="kn">import</span> <span class="nn">typing</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">onnx</span>
 <span class="kn">import</span> <span class="nn">onnxruntime</span>
+<span class="kn">import</span> <span class="nn">yaml</span>
 
 <span class="kn">import</span> <span class="nn">audeer</span>
 <span class="kn">import</span> <span class="nn">audobject</span>
-<span class="kn">import</span> <span class="nn">yaml</span>
 
 <span class="kn">from</span> <span class="nn">audonnx.core.node</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">InputNode</span><span class="p">,</span>
     <span class="n">OutputNode</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">audonnx.core.typing</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Device</span><span class="p">,</span>
     <span class="n">Labels</span><span class="p">,</span>
     <span class="n">Transform</span><span class="p">,</span>
 <span class="p">)</span>
@@ -174,9 +177,13 @@
 <span class="sd">    Use dictionary to assign transform objects to specific nodes</span>
 <span class="sd">    if model has multiple input nodes.</span>
 
-<span class="sd">    For output nodes an optional list of labels can be given,</span>
-<span class="sd">    where each label corresponds to a dimension in the output,</span>
-<span class="sd">    i.e. the number of labels must match the dimension of the output node.</span>
+<span class="sd">    For output nodes an optional list of labels can be given</span>
+<span class="sd">    to assign names to the last non-dynamic dimension.</span>
+<span class="sd">    E.g. if the shape of the output node is</span>
+<span class="sd">    ``(1, 3, -1)``</span>
+<span class="sd">    three labels can be assigned to the second dimension.</span>
+<span class="sd">    By default,</span>
+<span class="sd">    labels are generated from the name of the node.</span>
 <span class="sd">    Use dictionary to assign labels to specific nodes</span>
 <span class="sd">    if model has multiple output nodes.</span>
 
@@ -188,12 +195,45 @@
 <span class="sd">    to see all available methods.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        path: path to model file</span>
+<span class="sd">        path: ONNX proto object or path to ONNX file</span>
 <span class="sd">        labels: list of labels or dictionary with labels</span>
 <span class="sd">        transform: callable object or a dictionary of callable objects</span>
 <span class="sd">        device: set device</span>
 <span class="sd">            (``&#39;cpu&#39;``, ``&#39;cuda&#39;``, or ``&#39;cuda:&lt;id&gt;&#39;``)</span>
 <span class="sd">            or a (list of) provider(s)_</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; import audiofile</span>
+<span class="sd">        &gt;&gt;&gt; import opensmile</span>
+<span class="sd">        &gt;&gt;&gt; transform = opensmile.Smile(</span>
+<span class="sd">        ...    opensmile.FeatureSet.GeMAPSv01b,</span>
+<span class="sd">        ...    opensmile.FeatureLevel.LowLevelDescriptors,</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; path = os.path.join(&#39;tests&#39;, &#39;model.onnx&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; model = Model(</span>
+<span class="sd">        ...     path,</span>
+<span class="sd">        ...     labels=[&#39;female&#39;, &#39;male&#39;],</span>
+<span class="sd">        ...     transform=transform,</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; model</span>
+<span class="sd">        Input:</span>
+<span class="sd">          feature:</span>
+<span class="sd">            shape: [18, -1]</span>
+<span class="sd">            dtype: tensor(float)</span>
+<span class="sd">            transform: opensmile.core.smile.Smile</span>
+<span class="sd">        Output:</span>
+<span class="sd">          gender:</span>
+<span class="sd">            shape: [2]</span>
+<span class="sd">            dtype: tensor(float)</span>
+<span class="sd">            labels: [female, male]</span>
+<span class="sd">        &gt;&gt;&gt; path = os.path.join(&#39;tests&#39;, &#39;test.wav&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; signal, sampling_rate = audiofile.read(path)</span>
+<span class="sd">        &gt;&gt;&gt; model(</span>
+<span class="sd">        ...     signal,</span>
+<span class="sd">        ...     sampling_rate,</span>
+<span class="sd">        ...     outputs=&#39;gender&#39;,</span>
+<span class="sd">        ... ).round(1)</span>
+<span class="sd">        array([-195.1,   73.3], dtype=float32)</span>
 
 <span class="sd">    .. _provider(s): https://onnxruntime.ai/docs/execution-providers/</span>
 
@@ -212,16 +252,11 @@
     <span class="p">)</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
-            <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">path</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">onnx</span><span class="o">.</span><span class="n">ModelProto</span><span class="p">],</span>
             <span class="o">*</span><span class="p">,</span>
             <span class="n">labels</span><span class="p">:</span> <span class="n">Labels</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">transform</span><span class="p">:</span> <span class="n">Transform</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">device</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span>
-                <span class="nb">str</span><span class="p">,</span>
-                <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">],</span>
-                <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span>
-                    <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">]]],</span>
-            <span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;cpu&#39;</span><span class="p">,</span>
+            <span class="n">device</span><span class="p">:</span> <span class="n">Device</span> <span class="o">=</span> <span class="s1">&#39;cpu&#39;</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="c1"># keep original arguments to store them</span>
         <span class="c1"># when object is serialized</span>
@@ -230,12 +265,12 @@
             <span class="s1">&#39;transform&#39;</span><span class="p">:</span> <span class="n">transform</span><span class="p">,</span>
         <span class="p">}</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">safe_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Model path&quot;&quot;&quot;</span>
 
         <span class="n">providers</span> <span class="o">=</span> <span class="n">_device_to_providers</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sess</span> <span class="o">=</span> <span class="n">onnxruntime</span><span class="o">.</span><span class="n">InferenceSession</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">path</span><span class="o">.</span><span class="n">SerializeToString</span><span class="p">(),</span>
             <span class="n">providers</span><span class="o">=</span><span class="n">providers</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Interference session&quot;&quot;&quot;</span>
@@ -283,82 +318,93 @@
         <span class="k">for</span> <span class="n">output</span> <span class="ow">in</span> <span class="n">outputs</span><span class="p">:</span>
             <span class="n">shape</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">shape</span> <span class="ow">or</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
             <span class="n">shape</span> <span class="o">=</span> <span class="n">_shape</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
-            <span class="n">dim</span> <span class="o">=</span> <span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">dim_size</span> <span class="o">=</span> <span class="n">_last_static_dim_size</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">output</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">:</span>
                 <span class="n">lab</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">output</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lab</span><span class="p">)</span> <span class="o">!=</span> <span class="n">dim</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lab</span><span class="p">)</span> <span class="o">!=</span> <span class="n">dim_size</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                         <span class="sa">f</span><span class="s2">&quot;Cannot assign &quot;</span>
                         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">lab</span><span class="p">)</span><span class="si">}</span><span class="s2"> &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;labels to output &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;labels to output node &quot;</span>
                         <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">output</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;with dimension &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dim</span><span class="si">}</span><span class="s2">.&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;when last non-dynamic dimension has size &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dim_size</span><span class="si">}</span><span class="s2">.&quot;</span>
                     <span class="p">)</span>
-            <span class="k">elif</span> <span class="n">dim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">dim_size</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="n">lab</span> <span class="o">=</span> <span class="p">[</span><span class="n">output</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">lab</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">output</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim</span><span class="p">)]</span>
+                <span class="n">lab</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">output</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s1">&#39;</span>
+                       <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim_size</span><span class="p">)]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">outputs</span><span class="p">[</span><span class="n">output</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">OutputNode</span><span class="p">(</span>
                 <span class="n">shape</span><span class="p">,</span>
                 <span class="n">output</span><span class="o">.</span><span class="n">type</span><span class="p">,</span>
                 <span class="n">lab</span><span class="p">,</span>
             <span class="p">)</span>
 
-<div class="viewcode-block" id="Model.__call__"><a class="viewcode-back" href="../../../api.html#audonnx.Model.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span>
+<div class="viewcode-block" id="Model.__call__"><a class="viewcode-back" href="../../../api.html#audonnx.Model.__call__">[docs]</a>    <span class="nd">@audeer</span><span class="o">.</span><span class="n">deprecated_keyword_argument</span><span class="p">(</span>
+        <span class="n">deprecated_argument</span><span class="o">=</span><span class="s1">&#39;output_names&#39;</span><span class="p">,</span>
+        <span class="n">removal_version</span><span class="o">=</span><span class="s1">&#39;1.2.0&#39;</span><span class="p">,</span>
+        <span class="n">new_argument</span><span class="o">=</span><span class="s1">&#39;outputs&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">signal</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
             <span class="n">sampling_rate</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
             <span class="o">*</span><span class="p">,</span>
-            <span class="n">output_names</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">outputs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">concat</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="n">squeeze</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span>
         <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
         <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
     <span class="p">]:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Compute output for one or more nodes.</span>
 
-<span class="sd">        If ``output_names`` is a plain string,</span>
+<span class="sd">        If ``outputs`` is a plain string,</span>
 <span class="sd">        the output of the according node is returned.</span>
 
-<span class="sd">        If ``output_names`` is a list of strings,</span>
+<span class="sd">        If ``outputs`` is a list of strings,</span>
 <span class="sd">        a dictionary with according nodes as keys and</span>
 <span class="sd">        their outputs as values is returned.</span>
 
-<span class="sd">        If ``output_names`` is not set</span>
+<span class="sd">        If ``outputs`` is not set</span>
 <span class="sd">        and the model has a single output node,</span>
 <span class="sd">        the output of that node is returned.</span>
 <span class="sd">        Otherwise a dictionary with outputs of all nodes is returned.</span>
 
-<span class="sd">        Use :attr:`audonnx.Model.output_names` to get a list of available</span>
+<span class="sd">        If ``concat`` is set to ``True``,</span>
+<span class="sd">        the output of the requested nodes is concatenated</span>
+<span class="sd">        along the last non-dynamic axis</span>
+<span class="sd">        and a single array is returned.</span>
+<span class="sd">        This requires that the number of dimensions,</span>
+<span class="sd">        the position of dynamic axis,</span>
+<span class="sd">        and all dimensions except the last non-dynamic axis</span>
+<span class="sd">        match for the requested nodes</span>
+
+<span class="sd">        Use :attr:`audonnx.Model.outputs` to get a list of available</span>
 <span class="sd">        output nodes.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            signal: input signal</span>
 <span class="sd">            sampling_rate: sampling rate in Hz</span>
-<span class="sd">            output_names: name of output or list with output names</span>
+<span class="sd">            outputs: name of output or list with output names</span>
+<span class="sd">            concat: if ``True``,</span>
+<span class="sd">                concatenate output of the requested nodes</span>
+<span class="sd">            squeeze: if ``True``,</span>
+<span class="sd">                remove axes of length one from the output(s)</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            model output</span>
 
-<span class="sd">        Examples:</span>
-<span class="sd">            &gt;&gt;&gt; import audiofile</span>
-<span class="sd">            &gt;&gt;&gt; audio_path = os.path.join(&#39;tests&#39;, &#39;test.wav&#39;)</span>
-<span class="sd">            &gt;&gt;&gt; signal, sampling_rate = audiofile.read(audio_path)</span>
-<span class="sd">            &gt;&gt;&gt; model_path = os.path.join(&#39;tests&#39;, &#39;model.yaml&#39;)</span>
-<span class="sd">            &gt;&gt;&gt; import audobject</span>
-<span class="sd">            &gt;&gt;&gt; model = audobject.from_yaml(model_path)</span>
-<span class="sd">            &gt;&gt;&gt; model(</span>
-<span class="sd">            ...     signal,</span>
-<span class="sd">            ...     sampling_rate,</span>
-<span class="sd">            ...     output_names=&#39;gender&#39;,</span>
-<span class="sd">            ... ).round(1)</span>
-<span class="sd">            array([-195.1,   73.3], dtype=float32)</span>
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError: if ``concat`` is ``True``,</span>
+<span class="sd">                but output of requested nodes cannot be concatenated</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">output_names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">output_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outputs</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">output_names</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">output_names</span> <span class="o">=</span> <span class="n">output_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">outputs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">outputs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outputs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">outputs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">outputs</span> <span class="o">=</span> <span class="n">outputs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="n">y</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="nb">input</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -369,16 +415,27 @@
             <span class="n">y</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 
         <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
-            <span class="n">audeer</span><span class="o">.</span><span class="n">to_list</span><span class="p">(</span><span class="n">output_names</span><span class="p">),</span>
+            <span class="n">audeer</span><span class="o">.</span><span class="n">to_list</span><span class="p">(</span><span class="n">outputs</span><span class="p">),</span>
             <span class="n">y</span><span class="p">,</span>
         <span class="p">)</span>
 
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">output_names</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">z</span> <span class="o">=</span> <span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">z</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="n">name</span><span class="p">:</span> <span class="n">values</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">output_names</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+                <span class="n">name</span><span class="p">:</span> <span class="n">values</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
             <span class="p">}</span>
+            <span class="k">if</span> <span class="n">concat</span><span class="p">:</span>
+                <span class="n">shapes</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">outputs</span><span class="p">[</span><span class="n">node</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">outputs</span><span class="p">]</span>
+                <span class="n">z</span> <span class="o">=</span> <span class="n">_concat</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">shapes</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">squeeze</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="n">z</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="n">name</span><span class="p">:</span> <span class="n">values</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">z</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="p">}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">z</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="n">z</span></div>
 
@@ -398,6 +455,29 @@
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
+<div class="viewcode-block" id="Model.labels"><a class="viewcode-back" href="../../../api.html#audonnx.Model.labels">[docs]</a>    <span class="k">def</span> <span class="nf">labels</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">outputs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Collect labels of output nodes.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            outputs: name of output or list with output names.</span>
+<span class="sd">                Selects all output nodes by default</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list with labels</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">outputs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">outputs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outputs</span><span class="p">)</span>
+        <span class="n">outputs</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">to_list</span><span class="p">(</span><span class="n">outputs</span><span class="p">)</span>
+
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">outputs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">labels</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">outputs</span><span class="p">]</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">flatten_list</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">names</span></div>
+
 <div class="viewcode-block" id="Model.to_yaml"><a class="viewcode-back" href="../../../api.html#audonnx.Model.to_yaml">[docs]</a>    <span class="k">def</span> <span class="nf">to_yaml</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -405,6 +485,11 @@
             <span class="n">include_version</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Save model to YAML file.</span>
+
+<span class="sd">        If ONNX model was loaded from a byte stream,</span>
+<span class="sd">        it will be saved in addition to the YAML file</span>
+<span class="sd">        under the same path</span>
+<span class="sd">        with file extension ``.onnx``.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            path: file path, must end on ``.yaml``</span>
@@ -414,9 +499,17 @@
 <span class="sd">            ValueError: if file path does not end on ``.yaml``</span>
 
 <span class="sd">       &quot;&quot;&quot;</span>
-        <span class="n">path</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">safe_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">audeer</span><span class="o">.</span><span class="n">file_extension</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;yaml&#39;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Model path </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> does not end on &#39;.yaml&#39;&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># if model was loaded from a byte stream,</span>
+            <span class="c1"># we have to save it first</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">replace_file_extension</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;onnx&#39;</span><span class="p">)</span>
+            <span class="n">audeer</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+            <span class="n">onnx</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sess</span><span class="o">.</span><span class="n">_model_bytes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">to_yaml</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">include_version</span><span class="o">=</span><span class="n">include_version</span><span class="p">)</span></div></div>
 
@@ -454,11 +547,78 @@
     <span class="k">return</span> <span class="n">providers</span>
 
 
+<span class="k">def</span> <span class="nf">_concat</span><span class="p">(</span>
+        <span class="n">y</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+        <span class="n">shapes</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
+<span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Flatten dictionary by concatenating values.&quot;&quot;&quot;</span>
+
+    <span class="n">y</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+    <span class="c1"># special case if all shapes are [-1]</span>
+    <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">map</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="fm">__eq__</span><span class="p">,</span> <span class="n">shapes</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+    <span class="n">axis</span> <span class="o">=</span> <span class="n">_concat_axis</span><span class="p">(</span><span class="n">shapes</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">axis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;To concatenate outputs &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;number of dimensions, &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;position of dynamic axis, &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;and all dimensions except the last non-dynamic axis &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;must match. &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;This does not apply to: &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">shapes</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_concat_axis</span><span class="p">(</span><span class="n">shapes</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return concat dimension or None if not possible.&quot;&quot;&quot;</span>
+
+    <span class="c1"># number of dimensions do not match</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span> <span class="n">shapes</span><span class="p">)))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="c1"># dynamic axis in different positions</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">_dynamic_axis</span><span class="p">,</span> <span class="n">shapes</span><span class="p">)))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="c1"># select last non-dynamic axis</span>
+    <span class="n">axis</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">shapes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">-</span> <span class="p">(</span><span class="mi">2</span> <span class="k">if</span> <span class="n">shapes</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="k">else</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># remove concat axis</span>
+    <span class="n">shapes_wo_axis</span> <span class="o">=</span> <span class="p">[</span><span class="n">shape</span><span class="p">[:</span><span class="n">axis</span><span class="p">]</span> <span class="o">+</span> <span class="n">shape</span><span class="p">[</span><span class="n">axis</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:]</span> <span class="k">for</span> <span class="n">shape</span> <span class="ow">in</span> <span class="n">shapes</span><span class="p">]</span>
+
+    <span class="c1"># non-concat dimensions do not match</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">shapes_wo_axis</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="fm">__eq__</span><span class="p">,</span> <span class="n">shapes_wo_axis</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">return</span> <span class="n">axis</span>
+
+
+<span class="k">def</span> <span class="nf">_dynamic_axis</span><span class="p">(</span><span class="n">shape</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return dimension of dynamic axis or None if none.&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">dim</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">shape</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">dim</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">idx</span>
+    <span class="k">return</span> <span class="kc">None</span>
+
+
+<span class="k">def</span> <span class="nf">_last_static_dim_size</span><span class="p">(</span>
+        <span class="n">shape</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return size of last static dimension.&quot;&quot;&quot;</span>
+    <span class="n">shape</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="fm">__ne__</span><span class="p">,</span> <span class="n">shape</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="k">else</span> <span class="mi">0</span>
+
+
 <span class="k">def</span> <span class="nf">_shape</span><span class="p">(</span>
         <span class="n">shape</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Replace dynamic axis names with -1.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">shape</span><span class="p">]</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Replace dynamic dimensions with -1.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">shape</span><span class="p">]</span>
 </pre></div>
 
            </div>
@@ -474,7 +634,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/04/01 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/06/23 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -509,6 +669,7 @@
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/thebelab-helper.js"></script>
         <script src="../../../_static/clipboard.min.js"></script>
