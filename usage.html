@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                v0.6.0
+                v0.6.1
               </div>
             
           
@@ -169,7 +169,7 @@ Models with single or multiple input and output nodes are supported.</p>
 a file path, a signal array and an index in <a class="reference external" href="https://audeering.github.io/audformat/">audformat</a>.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">audiofile</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">audiofile</span>
 
 
 <span class="n">file</span> <span class="o">=</span> <span class="s1">&#39;./docs/_static/test.wav&#39;</span>
@@ -208,7 +208,7 @@ a file path, a signal array and an index in <a class="reference external" href="
 <p>Create <a class="reference external" href="https://pytorch.org/">Torch</a> model with a single input and output node.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
 
 
 <span class="k">class</span> <span class="nc">TorchModelSingle</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
@@ -237,7 +237,7 @@ a file path, a signal array and an index in <a class="reference external" href="
 raw audio signal to a sequence of low-level descriptors.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">opensmile</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">opensmile</span>
 
 
 <span class="n">smile</span> <span class="o">=</span> <span class="n">opensmile</span><span class="o">.</span><span class="n">Smile</span><span class="p">(</span>
@@ -253,7 +253,7 @@ raw audio signal to a sequence of low-level descriptors.</p>
 <p>Calculate features and run <a class="reference external" href="https://pytorch.org/">Torch</a> model.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">smile</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">sampling_rate</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">smile</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">sampling_rate</span><span class="p">)</span>
 <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
     <span class="n">z</span> <span class="o">=</span> <span class="n">torch_model</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
 <span class="n">z</span>
@@ -261,7 +261,7 @@ raw audio signal to a sequence of low-level descriptors.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>tensor([-120.1741,  380.0384])
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>tensor([-390.1148, -677.9344])
 </pre></div>
 </div>
 </div>
@@ -280,7 +280,7 @@ of the input has a dynamic size.
 And we assign meaningful names to the nodes.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">audeer</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">audeer</span>
 <span class="kn">import</span> <span class="nn">os</span>
 
 
@@ -313,7 +313,7 @@ Printing the model provides a summary of
 the input and output nodes.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">audonnx</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">audonnx</span>
 
 
 <span class="n">onnx_model</span> <span class="o">=</span> <span class="n">audonnx</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span>
@@ -343,7 +343,7 @@ Output:
 <p>Get information for individual nodes.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">onnx_model</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;feature&#39;</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">onnx_model</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;feature&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -355,7 +355,7 @@ Output:
 </div>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">onnx_model</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;feature&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">transform</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">onnx_model</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;feature&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">transform</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -376,7 +376,7 @@ Output:
 </div>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">onnx_model</span><span class="o">.</span><span class="n">outputs</span><span class="p">[</span><span class="s1">&#39;gender&#39;</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">onnx_model</span><span class="o">.</span><span class="n">outputs</span><span class="p">[</span><span class="s1">&#39;gender&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -388,7 +388,7 @@ Output:
 </div>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">onnx_model</span><span class="o">.</span><span class="n">outputs</span><span class="p">[</span><span class="s1">&#39;gender&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">labels</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">onnx_model</span><span class="o">.</span><span class="n">outputs</span><span class="p">[</span><span class="s1">&#39;gender&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">labels</span>
 </pre></div>
 </div>
 </div>
@@ -401,12 +401,12 @@ Output:
 <p>Check that the exported model gives the expected output.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">onnx_model</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">sampling_rate</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">onnx_model</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">sampling_rate</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([-120.1741 ,  380.03842], dtype=float32)
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([-390.1148 , -677.93427], dtype=float32)
 </pre></div>
 </div>
 </div>
@@ -418,7 +418,7 @@ Output:
 but we can use <a class="reference external" href="http://tools.pp.audeering.com/audinterface/">audinterface</a> to create one.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">audinterface</span>
 
 
@@ -467,14 +467,14 @@ but we can use <a class="reference external" href="http://tools.pp.audeering.com
       <th rowspan="2" valign="top">./docs/_static/test.wav</th>
       <th>0 days 00:00:00</th>
       <th>0 days 00:00:03</th>
-      <td>-120.020378</td>
-      <td>382.715027</td>
+      <td>-391.733215</td>
+      <td>-678.963745</td>
     </tr>
     <tr>
       <th>0 days 00:00:03</th>
       <th>0 days 00:00:05</th>
-      <td>-118.947250</td>
-      <td>372.873962</td>
+      <td>-387.949615</td>
+      <td>-676.427185</td>
     </tr>
   </tbody>
 </table>
@@ -483,7 +483,7 @@ but we can use <a class="reference external" href="http://tools.pp.audeering.com
 <p>Or if we are only interested in the majority class.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">interface</span><span class="o">.</span><span class="n">process_index</span><span class="p">(</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="n">idxmax</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">interface</span><span class="o">.</span><span class="n">process_index</span><span class="p">(</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="n">idxmax</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -522,12 +522,12 @@ but we can use <a class="reference external" href="http://tools.pp.audeering.com
       <th rowspan="2" valign="top">./docs/_static/test.wav</th>
       <th>0 days 00:00:00</th>
       <th>0 days 00:00:03</th>
-      <td>male</td>
+      <td>female</td>
     </tr>
     <tr>
       <th>0 days 00:00:03</th>
       <th>0 days 00:00:05</th>
-      <td>male</td>
+      <td>female</td>
     </tr>
   </tbody>
 </table>
@@ -539,7 +539,7 @@ but we can use <a class="reference external" href="http://tools.pp.audeering.com
 <p>Save the model to a YAML file.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">onnx_meta_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">onnx_root</span><span class="p">,</span> <span class="s1">&#39;model.yaml&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">onnx_meta_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">onnx_root</span><span class="p">,</span> <span class="s1">&#39;model.yaml&#39;</span><span class="p">)</span>
 <span class="n">onnx_model</span><span class="o">.</span><span class="n">to_yaml</span><span class="p">(</span><span class="n">onnx_meta_path</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -549,7 +549,7 @@ but we can use <a class="reference external" href="http://tools.pp.audeering.com
 </div>
 <div class="jupyter_cell docutils container">
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>$audonnx.core.model.Model==0.6.0:
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>$audonnx.core.model.Model==0.6.1:
   path: model.onnx
   labels:
   - female
@@ -572,7 +572,7 @@ but we can use <a class="reference external" href="http://tools.pp.audeering.com
 <p>Load the model from a YAML file.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">audobject</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">audobject</span>
 
 <span class="n">onnx_model_2</span> <span class="o">=</span> <span class="n">audobject</span><span class="o">.</span><span class="n">from_yaml</span><span class="p">(</span><span class="n">onnx_meta_path</span><span class="p">)</span>
 <span class="n">onnx_model_2</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">sampling_rate</span><span class="p">)</span>
@@ -580,7 +580,7 @@ but we can use <a class="reference external" href="http://tools.pp.audeering.com
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([-120.1741 ,  380.03842], dtype=float32)
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([-390.1148 , -677.93427], dtype=float32)
 </pre></div>
 </div>
 </div>
@@ -588,13 +588,13 @@ but we can use <a class="reference external" href="http://tools.pp.audeering.com
 <p>Or shorter:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">onnx_model_3</span> <span class="o">=</span> <span class="n">audonnx</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">onnx_root</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">onnx_model_3</span> <span class="o">=</span> <span class="n">audonnx</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">onnx_root</span><span class="p">)</span>
 <span class="n">onnx_model_3</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">sampling_rate</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([-120.1741 ,  380.03842], dtype=float32)
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([-390.1148 , -677.93427], dtype=float32)
 </pre></div>
 </div>
 </div>
@@ -612,7 +612,7 @@ as well as
 <code class="docutils literal notranslate"><span class="pre">onnxruntime</span></code>.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">onnxruntime.quantization</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">onnxruntime.quantization</span>
 
 
 <span class="n">onnx_quant_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">onnx_root</span><span class="p">,</span> <span class="s1">&#39;model_quant.onnx&#39;</span><span class="p">)</span>
@@ -630,7 +630,7 @@ as well as
 <p>The output of the quantized model differs slightly.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">onnx_model_4</span> <span class="o">=</span> <span class="n">audonnx</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">onnx_model_4</span> <span class="o">=</span> <span class="n">audonnx</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span>
     <span class="n">onnx_quant_path</span><span class="p">,</span>
     <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;female&#39;</span><span class="p">,</span> <span class="s1">&#39;male&#39;</span><span class="p">],</span>
     <span class="n">transform</span><span class="o">=</span><span class="n">smile</span><span class="p">,</span>
@@ -640,7 +640,7 @@ as well as
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([-120.12473,  380.95676], dtype=float32)
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([-391.59152, -680.55316], dtype=float32)
 </pre></div>
 </div>
 </div>
@@ -666,7 +666,7 @@ Mel-frequency cepstral coefficients (MFCCs)
 with <a class="reference external" href="https://librosa.org/doc/main/index.html">librosa</a>.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">mfcc</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">sr</span><span class="p">):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">mfcc</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">sr</span><span class="p">):</span>
     <span class="kn">import</span> <span class="nn">librosa</span>  <span class="c1"># import here to make function self-contained</span>
     <span class="n">y</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">mfcc</span><span class="p">(</span>
         <span class="n">y</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(),</span>
@@ -685,7 +685,7 @@ with <a class="reference external" href="https://librosa.org/doc/main/index.html
 we can turn it into a serializable object.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">transform</span> <span class="o">=</span> <span class="n">audonnx</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">mfcc</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">transform</span> <span class="o">=</span> <span class="n">audonnx</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">mfcc</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">transform</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -704,7 +704,7 @@ we can turn it into a serializable object.</p>
 <p>And use it to initialize our model.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">onnx_model_5</span> <span class="o">=</span> <span class="n">audonnx</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">onnx_model_5</span> <span class="o">=</span> <span class="n">audonnx</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span>
     <span class="n">onnx_model_path</span><span class="p">,</span>
     <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;female&#39;</span><span class="p">,</span> <span class="s1">&#39;male&#39;</span><span class="p">],</span>
     <span class="n">transform</span><span class="o">=</span><span class="n">transform</span><span class="p">,</span>
@@ -731,14 +731,14 @@ Output:
 <p>Then we can save and load the model as before.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">onnx_model_5</span><span class="o">.</span><span class="n">to_yaml</span><span class="p">(</span><span class="n">onnx_meta_path</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">onnx_model_5</span><span class="o">.</span><span class="n">to_yaml</span><span class="p">(</span><span class="n">onnx_meta_path</span><span class="p">)</span>
 <span class="n">onnx_model_6</span> <span class="o">=</span> <span class="n">audonnx</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">onnx_root</span><span class="p">)</span>
 <span class="n">onnx_model_6</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">sampling_rate</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([32.774086, 42.591503], dtype=float32)
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([23.884834 , -2.6306286], dtype=float32)
 </pre></div>
 </div>
 </div>
@@ -752,7 +752,7 @@ and provides two more output nodes -
 the output from the hidden layer and a confidence value.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">TorchModelMulti</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">TorchModelMulti</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -796,7 +796,7 @@ And since the first node expects the raw audio signal,
 we do not set a transform for it.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">onnx_multi_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">onnx_root</span><span class="p">,</span> <span class="s1">&#39;model.onnx&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">onnx_multi_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">onnx_root</span><span class="p">,</span> <span class="s1">&#39;model.onnx&#39;</span><span class="p">)</span>
 
 <span class="n">torch</span><span class="o">.</span><span class="n">onnx</span><span class="o">.</span><span class="n">export</span><span class="p">(</span>
     <span class="n">TorchModelMulti</span><span class="p">(),</span>
@@ -858,16 +858,16 @@ Output:
 returns a dictionary with output for every node.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">onnx_model_7</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">sampling_rate</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">onnx_model_7</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">sampling_rate</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>{&#39;hidden&#39;: array([ 6.8613571e-01,  5.6131836e-02,  2.3918788e-01,  5.8335471e-01,
-         2.8840475e+02, -5.9783386e+02,  7.9631714e+02, -2.4060355e+02],
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>{&#39;hidden&#39;: array([-7.25889385e-01,  9.38645780e-01,  9.69066679e-01,  5.48554659e-01,
+         1.17928185e+02,  6.49086853e+02,  7.37466309e+02,  1.66183258e+02],
        dtype=float32),
- &#39;gender&#39;: array([ 58.190384, 203.45624 ], dtype=float32),
- &#39;confidence&#39;: array([-19.296482], dtype=float32)}
+ &#39;gender&#39;: array([ 277.42065, -261.53973], dtype=float32),
+ &#39;confidence&#39;: array([-49.13835], dtype=float32)}
 </pre></div>
 </div>
 </div>
@@ -875,7 +875,7 @@ returns a dictionary with output for every node.</p>
 <p>To request a specific node use the <code class="docutils literal notranslate"><span class="pre">outputs</span></code> argument.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">onnx_model_7</span><span class="p">(</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">onnx_model_7</span><span class="p">(</span>
     <span class="n">signal</span><span class="p">,</span>
     <span class="n">sampling_rate</span><span class="p">,</span>
     <span class="n">outputs</span><span class="o">=</span><span class="s1">&#39;gender&#39;</span><span class="p">,</span>
@@ -884,7 +884,7 @@ returns a dictionary with output for every node.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([ 58.190384, 203.45624 ], dtype=float32)
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([ 277.42065, -261.53973], dtype=float32)
 </pre></div>
 </div>
 </div>
@@ -892,7 +892,7 @@ returns a dictionary with output for every node.</p>
 <p>Or provide a list of names to request several outputs.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">onnx_model_7</span><span class="p">(</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">onnx_model_7</span><span class="p">(</span>
     <span class="n">signal</span><span class="p">,</span>
     <span class="n">sampling_rate</span><span class="p">,</span>
     <span class="n">outputs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;gender&#39;</span><span class="p">,</span> <span class="s1">&#39;confidence&#39;</span><span class="p">],</span>
@@ -901,8 +901,8 @@ returns a dictionary with output for every node.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>{&#39;gender&#39;: array([ 58.190384, 203.45624 ], dtype=float32),
- &#39;confidence&#39;: array([-19.296482], dtype=float32)}
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>{&#39;gender&#39;: array([ 277.42065, -261.53973], dtype=float32),
+ &#39;confidence&#39;: array([-49.13835], dtype=float32)}
 </pre></div>
 </div>
 </div>
@@ -911,7 +911,7 @@ returns a dictionary with output for every node.</p>
 do:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">onnx_model_7</span><span class="p">(</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">onnx_model_7</span><span class="p">(</span>
     <span class="n">signal</span><span class="p">,</span>
     <span class="n">sampling_rate</span><span class="p">,</span>
     <span class="n">outputs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;gender&#39;</span><span class="p">,</span> <span class="s1">&#39;confidence&#39;</span><span class="p">],</span>
@@ -921,7 +921,7 @@ do:</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([ 58.190384, 203.45624 , -19.296482], dtype=float32)
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([ 277.42065, -261.53973,  -49.13835], dtype=float32)
 </pre></div>
 </div>
 </div>
@@ -929,7 +929,7 @@ do:</p>
 <p>Create interface and process a file.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">outputs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;gender&#39;</span><span class="p">,</span> <span class="s1">&#39;confidence&#39;</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">outputs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;gender&#39;</span><span class="p">,</span> <span class="s1">&#39;confidence&#39;</span><span class="p">]</span>
 <span class="n">interface</span> <span class="o">=</span> <span class="n">audinterface</span><span class="o">.</span><span class="n">Feature</span><span class="p">(</span>
     <span class="n">feature_names</span><span class="o">=</span><span class="n">onnx_model_7</span><span class="o">.</span><span class="n">labels</span><span class="p">(</span><span class="n">outputs</span><span class="p">),</span>
     <span class="n">process_func</span><span class="o">=</span><span class="n">onnx_model_7</span><span class="p">,</span>
@@ -981,9 +981,9 @@ do:</p>
       <th>./docs/_static/test.wav</th>
       <th>0 days</th>
       <th>0 days 00:00:05.247687500</th>
-      <td>58.190384</td>
-      <td>203.456238</td>
-      <td>-19.296482</td>
+      <td>277.420654</td>
+      <td>-261.539734</td>
+      <td>-49.138351</td>
     </tr>
   </tbody>
 </table>
@@ -1036,7 +1036,7 @@ In that case do:</p>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/06/23 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/06/27 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
