@@ -7,6 +7,12 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.6.1 (2022-06-27)
+--------------------------
+
+* Fixed: added missing ``onnx`` dependency to ``setup.cfg``
+
+
 Version 0.6.0 (2022-06-23)
 --------------------------
 
