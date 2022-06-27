@@ -10,7 +10,7 @@ and this project adheres to `Semantic Versioning`_.
 Version 0.6.1 (2022-06-27)
 --------------------------
 
-* Added: ``onnx`` dependency
+* Fixed: added missing ``onnx`` dependency to ``setup.cfg``
 
 
 Version 0.6.0 (2022-06-23)
