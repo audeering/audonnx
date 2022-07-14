@@ -7,6 +7,12 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.6.2 (2022-07-14)
+--------------------------
+
+* Changed: require ``audobject>=0.7.2``
+
+
 Version 0.6.1 (2022-06-27)
 --------------------------
 
