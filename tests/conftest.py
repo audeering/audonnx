@@ -6,7 +6,6 @@ import pytest
 
 import audeer
 import audiofile
-import audobject
 import opensmile
 
 

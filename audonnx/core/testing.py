@@ -1,10 +1,6 @@
 import typing
 
-import numpy as np
 import onnx
-
-import audeer
-import audobject
 
 from audonnx.core.function import Function
 from audonnx.core.model import Model
