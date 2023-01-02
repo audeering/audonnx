@@ -1,5 +1,6 @@
 import typing
 
+import numpy as np  # noqa: F401, needed for doctest
 import onnx
 
 from audonnx.core.function import Function
