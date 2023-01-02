@@ -23,8 +23,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    # Cache CI packages
-    - uses: actions/cache@v3
+    - name: Cache pre-commit repos
+      uses: actions/cache@v3
       id: cache-precommit
       with:
         path: ~/.cache/pre-commit
@@ -51,16 +51,17 @@ jobs:
 
     - name: Installing pre-commit hooks (cached)
       if: steps.cache-precommit.outputs.cache-hit != 'true'
-       run: |
-         pre-commit install --install-hooks
+      run: |
+        pre-commit install --install-hooks
 
     - name: Run style checking via pre-commit
       run: |
-         pre-commit run --all-files
+        pre-commit run --all-files
 
     - name: Test with pytest
       run: |
         python -m pytest
+
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
       with:
