@@ -1,0 +1,11 @@
+# See CONTRIBUTING.rst,
+# we expect this to be run via a git pre-commit hook.
+# You can also run the checks directly at the terminal, e.g.
+#
+# $ pre-commit run --all-files
+#
+repos:
+-   repo: https://github.com/pycqa/flake8
+    rev: '5.0.4'
+    hooks:
+    -   id: flake8
