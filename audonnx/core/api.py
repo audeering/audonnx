@@ -8,7 +8,7 @@ import audobject
 
 from audonnx.core.model import Model
 
-
+  
 def load(
         root: str,
         *,
