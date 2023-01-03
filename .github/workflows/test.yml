@@ -28,7 +28,7 @@ jobs:
       id: cache-precommit
       with:
         path: ~/.cache/pre-commit
-        key: pre-commit
+        key: pre-commit-${{ hashFiles('**/.pre-commit-config.yaml') }}
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
