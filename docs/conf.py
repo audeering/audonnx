@@ -20,7 +20,6 @@ title = 'Documentation'
 # General -----------------------------------------------------------------
 master_doc = 'index'
 source_suffix = '.rst'
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '**.ipynb_checkpoints']
 exclude_patterns = [
     'api-src',
     'build',
