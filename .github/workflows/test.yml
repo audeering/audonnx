@@ -23,6 +23,13 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Cache pre-commit repos
+      uses: actions/cache@v3
+      id: cache-precommit
+      with:
+        path: ~/.cache/pre-commit
+        key: ${{ runner.os }}-precommit-hooks-v2-${{ hashFiles('**/.pre-commit-config.yaml') }}
+
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
@@ -41,7 +48,8 @@ jobs:
         pip install -r docs/requirements.txt
         pip install -r tests/requirements.txt
 
-    - name: Installing pre-commit hooks
+    - name: Installing pre-commit hooks (cached)
+      if: steps.cache-precommit.outputs.cache-hit != 'true'
       run: |
         pre-commit install --install-hooks
 
