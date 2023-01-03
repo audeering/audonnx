@@ -177,7 +177,9 @@ def create_model_proto(
         }
         <BLANKLINE>
 
-    """
+    .. _`supported data types`: https://onnxruntime.ai/docs/reference/operators/custom-python-operator.html#supported-data-types
+
+    """  # noqa: E501
 
     # nodes
 
