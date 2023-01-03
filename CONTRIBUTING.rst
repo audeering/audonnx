@@ -48,6 +48,12 @@ You can enable those checks locally by executing::
 Afterwards flake8_ is executed
 every time you create a commit.
 
+You can also install flake8_
+and call it directly::
+
+    pip install flake8  # you might consider system wide installation
+    flake8
+
 .. _PEP8: http://www.python.org/dev/peps/pep-0008/
 .. _flake8: https://flake8.pycqa.org/en/latest/index.html
 .. _pre-commit: https://pre-commit.com
