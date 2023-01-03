@@ -2,8 +2,8 @@ opensmile >=2.3.0
 # Avoid pip error on Python 3.7,
 # compare https://github.com/audeering/audonnx/runs/5737150095
 audobject >=0.7.1
+pre-commit
 pytest
-pytest-flake8
 pytest-doctestplus
 pytest-console-scripts
 pytest-cov

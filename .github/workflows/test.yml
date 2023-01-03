@@ -22,6 +22,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
@@ -40,9 +41,18 @@ jobs:
         pip install -r docs/requirements.txt
         pip install -r tests/requirements.txt
 
+    - name: Install pre-commit hooks
+      run: |
+        pre-commit install --install-hooks
+
+    - name: Code style check via pre-commit
+      run: |
+        pre-commit run --all-files
+
     - name: Test with pytest
       run: |
         python -m pytest
+
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
       with:

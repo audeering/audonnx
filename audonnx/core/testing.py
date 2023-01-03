@@ -1,10 +1,7 @@
 import typing
 
-import numpy as np
+import numpy as np  # noqa: F401, needed for doctest
 import onnx
-
-import audeer
-import audobject
 
 from audonnx.core.function import Function
 from audonnx.core.model import Model

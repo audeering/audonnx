@@ -5,8 +5,6 @@ import sys
 
 import pytest
 
-import opensmile
-
 import audonnx.testing
 
 
