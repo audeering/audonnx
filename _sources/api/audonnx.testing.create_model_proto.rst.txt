@@ -1,0 +1,6 @@
+﻿create\_model\_proto\(\)
+========================
+
+.. currentmodule:: audonnx.testing
+
+.. autofunction:: audonnx.testing.create_model_proto

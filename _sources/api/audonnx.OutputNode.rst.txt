@@ -1,0 +1,20 @@
+﻿OutputNode
+==========
+
+.. currentmodule:: audonnx
+
+.. autoclass:: OutputNode
+
+
+dtype
+-----
+.. autoattribute:: OutputNode.dtype
+    
+labels
+------
+.. autoattribute:: OutputNode.labels
+    
+shape
+-----
+.. autoattribute:: OutputNode.shape
+    

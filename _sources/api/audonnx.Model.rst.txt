@@ -1,0 +1,80 @@
+﻿Model
+=====
+
+.. currentmodule:: audonnx
+
+.. autoclass:: Model
+
+
+\_\_call\_\_\(\)
+----------------
+.. automethod:: Model.__call__
+    
+arguments
+---------
+.. autoattribute:: Model.arguments
+    
+borrowed\_arguments
+-------------------
+.. autoattribute:: Model.borrowed_arguments
+    
+from\_dict\(\)
+--------------
+.. automethod:: Model.from_dict
+    
+from\_yaml\(\)
+--------------
+.. automethod:: Model.from_yaml
+    
+from\_yaml\_s\(\)
+-----------------
+.. automethod:: Model.from_yaml_s
+    
+hidden\_arguments
+-----------------
+.. autoattribute:: Model.hidden_arguments
+    
+id
+--
+.. autoattribute:: Model.id
+    
+inputs
+------
+.. autoattribute:: Model.inputs
+    
+is\_loaded\_from\_dict
+----------------------
+.. autoattribute:: Model.is_loaded_from_dict
+    
+labels\(\)
+----------
+.. automethod:: Model.labels
+    
+outputs
+-------
+.. autoattribute:: Model.outputs
+    
+path
+----
+.. autoattribute:: Model.path
+    
+resolvers
+---------
+.. autoattribute:: Model.resolvers
+    
+sess
+----
+.. autoattribute:: Model.sess
+    
+to\_dict\(\)
+------------
+.. automethod:: Model.to_dict
+    
+to\_yaml\(\)
+------------
+.. automethod:: Model.to_yaml
+    
+to\_yaml\_s\(\)
+---------------
+.. automethod:: Model.to_yaml_s
+    

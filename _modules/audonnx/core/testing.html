@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>audonnx.core.testing &mdash; audonnx Documentation</title>
+  <title>audonnx.core.testing &mdash; Documentation</title>
   
 
   
@@ -25,12 +25,8 @@
     
 
   
-
-  
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/css/audeering.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/audeering.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/jupyter-sphinx.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/thebelab.css" type="text/css" />
@@ -69,7 +65,7 @@
             
             
               <div class="version">
-                v0.6.2
+                v0.6.3
               </div>
             
           
@@ -100,8 +96,8 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../api.html">audonnx</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api-testing.html">audonnx.testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/audonnx.html">audonnx</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/audonnx.testing.html">audonnx.testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../genindex.html">Index</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
@@ -147,18 +143,15 @@
   <h1>Source code for audonnx.core.testing</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">typing</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>  <span class="c1"># noqa: F401, needed for doctest</span>
 <span class="kn">import</span> <span class="nn">onnx</span>
-
-<span class="kn">import</span> <span class="nn">audeer</span>
-<span class="kn">import</span> <span class="nn">audobject</span>
 
 <span class="kn">from</span> <span class="nn">audonnx.core.function</span> <span class="kn">import</span> <span class="n">Function</span>
 <span class="kn">from</span> <span class="nn">audonnx.core.model</span> <span class="kn">import</span> <span class="n">Model</span>
 <span class="kn">from</span> <span class="nn">audonnx.core.typing</span> <span class="kn">import</span> <span class="n">Device</span>
 
 
-<div class="viewcode-block" id="create_model"><a class="viewcode-back" href="../../../api-testing.html#audonnx.testing.create_model">[docs]</a><span class="k">def</span> <span class="nf">create_model</span><span class="p">(</span>
+<div class="viewcode-block" id="create_model"><a class="viewcode-back" href="../../../api/audonnx.testing.create_model.html#audonnx.testing.create_model">[docs]</a><span class="k">def</span> <span class="nf">create_model</span><span class="p">(</span>
         <span class="n">shapes</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">,</span>
@@ -166,7 +159,7 @@
         <span class="n">opset_version</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">14</span><span class="p">,</span>
         <span class="n">device</span><span class="p">:</span> <span class="n">Device</span> <span class="o">=</span> <span class="s1">&#39;cpu&#39;</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Model</span><span class="p">:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create test model.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create test model.</span>
 
 <span class="sd">    Creates a model that outputs</span>
 <span class="sd">    arrays filled with ``value``</span>
@@ -190,7 +183,7 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        model object</span>
 
-<span class="sd">    Example:</span>
+<span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; shapes = [[3], [1, -1, 2]]</span>
 <span class="sd">        &gt;&gt;&gt; model = create_model(shapes)</span>
 <span class="sd">        &gt;&gt;&gt; model</span>
@@ -255,13 +248,13 @@
     <span class="k">return</span> <span class="n">model</span></div>
 
 
-<div class="viewcode-block" id="create_model_proto"><a class="viewcode-back" href="../../../api-testing.html#audonnx.testing.create_model_proto">[docs]</a><span class="k">def</span> <span class="nf">create_model_proto</span><span class="p">(</span>
+<div class="viewcode-block" id="create_model_proto"><a class="viewcode-back" href="../../../api/audonnx.testing.create_model_proto.html#audonnx.testing.create_model_proto">[docs]</a><span class="k">def</span> <span class="nf">create_model_proto</span><span class="p">(</span>
         <span class="n">shapes</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">dtype</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">onnx</span><span class="o">.</span><span class="n">TensorProto</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">,</span>
         <span class="n">opset_version</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">14</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">onnx</span><span class="o">.</span><span class="n">ModelProto</span><span class="p">:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create test ONNX proto object.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create test ONNX proto object.</span>
 
 <span class="sd">    Creates an identity graph</span>
 <span class="sd">    with input and output nodes</span>
@@ -284,7 +277,7 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        ONNX object</span>
 
-<span class="sd">    Example:</span>
+<span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; create_model_proto([[2]])</span>
 <span class="sd">        ir_version: 8</span>
 <span class="sd">        producer_name: &quot;test&quot;</span>
@@ -327,7 +320,9 @@
 <span class="sd">        }</span>
 <span class="sd">        &lt;BLANKLINE&gt;</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    .. _`supported data types`: https://onnxruntime.ai/docs/reference/operators/custom-python-operator.html#supported-data-types</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
 
     <span class="c1"># nodes</span>
 
@@ -376,7 +371,7 @@
 
 
 <span class="k">def</span> <span class="nf">reshape</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return array with zeros of given shape.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return array with zeros of given shape.&quot;&quot;&quot;</span>
     <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>  <span class="c1"># noqa: F811</span>
     <span class="n">shape</span> <span class="o">=</span> <span class="p">[</span><span class="n">signal</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">s</span> <span class="o">&lt;</span> <span class="mi">0</span>
              <span class="k">else</span> <span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">shape</span><span class="p">]</span>
@@ -396,7 +391,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/07/14 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/01/03 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -404,7 +399,7 @@
   <div role="contentinfo">
     <p>
         
-      &copy; 2021-2022 audEERING GmbH
+      &copy; 2021-2023 audEERING GmbH
     </p>
   </div> 
 
@@ -433,11 +428,12 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
         <script src="../../../_static/thebelab-helper.js"></script>
         <script src="../../../_static/clipboard.min.js"></script>
         <script src="../../../_static/copybutton.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     
 
   

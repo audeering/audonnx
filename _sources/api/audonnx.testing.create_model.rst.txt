@@ -1,0 +1,6 @@
+﻿create\_model\(\)
+=================
+
+.. currentmodule:: audonnx.testing
+
+.. autofunction:: audonnx.testing.create_model

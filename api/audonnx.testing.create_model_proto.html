@@ -1,0 +1,309 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>create_model_proto() &mdash; Documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.png"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/audeering.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/jupyter-sphinx.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/thebelab.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Index" href="../genindex.html" />
+    <link rel="prev" title="create_model()" href="audonnx.testing.create_model.html" />
+    
+  
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          <a href="../index.html">
+          
+            <img src="../_static/images/audeering.png" class="logo" alt="audEERING"/>
+          
+          
+            <span> audonnx</span>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v0.6.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="audonnx.html">audonnx</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="audonnx.testing.html">audonnx.testing</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="audonnx.testing.create_model.html">create_model()</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">create_model_proto()</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../genindex.html">Index</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">audonnx</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="audonnx.testing.html">audonnx.testing</a> &raquo;</li>
+      <li>create_model_proto()</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/audeering/audonnx/" class="fa fa-github"> GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="create-model-proto">
+<h1>create_model_proto()<a class="headerlink" href="#create-model-proto" title="Permalink to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="audonnx.testing.create_model_proto">
+<span class="sig-prename descclassname"><span class="pre">audonnx.testing.</span></span><span class="sig-name descname"><span class="pre">create_model_proto</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shapes</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">opset_version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">14</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/audonnx/core/testing.html#create_model_proto"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audonnx.testing.create_model_proto" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create test ONNX proto object.</p>
+<p>Creates an identity graph
+with input and output nodes
+of the given <code class="docutils literal notranslate"><span class="pre">shapes</span></code>.
+For each entry an input and output
+node will be created.
+<code class="docutils literal notranslate"><span class="pre">-1</span></code>, <code class="docutils literal notranslate"><span class="pre">None</span></code> or strings
+define a dynamic axis.
+Per node,
+one dynamic axis is allowed.
+The identity graph can be used as <code class="docutils literal notranslate"><span class="pre">path</span></code> argument
+of <a class="reference internal" href="audonnx.Model.html#audonnx.Model" title="audonnx.Model"><code class="xref py py-class docutils literal notranslate"><span class="pre">audonnx.Model</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>shapes</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]]) – list with shapes defining the identical
+input and output nodes of the model graph</p></li>
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – data type, see <a class="reference external" href="https://onnxruntime.ai/docs/reference/operators/custom-python-operator.html#supported-data-types">supported data types</a></p></li>
+<li><p><strong>opset_version</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – opset version</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelProto</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>ONNX object</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">create_model_proto</span><span class="p">([[</span><span class="mi">2</span><span class="p">]])</span>
+<span class="go">ir_version: 8</span>
+<span class="go">producer_name: &quot;test&quot;</span>
+<span class="go">graph {</span>
+<span class="go">  node {</span>
+<span class="go">    input: &quot;input-0&quot;</span>
+<span class="go">    output: &quot;output-0&quot;</span>
+<span class="go">    op_type: &quot;Identity&quot;</span>
+<span class="go">  }</span>
+<span class="go">  name: &quot;test&quot;</span>
+<span class="go">  input {</span>
+<span class="go">    name: &quot;input-0&quot;</span>
+<span class="go">    type {</span>
+<span class="go">      tensor_type {</span>
+<span class="go">        elem_type: 1</span>
+<span class="go">        shape {</span>
+<span class="go">          dim {</span>
+<span class="go">            dim_value: 2</span>
+<span class="go">          }</span>
+<span class="go">        }</span>
+<span class="go">      }</span>
+<span class="go">    }</span>
+<span class="go">  }</span>
+<span class="go">  output {</span>
+<span class="go">    name: &quot;output-0&quot;</span>
+<span class="go">    type {</span>
+<span class="go">      tensor_type {</span>
+<span class="go">        elem_type: 1</span>
+<span class="go">        shape {</span>
+<span class="go">          dim {</span>
+<span class="go">            dim_value: 2</span>
+<span class="go">          }</span>
+<span class="go">        }</span>
+<span class="go">      }</span>
+<span class="go">    }</span>
+<span class="go">  }</span>
+<span class="go">}</span>
+<span class="go">opset_import {</span>
+<span class="go">  version: 14</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../genindex.html" class="btn btn-neutral float-right" title="Index" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="audonnx.testing.create_model.html" class="btn btn-neutral float-left" title="create_model()" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div>
+    <p>
+        
+        
+        
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/01/03 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+        
+    </p>
+  </div>
+
+  <div role="contentinfo">
+    <p>
+        
+      &copy; 2021-2023 audEERING GmbH
+    </p>
+  </div> 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/thebelab-helper.js"></script>
+        <script src="../_static/clipboard.min.js"></script>
+        <script src="../_static/copybutton.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>audonnx.core.function &mdash; audonnx Documentation</title>
+  <title>audonnx.core.function &mdash; Documentation</title>
   
 
   
@@ -25,12 +25,8 @@
     
 
   
-
-  
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/css/audeering.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/audeering.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/jupyter-sphinx.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/thebelab.css" type="text/css" />
@@ -69,7 +65,7 @@
             
             
               <div class="version">
-                v0.6.2
+                v0.6.3
               </div>
             
           
@@ -100,8 +96,8 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../api.html">audonnx</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api-testing.html">audonnx.testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/audonnx.html">audonnx</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/audonnx.testing.html">audonnx.testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../genindex.html">Index</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
@@ -152,15 +148,15 @@
 <span class="kn">import</span> <span class="nn">audobject</span>
 
 
-<div class="viewcode-block" id="Function"><a class="viewcode-back" href="../../../api.html#audonnx.Function">[docs]</a><span class="k">class</span> <span class="nc">Function</span><span class="p">(</span><span class="n">audobject</span><span class="o">.</span><span class="n">Object</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Turn function into an :class:`audobject.Object`.</span>
+<div class="viewcode-block" id="Function"><a class="viewcode-back" href="../../../api/audonnx.Function.html#audonnx.Function">[docs]</a><span class="k">class</span> <span class="nc">Function</span><span class="p">(</span><span class="n">audobject</span><span class="o">.</span><span class="n">Object</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Turn function into an :class:`audobject.Object`.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        func: function that expects input signal and sampling rate as</span>
 <span class="sd">            first two arguments</span>
 <span class="sd">        func_args: additional arguments that will be passed to the function</span>
 
-<span class="sd">    Example:</span>
+<span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; object = Function(lambda x, sr: x.mean())</span>
 <span class="sd">        &gt;&gt;&gt; object</span>
 <span class="sd">        {&#39;$audonnx.core.function.Function&#39;: {&#39;func&#39;: &#39;lambda x, sr: x.mean()&#39;, &#39;func_args&#39;: {}}}</span>
@@ -180,16 +176,16 @@
             <span class="n">func_args</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">func</span> <span class="o">=</span> <span class="n">func</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Function&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Function&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">func_args</span> <span class="o">=</span> <span class="n">func_args</span> <span class="ow">or</span> <span class="p">{}</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Additional function arguments&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Additional function arguments&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="Function.__call__"><a class="viewcode-back" href="../../../api.html#audonnx.Function.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span>
+<div class="viewcode-block" id="Function.__call__"><a class="viewcode-back" href="../../../api/audonnx.Function.html#audonnx.Function.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">signal</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
             <span class="n">sampling_rate</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Transform input signal.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Transform input signal.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            signal: input signal</span>
@@ -219,7 +215,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/07/14 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/01/03 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -227,7 +223,7 @@
   <div role="contentinfo">
     <p>
         
-      &copy; 2021-2022 audEERING GmbH
+      &copy; 2021-2023 audEERING GmbH
     </p>
   </div> 
 
@@ -256,11 +252,12 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
         <script src="../../../_static/thebelab-helper.js"></script>
         <script src="../../../_static/clipboard.min.js"></script>
         <script src="../../../_static/copybutton.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     
 
   

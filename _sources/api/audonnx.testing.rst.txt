@@ -13,14 +13,9 @@ In order to use it you first have to import it explicitly:
 
     import audonnx.testing
 
+.. autosummary::
+    :toctree:
+    :nosignatures:
 
-create_model
-------------
-
-.. autofunction:: create_model
-
-
-create_model_proto
-------------------
-
-.. autofunction:: create_model_proto
+    create_model
+    create_model_proto

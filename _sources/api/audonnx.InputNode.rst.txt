@@ -1,0 +1,20 @@
+﻿InputNode
+=========
+
+.. currentmodule:: audonnx
+
+.. autoclass:: InputNode
+
+
+dtype
+-----
+.. autoattribute:: InputNode.dtype
+    
+shape
+-----
+.. autoattribute:: InputNode.shape
+    
+transform
+---------
+.. autoattribute:: InputNode.transform
+    

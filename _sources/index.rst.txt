@@ -17,8 +17,8 @@
     :caption: API Documentation
     :hidden:
 
-    api
-    api-testing
+    api/audonnx
+    api/audonnx.testing
     genindex
 
 .. toctree::

@@ -1,0 +1,6 @@
+﻿load\(\)
+========
+
+.. currentmodule:: audonnx
+
+.. autofunction:: audonnx.load

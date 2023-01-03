@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Usage &mdash; audonnx Documentation</title>
+  <title>Usage &mdash; Documentation</title>
   
 
   
@@ -25,19 +25,15 @@
     
 
   
-
-  
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/css/audeering.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/audeering.css" type="text/css" />
   <link rel="stylesheet" href="_static/jupyter-sphinx.css" type="text/css" />
   <link rel="stylesheet" href="_static/thebelab.css" type="text/css" />
   <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="audonnx" href="api.html" />
+    <link rel="next" title="audonnx" href="api/audonnx.html" />
     <link rel="prev" title="Installation" href="installation.html" />
     
   
@@ -71,7 +67,7 @@
             
             
               <div class="version">
-                v0.6.2
+                v0.6.3
               </div>
             
           
@@ -112,8 +108,8 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="api.html">audonnx</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api-testing.html">audonnx.testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/audonnx.html">audonnx</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/audonnx.testing.html">audonnx.testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="genindex.html">Index</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
@@ -162,7 +158,7 @@
 <div class="cell_output docutils container">
 </div>
 </div>
-<p><a class="reference internal" href="api.html#module-audonnx" title="audonnx"><code class="xref py py-mod docutils literal notranslate"><span class="pre">audonnx</span></code></a> offers a simple interface
+<p><a class="reference internal" href="api/audonnx.html#module-audonnx" title="audonnx"><code class="xref py py-mod docutils literal notranslate"><span class="pre">audonnx</span></code></a> offers a simple interface
 to load and use models in <a class="reference external" href="https://onnx.ai/">ONNX</a> format.
 Models with single or multiple input and output nodes are supported.</p>
 <p>We begin with creating some test input -
@@ -261,7 +257,7 @@ raw audio signal to a sequence of low-level descriptors.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>tensor([-118.3330, -154.2345])
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>tensor([ 122.0266, -171.5940])
 </pre></div>
 </div>
 </div>
@@ -304,7 +300,7 @@ And we assign meaningful names to the nodes.</p>
 </div>
 </div>
 <p>From the exported model file
-we now create an object of <a class="reference internal" href="api.html#audonnx.Model" title="audonnx.Model"><code class="xref py py-class docutils literal notranslate"><span class="pre">audonnx.Model</span></code></a>.
+we now create an object of <a class="reference internal" href="api/audonnx.Model.html#audonnx.Model" title="audonnx.Model"><code class="xref py py-class docutils literal notranslate"><span class="pre">audonnx.Model</span></code></a>.
 We pass the feature extractor,
 so that the model can automatically convert the
 input signal to the desired representation.
@@ -406,7 +402,7 @@ Output:
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([-118.33302, -154.23453], dtype=float32)
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([ 122.02665, -171.594  ], dtype=float32)
 </pre></div>
 </div>
 </div>
@@ -467,14 +463,14 @@ but we can use <a class="reference external" href="http://tools.pp.audeering.com
       <th rowspan="2" valign="top">./docs/_static/test.wav</th>
       <th>0 days 00:00:00</th>
       <th>0 days 00:00:03</th>
-      <td>-120.880562</td>
-      <td>-158.609238</td>
+      <td>120.405304</td>
+      <td>-171.372650</td>
     </tr>
     <tr>
       <th>0 days 00:00:03</th>
       <th>0 days 00:00:05</th>
-      <td>-115.089485</td>
-      <td>-148.936371</td>
+      <td>122.611946</td>
+      <td>-170.420349</td>
     </tr>
   </tbody>
 </table>
@@ -549,7 +545,7 @@ but we can use <a class="reference external" href="http://tools.pp.audeering.com
 </div>
 <div class="jupyter_cell docutils container">
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>$audonnx.core.model.Model==0.6.2:
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>$audonnx.core.model.Model==0.6.3:
   path: model.onnx
   labels:
   - female
@@ -580,7 +576,7 @@ but we can use <a class="reference external" href="http://tools.pp.audeering.com
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([-118.33302, -154.23453], dtype=float32)
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([ 122.02665, -171.594  ], dtype=float32)
 </pre></div>
 </div>
 </div>
@@ -594,7 +590,7 @@ but we can use <a class="reference external" href="http://tools.pp.audeering.com
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([-118.33302, -154.23453], dtype=float32)
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([ 122.02665, -171.594  ], dtype=float32)
 </pre></div>
 </div>
 </div>
@@ -640,7 +636,7 @@ as well as
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([-117.40734, -152.74675], dtype=float32)
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([ 122.65322, -171.98376], dtype=float32)
 </pre></div>
 </div>
 </div>
@@ -653,11 +649,11 @@ we have used
 <a class="reference external" href="https://audeering.github.io/opensmile-python/api-smile.html#opensmile.Smile" title="(in opensmile vv2.4.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">opensmile.Smile</span></code></a>
 as feature extractor.
 It derives from
-<a class="reference external" href="https://audeering.github.io/audobject/api.html#audobject.Object" title="(in audobject vv0.7.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">audobject.Object</span></code></a>
+<a class="reference external" href="https://audeering.github.io/audobject/api/audobject.Object.html#audobject.Object" title="(in audobject vv0.7.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">audobject.Object</span></code></a>
 and is therefore serializable by default.
 However,
 using
-<a class="reference internal" href="api.html#audonnx.Function" title="audonnx.Function"><code class="xref py py-class docutils literal notranslate"><span class="pre">audonnx.Function</span></code></a>
+<a class="reference internal" href="api/audonnx.Function.html#audonnx.Function" title="audonnx.Function"><code class="xref py py-class docutils literal notranslate"><span class="pre">audonnx.Function</span></code></a>
 we can turn any function
 into a serializable object.
 For instance,
@@ -738,7 +734,7 @@ Output:
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([12.343344 , -2.8257084], dtype=float32)
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([66.58627 , 29.430914], dtype=float32)
 </pre></div>
 </div>
 </div>
@@ -863,11 +859,11 @@ returns a dictionary with output for every node.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>{&#39;hidden&#39;: array([-6.8654603e-01,  2.0461591e-01,  6.5402287e-01,  2.8770411e-01,
-        -9.5057854e+01,  4.3317570e+01, -3.0164612e+02,  7.1505570e+00],
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>{&#39;hidden&#39;: array([ 3.7479585e-01, -4.6026641e-01, -9.7482294e-01,  5.3081505e-02,
+         4.3667770e+02, -2.3028462e+02, -7.6589978e+02,  3.9537628e+02],
        dtype=float32),
- &#39;gender&#39;: array([-103.56804 ,   31.822376], dtype=float32),
- &#39;confidence&#39;: array([-75.55417], dtype=float32)}
+ &#39;gender&#39;: array([ -64.518906, -203.52118 ], dtype=float32),
+ &#39;confidence&#39;: array([-181.1982], dtype=float32)}
 </pre></div>
 </div>
 </div>
@@ -884,7 +880,7 @@ returns a dictionary with output for every node.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([-103.56804 ,   31.822376], dtype=float32)
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([ -64.518906, -203.52118 ], dtype=float32)
 </pre></div>
 </div>
 </div>
@@ -901,8 +897,8 @@ returns a dictionary with output for every node.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>{&#39;gender&#39;: array([-103.56804 ,   31.822376], dtype=float32),
- &#39;confidence&#39;: array([-75.55417], dtype=float32)}
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>{&#39;gender&#39;: array([ -64.518906, -203.52118 ], dtype=float32),
+ &#39;confidence&#39;: array([-181.1982], dtype=float32)}
 </pre></div>
 </div>
 </div>
@@ -921,7 +917,7 @@ do:</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([-103.56804 ,   31.822376,  -75.55417 ], dtype=float32)
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([ -64.518906, -203.52118 , -181.1982  ], dtype=float32)
 </pre></div>
 </div>
 </div>
@@ -981,9 +977,9 @@ do:</p>
       <th>./docs/_static/test.wav</th>
       <th>0 days</th>
       <th>0 days 00:00:05.247687500</th>
-      <td>-103.568039</td>
-      <td>31.822376</td>
-      <td>-75.554169</td>
+      <td>-64.518906</td>
+      <td>-203.521179</td>
+      <td>-181.198196</td>
     </tr>
   </tbody>
 </table>
@@ -1021,7 +1017,7 @@ In that case do:</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="api.html" class="btn btn-neutral float-right" title="audonnx" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="api/audonnx.html" class="btn btn-neutral float-right" title="audonnx" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -1036,7 +1032,7 @@ In that case do:</p>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/07/14 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/01/03 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -1044,7 +1040,7 @@ In that case do:</p>
   <div role="contentinfo">
     <p>
         
-      &copy; 2021-2022 audEERING GmbH
+      &copy; 2021-2023 audEERING GmbH
     </p>
   </div> 
 
@@ -1073,11 +1069,12 @@ In that case do:</p>
         <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
         <script src="_static/thebelab-helper.js"></script>
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     
 
   

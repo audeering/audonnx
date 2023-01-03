@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>audonnx.core.node &mdash; audonnx Documentation</title>
+  <title>audonnx.core.node &mdash; Documentation</title>
   
 
   
@@ -25,12 +25,8 @@
     
 
   
-
-  
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/css/audeering.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/audeering.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/jupyter-sphinx.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/thebelab.css" type="text/css" />
@@ -69,7 +65,7 @@
             
             
               <div class="version">
-                v0.6.2
+                v0.6.3
               </div>
             
           
@@ -100,8 +96,8 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../api.html">audonnx</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api-testing.html">audonnx.testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/audonnx.html">audonnx</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/audonnx.testing.html">audonnx.testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../genindex.html">Index</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
@@ -153,8 +149,8 @@
 <span class="kn">from</span> <span class="nn">audonnx.core.function</span> <span class="kn">import</span> <span class="n">Function</span>
 
 
-<div class="viewcode-block" id="InputNode"><a class="viewcode-back" href="../../../api.html#audonnx.InputNode">[docs]</a><span class="k">class</span> <span class="nc">InputNode</span><span class="p">:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Input node.</span>
+<div class="viewcode-block" id="InputNode"><a class="viewcode-back" href="../../../api/audonnx.InputNode.html#audonnx.InputNode">[docs]</a><span class="k">class</span> <span class="nc">InputNode</span><span class="p">:</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Input node.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        shape: list with dimensions</span>
@@ -175,13 +171,13 @@
             <span class="p">],</span>
     <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">dtype</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Data type of node&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Data type of node&quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="n">shape</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Shape of node&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Shape of node&quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">transform</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Transform object&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Transform object&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">:</span>
 
@@ -205,8 +201,8 @@
         <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dict</span><span class="p">(),</span> <span class="n">default_flow_style</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="OutputNode"><a class="viewcode-back" href="../../../api.html#audonnx.OutputNode">[docs]</a><span class="k">class</span> <span class="nc">OutputNode</span><span class="p">:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Output node.</span>
+<div class="viewcode-block" id="OutputNode"><a class="viewcode-back" href="../../../api/audonnx.OutputNode.html#audonnx.OutputNode">[docs]</a><span class="k">class</span> <span class="nc">OutputNode</span><span class="p">:</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Output node.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        shape: list with dimensions</span>
@@ -221,13 +217,13 @@
             <span class="n">labels</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
     <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="n">shape</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Shape of node&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Shape of node&quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">dtype</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Data type of node&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Data type of node&quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="n">labels</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Labels of last non-dynamic output dimension.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Labels of last non-dynamic output dimension.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">:</span>
 
@@ -259,7 +255,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/07/14 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/01/03 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -267,7 +263,7 @@
   <div role="contentinfo">
     <p>
         
-      &copy; 2021-2022 audEERING GmbH
+      &copy; 2021-2023 audEERING GmbH
     </p>
   </div> 
 
@@ -296,11 +292,12 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
         <script src="../../../_static/thebelab-helper.js"></script>
         <script src="../../../_static/clipboard.min.js"></script>
         <script src="../../../_static/copybutton.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     
 
   
