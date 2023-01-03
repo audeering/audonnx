@@ -55,7 +55,7 @@ class Model(audobject.Object):
             (``'cpu'``, ``'cuda'``, or ``'cuda:<id>'``)
             or a (list of) provider(s)_
 
-    Example:
+    Examples:
         >>> import audiofile
         >>> import opensmile
         >>> transform = opensmile.Smile(

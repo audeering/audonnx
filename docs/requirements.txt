@@ -1,3 +1,4 @@
+audeer >=1.18.0
 opensmile >=2.4.0
 jupyter
 jupyter-sphinx

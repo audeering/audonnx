@@ -13,7 +13,7 @@ class Function(audobject.Object):
             first two arguments
         func_args: additional arguments that will be passed to the function
 
-    Example:
+    Examples:
         >>> object = Function(lambda x, sr: x.mean())
         >>> object
         {'$audonnx.core.function.Function': {'func': 'lambda x, sr: x.mean()', 'func_args': {}}}
