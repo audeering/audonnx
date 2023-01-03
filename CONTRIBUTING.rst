@@ -54,6 +54,10 @@ and call it directly::
     pip install flake8  # you might consider system wide installation
     flake8
 
+It can be restricted to specific folders::
+
+    flake8 audfoo/ tests/
+
 .. _PEP8: http://www.python.org/dev/peps/pep-0008/
 .. _flake8: https://flake8.pycqa.org/en/latest/index.html
 .. _pre-commit: https://pre-commit.com
