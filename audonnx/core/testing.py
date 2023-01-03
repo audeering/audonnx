@@ -40,7 +40,7 @@ def create_model(
     Returns:
         model object
 
-    Example:
+    Examples:
         >>> shapes = [[3], [1, -1, 2]]
         >>> model = create_model(shapes)
         >>> model
@@ -134,7 +134,7 @@ def create_model_proto(
     Returns:
         ONNX object
 
-    Example:
+    Examples:
         >>> create_model_proto([[2]])
         ir_version: 8
         producer_name: "test"
