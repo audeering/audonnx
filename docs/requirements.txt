@@ -3,8 +3,8 @@ opensmile >=2.4.0
 jupyter
 jupyter-sphinx
 librosa
-onnx <=1.13.0  # https://github.com/audeering/audonnx/issues/48
-protobuf <=3.20.1  # avoid TypeError: Descriptors cannot not be created directly
+onnx
+protobuf
 torch
 sphinx
 sphinx-audeering-theme >=1.0.14
