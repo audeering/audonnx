@@ -264,9 +264,14 @@ as well as
     import onnxruntime.quantization
 
 
+    onnx_infer_path = os.path.join(onnx_root, 'model_infer.onnx')
+    onnxruntime.quantization.quant_pre_process(
+        onnx_model_path,
+        onnx_infer_path,
+    )
     onnx_quant_path = os.path.join(onnx_root, 'model_quant.onnx')
     onnxruntime.quantization.quantize_dynamic(
-        onnx_model_path,
+        onnx_infer_path,
         onnx_quant_path,
         weight_type=onnxruntime.quantization.QuantType.QUInt8,
     )
