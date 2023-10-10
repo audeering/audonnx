@@ -136,7 +136,10 @@ def create_model_proto(
 
     Examples:
         >>> create_model_proto([[2]])
-        ir_version: 8
+        ir_version: 9
+        opset_import {
+          version: 14
+        }
         producer_name: "test"
         graph {
           node {
@@ -171,9 +174,6 @@ def create_model_proto(
               }
             }
           }
-        }
-        opset_import {
-          version: 14
         }
         <BLANKLINE>
 
