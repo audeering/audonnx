@@ -251,7 +251,8 @@ Quantize weights
 ----------------
 
 To reduce the memory print of a model,
-we can quantize it.
+we can quantize it,
+compare the `MobilenetV2 example`_.
 For instance, we can store model weights as 8 bit integers.
 For quantization make sure
 you have installed
@@ -513,6 +514,7 @@ In that case do:
 .. _audinterface: http://tools.pp.audeering.com/audinterface/
 .. _audobject: http://tools.pp.audeering.com/audobject/
 .. _librosa: https://librosa.org/doc/main/index.html
+.. _MobilenetV2 example: https://github.com/microsoft/onnxruntime-inference-examples/blob/main/quantization/image_classification/cpu/ReadMe.md#onnx-runtime-quantization-example
 .. _ONNX: https://onnx.ai/
 .. _OpenSMILE: https://github.com/audeering/opensmile-python
 .. _table: https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html#requirements
