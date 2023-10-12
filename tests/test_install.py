@@ -1,8 +1,8 @@
 import os
-import pkg_resources
 import subprocess
 import sys
 
+import pkg_resources
 import pytest
 
 import audonnx.testing

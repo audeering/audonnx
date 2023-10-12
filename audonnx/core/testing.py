@@ -73,7 +73,6 @@ def create_model(
     .. _`supported data types`: https://onnxruntime.ai/docs/reference/operators/custom-python-operator.html#supported-data-types
 
     """  # noqa: E501
-
     # create graph
 
     object = create_model_proto(
@@ -180,7 +179,6 @@ def create_model_proto(
     .. _`supported data types`: https://onnxruntime.ai/docs/reference/operators/custom-python-operator.html#supported-data-types
 
     """  # noqa: E501
-
     # nodes
 
     inputs = []
