@@ -55,6 +55,7 @@ class InputNode:
         }
 
     def __repr__(self):
+        r"""Printable presentation of input node."""
         return yaml.dump(self._dict(), default_flow_style=True).strip()
 
 
@@ -96,4 +97,5 @@ class OutputNode:
         }
 
     def __repr__(self):
+        r"""Printable presentation of output node."""
         return yaml.dump(self._dict(), default_flow_style=True).strip()

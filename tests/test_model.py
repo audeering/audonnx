@@ -377,8 +377,8 @@ def test_outputs(object, transform, labels, expected):
         transform=transform,
     )
     assert list(expected) == list(model.outputs)
-    for name, l in expected.items():
-        assert model.outputs[name].labels == l
+    for name, expected_labels in expected.items():
+        assert model.outputs[name].labels == expected_labels
 
 
 @pytest.mark.parametrize(

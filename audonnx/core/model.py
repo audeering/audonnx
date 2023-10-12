@@ -10,15 +10,11 @@ import yaml
 import audeer
 import audobject
 
-from audonnx.core.node import (
-    InputNode,
-    OutputNode,
-)
-from audonnx.core.typing import (
-    Device,
-    Labels,
-    Transform,
-)
+from audonnx.core.node import InputNode
+from audonnx.core.node import OutputNode
+from audonnx.core.typing import Device
+from audonnx.core.typing import Labels
+from audonnx.core.typing import Transform
 
 
 class Model(audobject.Object):
@@ -41,7 +37,7 @@ class Model(audobject.Object):
     if model has multiple output nodes.
 
     :class:`Model` inherites from :class:`audobject.Object`,
-    which means you can seralize to
+    which means you can serialize to
     and instantiate the class
     from a YAML file.
     Have a look at :class:`audobject.Object`
@@ -293,7 +289,7 @@ class Model(audobject.Object):
         return z
 
     def __repr__(self) -> str:
-
+        r"""Printable representation of model."""
         d = {
             'Input': {
                 name: node._dict() for name, node in self.inputs.items()
@@ -302,10 +298,10 @@ class Model(audobject.Object):
                 name: node._dict() for name, node in self.outputs.items()
             }
         }
-
         return yaml.dump(d, default_flow_style=None).strip()
 
     def __str__(self) -> str:
+        r"""String representation of model."""
         return repr(self)
 
     def labels(
@@ -351,7 +347,7 @@ class Model(audobject.Object):
         Raises:
             ValueError: if file path does not end on ``.yaml``
 
-       """
+        """
         path = audeer.path(path)
         if not audeer.file_extension(path) == 'yaml':
             raise ValueError(f"Model path {path} does not end on '.yaml'")
@@ -405,7 +401,6 @@ def _concat(
         shapes: typing.Sequence[typing.List[int]],
 ):
     r"""Flatten dictionary by concatenating values."""
-
     y = list(y.values())
 
     # special case if all shapes are [-1]
@@ -429,7 +424,6 @@ def _concat(
 
 def _concat_axis(shapes: typing.Sequence[int]) -> typing.Optional[int]:
     r"""Return concat dimension or None if not possible."""
-
     # number of dimensions do not match
     if not len(set(map(len, shapes))) == 1:
         return None

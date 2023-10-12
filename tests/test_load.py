@@ -6,8 +6,8 @@ import oyaml as yaml
 import pytest
 
 import audeer
-
 import audobject
+
 import audonnx.testing
 
 

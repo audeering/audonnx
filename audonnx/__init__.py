@@ -1,10 +1,8 @@
 from audonnx.core.api import load
 from audonnx.core.function import Function
 from audonnx.core.model import Model
-from audonnx.core.node import (
-    InputNode,
-    OutputNode,
-)
+from audonnx.core.node import InputNode
+from audonnx.core.node import OutputNode
 
 
 __all__ = []

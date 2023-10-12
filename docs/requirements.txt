@@ -10,3 +10,4 @@ sphinx
 sphinx-audeering-theme >=1.0.14
 sphinx-autodoc-typehints
 sphinx-copybutton
+toml

@@ -66,7 +66,6 @@ def load(
             labels: [female, male]
 
     """  # noqa: E501
-
     root = audeer.path(root)
     model_file = os.path.join(root, model_file)
     model_file_yaml = audeer.replace_file_extension(model_file, 'yaml')
