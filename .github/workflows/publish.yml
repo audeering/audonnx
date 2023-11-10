@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: release
     permissions:
+      pages: write
       id-token: write
 
     steps:
