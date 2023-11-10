@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                v0.6.3
+                v0.6.5
               </div>
             
           
@@ -216,7 +216,6 @@
 <span class="sd">    .. _`supported data types`: https://onnxruntime.ai/docs/reference/operators/custom-python-operator.html#supported-data-types</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
-
     <span class="c1"># create graph</span>
 
     <span class="nb">object</span> <span class="o">=</span> <span class="n">create_model_proto</span><span class="p">(</span>
@@ -279,7 +278,10 @@
 
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; create_model_proto([[2]])</span>
-<span class="sd">        ir_version: 8</span>
+<span class="sd">        ir_version: 9</span>
+<span class="sd">        opset_import {</span>
+<span class="sd">          version: 14</span>
+<span class="sd">        }</span>
 <span class="sd">        producer_name: &quot;test&quot;</span>
 <span class="sd">        graph {</span>
 <span class="sd">          node {</span>
@@ -315,15 +317,11 @@
 <span class="sd">            }</span>
 <span class="sd">          }</span>
 <span class="sd">        }</span>
-<span class="sd">        opset_import {</span>
-<span class="sd">          version: 14</span>
-<span class="sd">        }</span>
 <span class="sd">        &lt;BLANKLINE&gt;</span>
 
 <span class="sd">    .. _`supported data types`: https://onnxruntime.ai/docs/reference/operators/custom-python-operator.html#supported-data-types</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
-
     <span class="c1"># nodes</span>
 
     <span class="n">inputs</span> <span class="o">=</span> <span class="p">[]</span>
@@ -391,7 +389,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/01/03 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/11/10 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

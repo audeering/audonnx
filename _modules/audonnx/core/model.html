@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                v0.6.3
+                v0.6.5
               </div>
             
           
@@ -153,15 +153,11 @@
 <span class="kn">import</span> <span class="nn">audeer</span>
 <span class="kn">import</span> <span class="nn">audobject</span>
 
-<span class="kn">from</span> <span class="nn">audonnx.core.node</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">InputNode</span><span class="p">,</span>
-    <span class="n">OutputNode</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="kn">from</span> <span class="nn">audonnx.core.typing</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">Device</span><span class="p">,</span>
-    <span class="n">Labels</span><span class="p">,</span>
-    <span class="n">Transform</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">audonnx.core.node</span> <span class="kn">import</span> <span class="n">InputNode</span>
+<span class="kn">from</span> <span class="nn">audonnx.core.node</span> <span class="kn">import</span> <span class="n">OutputNode</span>
+<span class="kn">from</span> <span class="nn">audonnx.core.typing</span> <span class="kn">import</span> <span class="n">Device</span>
+<span class="kn">from</span> <span class="nn">audonnx.core.typing</span> <span class="kn">import</span> <span class="n">Labels</span>
+<span class="kn">from</span> <span class="nn">audonnx.core.typing</span> <span class="kn">import</span> <span class="n">Transform</span>
 
 
 <div class="viewcode-block" id="Model"><a class="viewcode-back" href="../../../api/audonnx.Model.html#audonnx.Model">[docs]</a><span class="k">class</span> <span class="nc">Model</span><span class="p">(</span><span class="n">audobject</span><span class="o">.</span><span class="n">Object</span><span class="p">):</span>
@@ -184,7 +180,7 @@
 <span class="sd">    if model has multiple output nodes.</span>
 
 <span class="sd">    :class:`Model` inherites from :class:`audobject.Object`,</span>
-<span class="sd">    which means you can seralize to</span>
+<span class="sd">    which means you can serialize to</span>
 <span class="sd">    and instantiate the class</span>
 <span class="sd">    from a YAML file.</span>
 <span class="sd">    Have a look at :class:`audobject.Object`</span>
@@ -436,7 +432,7 @@
         <span class="k">return</span> <span class="n">z</span></div>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Printable representation of model.&quot;&quot;&quot;</span>
         <span class="n">d</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;Input&#39;</span><span class="p">:</span> <span class="p">{</span>
                 <span class="n">name</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">_dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
@@ -445,10 +441,10 @@
                 <span class="n">name</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">_dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
             <span class="p">}</span>
         <span class="p">}</span>
-
         <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">default_flow_style</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;String representation of model.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Model.labels"><a class="viewcode-back" href="../../../api/audonnx.Model.html#audonnx.Model.labels">[docs]</a>    <span class="k">def</span> <span class="nf">labels</span><span class="p">(</span>
@@ -494,7 +490,7 @@
 <span class="sd">        Raises:</span>
 <span class="sd">            ValueError: if file path does not end on ``.yaml``</span>
 
-<span class="sd">       &quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">path</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">audeer</span><span class="o">.</span><span class="n">file_extension</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;yaml&#39;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Model path </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> does not end on &#39;.yaml&#39;&quot;</span><span class="p">)</span>
@@ -548,7 +544,6 @@
         <span class="n">shapes</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Flatten dictionary by concatenating values.&quot;&quot;&quot;</span>
-
     <span class="n">y</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
 
     <span class="c1"># special case if all shapes are [-1]</span>
@@ -572,7 +567,6 @@
 
 <span class="k">def</span> <span class="nf">_concat_axis</span><span class="p">(</span><span class="n">shapes</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return concat dimension or None if not possible.&quot;&quot;&quot;</span>
-
     <span class="c1"># number of dimensions do not match</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span> <span class="n">shapes</span><span class="p">)))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>
@@ -630,7 +624,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/01/03 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/11/10 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

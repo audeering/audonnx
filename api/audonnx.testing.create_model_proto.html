@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                v0.6.3
+                v0.6.5
               </div>
             
           
@@ -167,10 +167,10 @@ of <a class="reference internal" href="audonnx.Model.html#audonnx.Model" title="
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>shapes</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]]) – list with shapes defining the identical
+<li><p><strong>shapes</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]]) – list with shapes defining the identical
 input and output nodes of the model graph</p></li>
-<li><p><strong>dtype</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – data type, see <a class="reference external" href="https://onnxruntime.ai/docs/reference/operators/custom-python-operator.html#supported-data-types">supported data types</a></p></li>
-<li><p><strong>opset_version</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – opset version</p></li>
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – data type, see <a class="reference external" href="https://onnxruntime.ai/docs/reference/operators/custom-python-operator.html#supported-data-types">supported data types</a></p></li>
+<li><p><strong>opset_version</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – opset version</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -182,7 +182,10 @@ input and output nodes of the model graph</p></li>
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">create_model_proto</span><span class="p">([[</span><span class="mi">2</span><span class="p">]])</span>
-<span class="go">ir_version: 8</span>
+<span class="go">ir_version: 9</span>
+<span class="go">opset_import {</span>
+<span class="go">  version: 14</span>
+<span class="go">}</span>
 <span class="go">producer_name: &quot;test&quot;</span>
 <span class="go">graph {</span>
 <span class="go">  node {</span>
@@ -218,9 +221,6 @@ input and output nodes of the model graph</p></li>
 <span class="go">    }</span>
 <span class="go">  }</span>
 <span class="go">}</span>
-<span class="go">opset_import {</span>
-<span class="go">  version: 14</span>
-<span class="go">}</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -250,7 +250,7 @@ input and output nodes of the model graph</p></li>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/01/03 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/11/10 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
