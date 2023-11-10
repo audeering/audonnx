@@ -7,6 +7,14 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.6.4 (2023-11-10)
+--------------------------
+
+* Added: pre-processing step in the documentation
+  on how to quantize an ONNX model
+* Removed: support for Python 3.7
+
+
 Version 0.6.3 (2023-01-03)
 --------------------------
 
