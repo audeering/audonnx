@@ -11,7 +11,7 @@ Version 0.6.4 (2023-11-10)
 --------------------------
 
 * Added: pre-processing step in the documentation
-  on how to export to an ONNX model
+  on how to quantize an ONNX model
 * Removed: support for Python 3.7
 
 
