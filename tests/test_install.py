@@ -2,7 +2,6 @@ import os
 import subprocess
 import sys
 
-import pkg_resources
 import pytest
 
 import audonnx.testing
@@ -25,8 +24,6 @@ def uninstall(
     for m in list(sys.modules):
         if m.startswith(package):
             sys.modules.pop(m)
-    # force pkg_resources to re-scan site packages
-    pkg_resources._initialize_master_working_set()
 
 
 def test(tmpdir):
