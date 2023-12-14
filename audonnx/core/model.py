@@ -1,5 +1,4 @@
 import os
-import re
 import typing
 
 import numpy as np
@@ -12,6 +11,7 @@ import audobject
 
 from audonnx.core.node import InputNode
 from audonnx.core.node import OutputNode
+from audonnx.core.ort import device_to_providers
 from audonnx.core.typing import Device
 from audonnx.core.typing import Labels
 from audonnx.core.typing import Transform
@@ -117,7 +117,7 @@ class Model(audobject.Object):
         self.path = audeer.path(path) if isinstance(path, str) else None
         r"""Model path"""
 
-        providers = _device_to_providers(device)
+        providers = device_to_providers(device)
         self.sess = onnxruntime.InferenceSession(
             self.path if isinstance(path, str) else path.SerializeToString(),
             providers=providers,
@@ -361,39 +361,6 @@ class Model(audobject.Object):
 
         with open(path, 'w') as fp:
             super().to_yaml(fp, include_version=include_version)
-
-
-def _device_to_providers(
-        device: typing.Union[
-            str,
-            typing.Tuple[str, typing.Dict],
-            typing.Sequence[typing.Union[str, typing.Tuple[str, typing.Dict]]],
-        ],
-) -> typing.Sequence[typing.Union[str, typing.Tuple[str, typing.Dict]]]:
-    r"""Converts device into a list of providers."""
-    if isinstance(device, str):
-        if device == 'cpu':
-            providers = ['CPUExecutionProvider']
-        elif device.startswith('cuda'):
-            match = re.search(r'^cuda:(\d+)$', device)
-            if match:
-                device_id = match.group(1)
-                providers = [
-                    (
-                        'CUDAExecutionProvider', {
-                            'device_id': device_id,
-                        }
-                    ),
-                ]
-            else:
-                providers = ['CUDAExecutionProvider']
-        else:
-            providers = [device]
-    elif isinstance(device, tuple):
-        providers = [device]
-    else:
-        providers = device
-    return providers
 
 
 def _concat(

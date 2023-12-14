@@ -11,4 +11,5 @@ audonnx
     Model
     InputNode
     OutputNode
+    device_to_providers
     load
