@@ -3,6 +3,7 @@ from audonnx.core.function import Function
 from audonnx.core.model import Model
 from audonnx.core.node import InputNode
 from audonnx.core.node import OutputNode
+from audonnx.core.ort import device_to_providers
 
 
 __all__ = []
