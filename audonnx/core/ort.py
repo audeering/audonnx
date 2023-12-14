@@ -15,16 +15,16 @@ def device_to_providers(
         device: ``'cpu'``,
             ``'cuda'``,
             ``'cuda:<id>'``,
-            or a (list of) provider(s)_
+            or a (list of) `ONNX Runtime Execution Providers`_
 
     Returns:
-        sequence of providers
+        sequence of `ONNX Runtime Execution Providers`_
 
     Examples:
         >>> device_to_providers('cpu')
         ['CPUExecutionProvider']
 
-    .. _provider(s): https://onnxruntime.ai/docs/execution-providers/
+    .. _ONNX Runtime Execution Providers: https://onnxruntime.ai/docs/execution-providers/
 
     """
     if isinstance(device, str):
