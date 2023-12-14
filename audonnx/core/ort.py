@@ -18,7 +18,7 @@ def device_to_providers(
             or a (list of) provider(s)_
 
     Returns:
-        list of providers
+        sequence of providers
 
     Examples:
         >>> device_to_providers('cpu')
