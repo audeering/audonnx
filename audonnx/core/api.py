@@ -46,7 +46,7 @@ def load(
         transform_file: YAML file with transformation
         device: set device
             (``'cpu'``, ``'cuda'``, or ``'cuda:<id>'``)
-            or a (list of) provider_
+            or a (list of) `provider(s)`_
         num_workers: number of threads for running
             onnxruntime inference on cpu.
             If ``None`` and ``session_options`` is ``None``,
@@ -61,7 +61,7 @@ def load(
             for inference on cpu and ``num_workers`` is ignored.
         auto_install: install missing packages needed to create the object
 
-    .. _provider: https://onnxruntime.ai/docs/execution-providers/
+    .. _`provider(s)`: https://onnxruntime.ai/docs/execution-providers/
     .. _onnxruntime.SessionOptions: https://onnxruntime.ai/docs/api/python/api_summary.html#sessionoptions
     .. _inter_op_num_threads: https://onnxruntime.ai/docs/api/python/api_summary.html#onnxruntime.SessionOptions.inter_op_num_threads
     .. _intra_op_num_threads: https://onnxruntime.ai/docs/api/python/api_summary.html#onnxruntime.SessionOptions.intra_op_num_threads

@@ -49,7 +49,7 @@ class Model(audobject.Object):
         transform: callable object or a dictionary of callable objects
         device: set device
             (``'cpu'``, ``'cuda'``, or ``'cuda:<id>'``)
-            or a (list of) provider(s)_
+            or a (list of) `provider(s)`_
         num_workers: number of threads for running
             onnxruntime inference on cpu.
             If ``None`` and ``session_options`` is ``None``,
@@ -96,7 +96,7 @@ class Model(audobject.Object):
         ... ).round(1)
         array([-195.1,   73.3], dtype=float32)
 
-    .. _provider(s): https://onnxruntime.ai/docs/execution-providers/
+    .. _`provider(s)`: https://onnxruntime.ai/docs/execution-providers/
     .. _onnxruntime.SessionOptions: https://onnxruntime.ai/docs/api/python/api_summary.html#sessionoptions
     .. _inter_op_num_threads: https://onnxruntime.ai/docs/api/python/api_summary.html#onnxruntime.SessionOptions.inter_op_num_threads
     .. _intra_op_num_threads: https://onnxruntime.ai/docs/api/python/api_summary.html#onnxruntime.SessionOptions.intra_op_num_threads

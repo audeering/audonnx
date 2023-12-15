@@ -38,7 +38,7 @@ def create_model(
         opset_version: opset version
         device: set device
             (``'cpu'``, ``'cuda'``, or ``'cuda:<id>'``)
-            or a (list of) provider(s)_
+            or a (list of) `provider(s)`_
         num_workers: number of threads for running
             onnxruntime inference on cpu.
             If ``None`` and ``session_options`` is ``None``,
@@ -86,7 +86,7 @@ def create_model(
                 [0., 0.]]], dtype=float32)}
 
     .. _`supported data types`: https://onnxruntime.ai/docs/reference/operators/custom-python-operator.html#supported-data-types
-    .. _provider(s): https://onnxruntime.ai/docs/execution-providers/
+    .. _`provider(s)`: https://onnxruntime.ai/docs/execution-providers/
     .. _onnxruntime.SessionOptions: https://onnxruntime.ai/docs/api/python/api_summary.html#sessionoptions
     .. _inter_op_num_threads: https://onnxruntime.ai/docs/api/python/api_summary.html#onnxruntime.SessionOptions.inter_op_num_threads
     .. _intra_op_num_threads: https://onnxruntime.ai/docs/api/python/api_summary.html#onnxruntime.SessionOptions.intra_op_num_threads
