@@ -52,7 +52,16 @@ class Model(audobject.Object):
             or a (list of) provider(s)_
         num_workers: number of threads for running
             onnxruntime inference on cpu.
-            If ``None`` onnxruntime chooses the number of threads
+            If ``None`` and ``session_options`` is ``None``,
+            onnxruntime chooses the number of threads
+        session_options: onnxruntime.SessionOptions_ to use for inference.
+            If ``None`` the default options are used and the number of
+            threads for running inference on cpu is determined
+            by ``num_workers``. Otherwise, the provided options are used
+            and the ``session_options`` properties
+            inter_op_num_threads_ and intra_op_num_threads_
+            determine the number of threads
+            for inference on cpu and ``num_workers`` is ignored.
 
     Examples:
         >>> import audiofile
@@ -88,6 +97,9 @@ class Model(audobject.Object):
         array([-195.1,   73.3], dtype=float32)
 
     .. _provider(s): https://onnxruntime.ai/docs/execution-providers/
+    .. _onnxruntime.SessionOptions: https://onnxruntime.ai/docs/api/python/api_summary.html#sessionoptions
+    .. _inter_op_num_threads: https://onnxruntime.ai/docs/api/python/api_summary.html#onnxruntime.SessionOptions.inter_op_num_threads
+    .. _intra_op_num_threads: https://onnxruntime.ai/docs/api/python/api_summary.html#onnxruntime.SessionOptions.intra_op_num_threads
 
     """
     @audobject.init_decorator(
@@ -101,6 +113,7 @@ class Model(audobject.Object):
         hide=[
             'device',
             'num_workers',
+            'session_options',
         ],
     )
     def __init__(
@@ -111,6 +124,9 @@ class Model(audobject.Object):
             transform: Transform = None,
             device: Device = 'cpu',
             num_workers: typing.Optional[int] = 1,
+            session_options: typing.Optional[
+                onnxruntime.SessionOptions
+            ] = None,
     ):
         # keep original arguments to store them
         # when object is serialized
@@ -122,10 +138,11 @@ class Model(audobject.Object):
         self.path = audeer.path(path) if isinstance(path, str) else None
         r"""Model path"""
 
-        session_options = onnxruntime.SessionOptions()
-        if num_workers is not None:
-            session_options.inter_op_num_threads = num_workers
-            session_options.intra_op_num_threads = num_workers
+        if session_options is None:
+            session_options = onnxruntime.SessionOptions()
+            if num_workers is not None:
+                session_options.inter_op_num_threads = num_workers
+                session_options.intra_op_num_threads = num_workers
 
         providers = device_to_providers(device)
         self.sess = onnxruntime.InferenceSession(
