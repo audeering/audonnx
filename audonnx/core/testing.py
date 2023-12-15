@@ -15,6 +15,7 @@ def create_model(
         dtype: int = onnx.TensorProto.FLOAT,
         opset_version: int = 14,
         device: Device = 'cpu',
+        num_workers: typing.Optional[int] = 1,
 ) -> Model:
     r"""Create test model.
 
@@ -36,6 +37,9 @@ def create_model(
         device: set device
             (``'cpu'``, ``'cuda'``, or ``'cuda:<id>'``)
             or a (list of) provider(s)_
+        num_workers: number of threads for running
+            onnxruntime inference on cpu.
+            If ``None`` onnxruntime chooses the number of threads
 
     Returns:
         model object
@@ -99,6 +103,7 @@ def create_model(
         object,
         transform=transform,
         device=device,
+        num_workers=num_workers,
     )
 
     return model

@@ -20,6 +20,7 @@ def load(
             typing.Tuple[str, typing.Dict],
             typing.Sequence[typing.Union[str, typing.Tuple[str, typing.Dict]]],
         ] = 'cpu',
+        num_workers: typing.Optional[int] = 1,
         auto_install: bool = False,
 ) -> Model:
     r"""Load model from folder.
@@ -44,6 +45,9 @@ def load(
         device: set device
             (``'cpu'``, ``'cuda'``, or ``'cuda:<id>'``)
             or a (list of) provider_
+        num_workers: number of threads for running
+            onnxruntime inference on cpu.
+            If ``None`` onnxruntime chooses the number of threads
         auto_install: install missing packages needed to create the object
 
     .. _provider: https://onnxruntime.ai/docs/execution-providers/
@@ -85,6 +89,7 @@ def load(
                 auto_install=auto_install,
                 override_args={
                     'device': device,
+                    'num_workers': num_workers,
                 },
             )
 
@@ -111,6 +116,7 @@ def load(
         labels=labels,
         transform=transform,
         device=device,
+        num_workers=num_workers,
     )
 
     return model

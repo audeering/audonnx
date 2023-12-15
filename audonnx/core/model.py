@@ -50,6 +50,9 @@ class Model(audobject.Object):
         device: set device
             (``'cpu'``, ``'cuda'``, or ``'cuda:<id>'``)
             or a (list of) provider(s)_
+        num_workers: number of threads for running
+            onnxruntime inference on cpu.
+            If ``None`` onnxruntime chooses the number of threads
 
     Examples:
         >>> import audiofile
@@ -97,6 +100,7 @@ class Model(audobject.Object):
         },
         hide=[
             'device',
+            'num_workers',
         ],
     )
     def __init__(
@@ -106,6 +110,7 @@ class Model(audobject.Object):
             labels: Labels = None,
             transform: Transform = None,
             device: Device = 'cpu',
+            num_workers: typing.Optional[int] = 1,
     ):
         # keep original arguments to store them
         # when object is serialized
@@ -117,9 +122,15 @@ class Model(audobject.Object):
         self.path = audeer.path(path) if isinstance(path, str) else None
         r"""Model path"""
 
+        session_options = onnxruntime.SessionOptions()
+        if num_workers is not None:
+            session_options.inter_op_num_threads = num_workers
+            session_options.intra_op_num_threads = num_workers
+
         providers = device_to_providers(device)
         self.sess = onnxruntime.InferenceSession(
             self.path if isinstance(path, str) else path.SerializeToString(),
+            sess_options=session_options,
             providers=providers,
         )
         r"""Interference session"""

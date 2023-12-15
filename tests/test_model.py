@@ -228,6 +228,20 @@ def test_call_concat(model, outputs, expected):
             np.testing.assert_equal(y, expected)
 
 
+@pytest.mark.parametrize('device', ['cpu', 'cuda:0'])
+@pytest.mark.parametrize('num_workers', [None, 1, 2])
+def test_call_num_workers(device, num_workers):
+    model = audonnx.testing.create_model(
+        [[2]], device=device, num_workers=num_workers
+    )
+    y = model(
+        pytest.SIGNAL,
+        pytest.SAMPLING_RATE,
+    )
+    expected = np.array([0.0, 0.0], np.float32)
+    np.testing.assert_equal(y, expected)
+
+
 @pytest.mark.parametrize(
     'device',
     [
