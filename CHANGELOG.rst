@@ -18,6 +18,7 @@ Version 0.6.4 (2023-11-10)
 
 * Added: pre-processing step in the documentation
   on how to quantize an ONNX model
+* Added: support for Python 3.11
 * Removed: support for Python 3.7
 
 
