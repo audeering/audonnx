@@ -7,6 +7,26 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.7.0 (2023-12-18)
+--------------------------
+
+* Added: ``audonnx.device_to_providers()``
+  to convert device names
+  to ONNX runtime providers
+* Added: ``num_workers`` argument
+  to ``audonnx.Model``,
+  ``audonnx.load()``,
+  and ``audonnx.testing.create_model()``.
+  Its default value is ``1``,
+  whereas before ONNX runtime
+  was selecting all available workers
+* Added: ``session_options`` argument
+  to ``audonnx.Model``,
+  ``audonnx.load()``,
+  and ``audonnx.testing.create_model()``
+  to provide ONNX runtime options
+
+
 Version 0.6.5 (2023-11-10)
 --------------------------
 
