@@ -16,7 +16,11 @@ Version 0.7.0 (2023-12-18)
 * Added: ``num_workers`` argument
   to ``audonnx.Model``,
   ``audonnx.load()``,
-  and ``audonnx.testing.create_model()``
+  and ``audonnx.testing.create_model()``.
+  It's default value is ``1``,
+  whereas before ONNX runtime
+  was selecting as many workers
+  as were available
 * Added: ``session_options`` argument
   to ``audonnx.Model``,
   ``audonnx.load()``,
