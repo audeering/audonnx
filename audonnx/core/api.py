@@ -53,14 +53,18 @@ def load(
             onnxruntime chooses the number of threads
         session_options: :class:`onnxruntime.SessionOptions`
             to use for inference.
-            If ``None`` the default options are used and the number of
-            threads for running inference on cpu is determined
-            by ``num_workers``. Otherwise, the provided options are used
+            If ``None`` the default options are used
+            and the number of threads
+            for running inference on cpu
+            is determined by ``num_workers``.
+            Otherwise,
+            the provided options are used
             and the ``session_options`` properties
             :attr:`~onnxruntime.SessionOptions.inter_op_num_threads`
             and :attr:`~onnxruntime.SessionOptions.intra_op_num_threads`
             determine the number of threads
-            for inference on cpu and ``num_workers`` is ignored
+            for inference on cpu
+            and ``num_workers`` is ignored
         auto_install: install missing packages needed to create the object
 
     .. _`provider(s)`: https://onnxruntime.ai/docs/execution-providers/
