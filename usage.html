@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                v0.6.5
+                v0.7.0
               </div>
             
           
@@ -257,7 +257,7 @@ raw audio signal to a sequence of low-level descriptors.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>tensor([-267.7593, -194.8262])
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>tensor([  29.3742, -214.7639])
 </pre></div>
 </div>
 </div>
@@ -402,7 +402,7 @@ Output:
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([-267.75925, -194.82623], dtype=float32)
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([  29.374172, -214.76393 ], dtype=float32)
 </pre></div>
 </div>
 </div>
@@ -463,14 +463,14 @@ but we can use <a class="reference external" href="http://tools.pp.audeering.com
       <th rowspan="2" valign="top">./docs/_static/test.wav</th>
       <th>0 days 00:00:00</th>
       <th>0 days 00:00:03</th>
-      <td>-268.852905</td>
-      <td>-195.602356</td>
+      <td>30.218712</td>
+      <td>-214.255234</td>
     </tr>
     <tr>
       <th>0 days 00:00:03</th>
       <th>0 days 00:00:05</th>
-      <td>-267.070007</td>
-      <td>-189.138123</td>
+      <td>28.661716</td>
+      <td>-211.555435</td>
     </tr>
   </tbody>
 </table>
@@ -518,12 +518,12 @@ but we can use <a class="reference external" href="http://tools.pp.audeering.com
       <th rowspan="2" valign="top">./docs/_static/test.wav</th>
       <th>0 days 00:00:00</th>
       <th>0 days 00:00:03</th>
-      <td>male</td>
+      <td>female</td>
     </tr>
     <tr>
       <th>0 days 00:00:03</th>
       <th>0 days 00:00:05</th>
-      <td>male</td>
+      <td>female</td>
     </tr>
   </tbody>
 </table>
@@ -545,7 +545,7 @@ but we can use <a class="reference external" href="http://tools.pp.audeering.com
 </div>
 <div class="jupyter_cell docutils container">
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>$audonnx.core.model.Model==0.6.5:
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>$audonnx.core.model.Model==0.7.0:
   path: model.onnx
   labels:
   - female
@@ -576,7 +576,7 @@ but we can use <a class="reference external" href="http://tools.pp.audeering.com
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([-267.75925, -194.82623], dtype=float32)
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([  29.374172, -214.76393 ], dtype=float32)
 </pre></div>
 </div>
 </div>
@@ -590,7 +590,7 @@ but we can use <a class="reference external" href="http://tools.pp.audeering.com
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([-267.75925, -194.82623], dtype=float32)
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([  29.374172, -214.76393 ], dtype=float32)
 </pre></div>
 </div>
 </div>
@@ -642,7 +642,7 @@ as well as
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([-267.0688 , -195.11398], dtype=float32)
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([  29.231592, -212.91867 ], dtype=float32)
 </pre></div>
 </div>
 </div>
@@ -655,7 +655,7 @@ we have used
 <a class="reference external" href="https://audeering.github.io/opensmile-python/api/opensmile.Smile.html#opensmile.Smile" title="(in opensmile vv2.5.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">opensmile.Smile</span></code></a>
 as feature extractor.
 It derives from
-<a class="reference external" href="https://audeering.github.io/audobject/api/audobject.Object.html#audobject.Object" title="(in audobject vv0.7.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">audobject.Object</span></code></a>
+<a class="reference external" href="https://audeering.github.io/audobject/api/audobject.Object.html#audobject.Object" title="(in audobject)"><code class="xref py py-class docutils literal notranslate"><span class="pre">audobject.Object</span></code></a>
 and is therefore serializable by default.
 However,
 using
@@ -740,7 +740,7 @@ Output:
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([-13.800442, -26.948713], dtype=float32)
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([-32.218803,  47.5395  ], dtype=float32)
 </pre></div>
 </div>
 </div>
@@ -865,11 +865,11 @@ returns a dictionary with output for every node.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>{&#39;hidden&#39;: array([ 9.7035688e-01,  6.6039115e-01, -4.5032781e-01,  1.5159090e-02,
-        -6.6303162e+02, -6.1991290e+02,  2.4753911e+02, -6.8626147e+02],
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>{&#39;hidden&#39;: array([ 7.6027595e-02, -8.8102180e-01, -4.5986521e-01, -2.4757692e-01,
+        -3.5762204e+02, -6.2052740e+02, -6.6322235e+02, -2.5100070e+02],
        dtype=float32),
- &#39;gender&#39;: array([ 209.00247, -315.52798], dtype=float32),
- &#39;confidence&#39;: array([-61.40603], dtype=float32)}
+ &#39;gender&#39;: array([-85.367584, 330.33902 ], dtype=float32),
+ &#39;confidence&#39;: array([-17.792288], dtype=float32)}
 </pre></div>
 </div>
 </div>
@@ -886,7 +886,7 @@ returns a dictionary with output for every node.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([ 209.00247, -315.52798], dtype=float32)
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([-85.367584, 330.33902 ], dtype=float32)
 </pre></div>
 </div>
 </div>
@@ -903,8 +903,8 @@ returns a dictionary with output for every node.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>{&#39;gender&#39;: array([ 209.00247, -315.52798], dtype=float32),
- &#39;confidence&#39;: array([-61.40603], dtype=float32)}
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>{&#39;gender&#39;: array([-85.367584, 330.33902 ], dtype=float32),
+ &#39;confidence&#39;: array([-17.792288], dtype=float32)}
 </pre></div>
 </div>
 </div>
@@ -923,7 +923,7 @@ do:</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([ 209.00247, -315.52798,  -61.40603], dtype=float32)
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([-85.367584, 330.33902 , -17.792288], dtype=float32)
 </pre></div>
 </div>
 </div>
@@ -983,9 +983,9 @@ do:</p>
       <th>./docs/_static/test.wav</th>
       <th>0 days</th>
       <th>0 days 00:00:05.247687500</th>
-      <td>209.002472</td>
-      <td>-315.527985</td>
-      <td>-61.406029</td>
+      <td>-85.367584</td>
+      <td>330.33902</td>
+      <td>-17.792288</td>
     </tr>
   </tbody>
 </table>
@@ -1038,7 +1038,7 @@ In that case do:</p>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/11/10 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/12/18 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

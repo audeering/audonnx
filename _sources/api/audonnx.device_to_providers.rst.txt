@@ -1,0 +1,6 @@
+﻿device\_to\_providers\(\)
+=========================
+
+.. currentmodule:: audonnx
+
+.. autofunction:: audonnx.device_to_providers

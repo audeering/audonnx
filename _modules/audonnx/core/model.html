@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                v0.6.5
+                v0.7.0
               </div>
             
           
@@ -142,7 +142,6 @@
             
   <h1>Source code for audonnx.core.model</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">typing</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -155,6 +154,7 @@
 
 <span class="kn">from</span> <span class="nn">audonnx.core.node</span> <span class="kn">import</span> <span class="n">InputNode</span>
 <span class="kn">from</span> <span class="nn">audonnx.core.node</span> <span class="kn">import</span> <span class="n">OutputNode</span>
+<span class="kn">from</span> <span class="nn">audonnx.core.ort</span> <span class="kn">import</span> <span class="n">device_to_providers</span>
 <span class="kn">from</span> <span class="nn">audonnx.core.typing</span> <span class="kn">import</span> <span class="n">Device</span>
 <span class="kn">from</span> <span class="nn">audonnx.core.typing</span> <span class="kn">import</span> <span class="n">Labels</span>
 <span class="kn">from</span> <span class="nn">audonnx.core.typing</span> <span class="kn">import</span> <span class="n">Transform</span>
@@ -192,7 +192,25 @@
 <span class="sd">        transform: callable object or a dictionary of callable objects</span>
 <span class="sd">        device: set device</span>
 <span class="sd">            (``&#39;cpu&#39;``, ``&#39;cuda&#39;``, or ``&#39;cuda:&lt;id&gt;&#39;``)</span>
-<span class="sd">            or a (list of) provider(s)_</span>
+<span class="sd">            or a (list of) `provider(s)`_</span>
+<span class="sd">        num_workers: number of threads for running</span>
+<span class="sd">            onnxruntime inference on cpu.</span>
+<span class="sd">            If ``None`` and ``session_options`` is ``None``,</span>
+<span class="sd">            onnxruntime chooses the number of threads</span>
+<span class="sd">        session_options: :class:`onnxruntime.SessionOptions`</span>
+<span class="sd">            to use for inference.</span>
+<span class="sd">            If ``None`` the default options are used</span>
+<span class="sd">            and the number of threads</span>
+<span class="sd">            for running inference on cpu</span>
+<span class="sd">            is determined by ``num_workers``.</span>
+<span class="sd">            Otherwise,</span>
+<span class="sd">            the provided options are used</span>
+<span class="sd">            and the ``session_options`` properties</span>
+<span class="sd">            :attr:`~onnxruntime.SessionOptions.inter_op_num_threads`</span>
+<span class="sd">            and :attr:`~onnxruntime.SessionOptions.intra_op_num_threads`</span>
+<span class="sd">            determine the number of threads</span>
+<span class="sd">            for inference on cpu</span>
+<span class="sd">            and ``num_workers`` is ignored</span>
 
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; import audiofile</span>
@@ -227,7 +245,7 @@
 <span class="sd">        ... ).round(1)</span>
 <span class="sd">        array([-195.1,   73.3], dtype=float32)</span>
 
-<span class="sd">    .. _provider(s): https://onnxruntime.ai/docs/execution-providers/</span>
+<span class="sd">    .. _`provider(s)`: https://onnxruntime.ai/docs/execution-providers/</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nd">@audobject</span><span class="o">.</span><span class="n">init_decorator</span><span class="p">(</span>
@@ -240,6 +258,8 @@
         <span class="p">},</span>
         <span class="n">hide</span><span class="o">=</span><span class="p">[</span>
             <span class="s1">&#39;device&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;num_workers&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;session_options&#39;</span><span class="p">,</span>
         <span class="p">],</span>
     <span class="p">)</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -249,6 +269,10 @@
             <span class="n">labels</span><span class="p">:</span> <span class="n">Labels</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">transform</span><span class="p">:</span> <span class="n">Transform</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">device</span><span class="p">:</span> <span class="n">Device</span> <span class="o">=</span> <span class="s1">&#39;cpu&#39;</span><span class="p">,</span>
+            <span class="n">num_workers</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="n">session_options</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span>
+                <span class="n">onnxruntime</span><span class="o">.</span><span class="n">SessionOptions</span>
+            <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="c1"># keep original arguments to store them</span>
         <span class="c1"># when object is serialized</span>
@@ -260,9 +284,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Model path&quot;&quot;&quot;</span>
 
-        <span class="n">providers</span> <span class="o">=</span> <span class="n">_device_to_providers</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">session_options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">session_options</span> <span class="o">=</span> <span class="n">onnxruntime</span><span class="o">.</span><span class="n">SessionOptions</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">num_workers</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">session_options</span><span class="o">.</span><span class="n">inter_op_num_threads</span> <span class="o">=</span> <span class="n">num_workers</span>
+                <span class="n">session_options</span><span class="o">.</span><span class="n">intra_op_num_threads</span> <span class="o">=</span> <span class="n">num_workers</span>
+
+        <span class="n">providers</span> <span class="o">=</span> <span class="n">device_to_providers</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sess</span> <span class="o">=</span> <span class="n">onnxruntime</span><span class="o">.</span><span class="n">InferenceSession</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">path</span><span class="o">.</span><span class="n">SerializeToString</span><span class="p">(),</span>
+            <span class="n">sess_options</span><span class="o">=</span><span class="n">session_options</span><span class="p">,</span>
             <span class="n">providers</span><span class="o">=</span><span class="n">providers</span><span class="p">,</span>
         <span class="p">)</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Interference session&quot;&quot;&quot;</span>
@@ -506,39 +537,6 @@
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">to_yaml</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">include_version</span><span class="o">=</span><span class="n">include_version</span><span class="p">)</span></div></div>
 
 
-<span class="k">def</span> <span class="nf">_device_to_providers</span><span class="p">(</span>
-        <span class="n">device</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span>
-            <span class="nb">str</span><span class="p">,</span>
-            <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">],</span>
-            <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">]]],</span>
-        <span class="p">],</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">]]]:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Converts device into a list of providers.&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">device</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">device</span> <span class="o">==</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
-            <span class="n">providers</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;CPUExecutionProvider&#39;</span><span class="p">]</span>
-        <span class="k">elif</span> <span class="n">device</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;cuda&#39;</span><span class="p">):</span>
-            <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^cuda:(\d+)$&#39;</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
-                <span class="n">device_id</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-                <span class="n">providers</span> <span class="o">=</span> <span class="p">[</span>
-                    <span class="p">(</span>
-                        <span class="s1">&#39;CUDAExecutionProvider&#39;</span><span class="p">,</span> <span class="p">{</span>
-                            <span class="s1">&#39;device_id&#39;</span><span class="p">:</span> <span class="n">device_id</span><span class="p">,</span>
-                        <span class="p">}</span>
-                    <span class="p">),</span>
-                <span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">providers</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;CUDAExecutionProvider&#39;</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">providers</span> <span class="o">=</span> <span class="p">[</span><span class="n">device</span><span class="p">]</span>
-    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">device</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
-        <span class="n">providers</span> <span class="o">=</span> <span class="p">[</span><span class="n">device</span><span class="p">]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">providers</span> <span class="o">=</span> <span class="n">device</span>
-    <span class="k">return</span> <span class="n">providers</span>
-
-
 <span class="k">def</span> <span class="nf">_concat</span><span class="p">(</span>
         <span class="n">y</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
         <span class="n">shapes</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
@@ -624,7 +622,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/11/10 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/12/18 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

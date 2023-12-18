@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                v0.6.5
+                v0.7.0
               </div>
             
           
@@ -145,6 +145,7 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>  <span class="c1"># noqa: F401, needed for doctest</span>
 <span class="kn">import</span> <span class="nn">onnx</span>
+<span class="kn">import</span> <span class="nn">onnxruntime</span>
 
 <span class="kn">from</span> <span class="nn">audonnx.core.function</span> <span class="kn">import</span> <span class="n">Function</span>
 <span class="kn">from</span> <span class="nn">audonnx.core.model</span> <span class="kn">import</span> <span class="n">Model</span>
@@ -158,6 +159,8 @@
         <span class="n">dtype</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">onnx</span><span class="o">.</span><span class="n">TensorProto</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">,</span>
         <span class="n">opset_version</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">14</span><span class="p">,</span>
         <span class="n">device</span><span class="p">:</span> <span class="n">Device</span> <span class="o">=</span> <span class="s1">&#39;cpu&#39;</span><span class="p">,</span>
+        <span class="n">num_workers</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">session_options</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">onnxruntime</span><span class="o">.</span><span class="n">SessionOptions</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Model</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create test model.</span>
 
@@ -178,7 +181,25 @@
 <span class="sd">        opset_version: opset version</span>
 <span class="sd">        device: set device</span>
 <span class="sd">            (``&#39;cpu&#39;``, ``&#39;cuda&#39;``, or ``&#39;cuda:&lt;id&gt;&#39;``)</span>
-<span class="sd">            or a (list of) provider(s)_</span>
+<span class="sd">            or a (list of) `provider(s)`_</span>
+<span class="sd">        num_workers: number of threads for running</span>
+<span class="sd">            onnxruntime inference on cpu.</span>
+<span class="sd">            If ``None`` and ``session_options`` is ``None``,</span>
+<span class="sd">            onnxruntime chooses the number of threads</span>
+<span class="sd">        session_options: :class:`onnxruntime.SessionOptions`</span>
+<span class="sd">            to use for inference.</span>
+<span class="sd">            If ``None`` the default options are used</span>
+<span class="sd">            and the number of threads</span>
+<span class="sd">            for running inference on cpu</span>
+<span class="sd">            is determined by ``num_workers``.</span>
+<span class="sd">            Otherwise,</span>
+<span class="sd">            the provided options are used</span>
+<span class="sd">            and the ``session_options`` properties</span>
+<span class="sd">            :attr:`~onnxruntime.SessionOptions.inter_op_num_threads`</span>
+<span class="sd">            and :attr:`~onnxruntime.SessionOptions.intra_op_num_threads`</span>
+<span class="sd">            determine the number of threads</span>
+<span class="sd">            for inference on cpu</span>
+<span class="sd">            and ``num_workers`` is ignored</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        model object</span>
@@ -214,6 +235,7 @@
 <span class="sd">                [0., 0.]]], dtype=float32)}</span>
 
 <span class="sd">    .. _`supported data types`: https://onnxruntime.ai/docs/reference/operators/custom-python-operator.html#supported-data-types</span>
+<span class="sd">    .. _`provider(s)`: https://onnxruntime.ai/docs/execution-providers/</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
     <span class="c1"># create graph</span>
@@ -242,6 +264,8 @@
         <span class="nb">object</span><span class="p">,</span>
         <span class="n">transform</span><span class="o">=</span><span class="n">transform</span><span class="p">,</span>
         <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
+        <span class="n">num_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">,</span>
+        <span class="n">session_options</span><span class="o">=</span><span class="n">session_options</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">model</span></div>
@@ -389,7 +413,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/11/10 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/12/18 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

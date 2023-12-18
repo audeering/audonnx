@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                v0.6.5
+                v0.7.0
               </div>
             
           
@@ -105,6 +105,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#version-0-7-0-2023-12-18">Version 0.7.0 (2023-12-18)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-6-5-2023-11-10">Version 0.6.5 (2023-11-10)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-6-4-2023-11-10">Version 0.6.4 (2023-11-10)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-6-3-2023-01-03">Version 0.6.3 (2023-01-03)</a></li>
@@ -170,6 +171,26 @@
 <p>All notable changes to this project will be documented in this file.</p>
 <p>The format is based on <a class="reference external" href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>,
 and this project adheres to <a class="reference external" href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
+<div class="section" id="version-0-7-0-2023-12-18">
+<h2>Version 0.7.0 (2023-12-18)<a class="headerlink" href="#version-0-7-0-2023-12-18" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Added: <code class="docutils literal notranslate"><span class="pre">audonnx.device_to_providers()</span></code>
+to convert device names
+to ONNX runtime providers</p></li>
+<li><p>Added: <code class="docutils literal notranslate"><span class="pre">num_workers</span></code> argument
+to <code class="docutils literal notranslate"><span class="pre">audonnx.Model</span></code>,
+<code class="docutils literal notranslate"><span class="pre">audonnx.load()</span></code>,
+and <code class="docutils literal notranslate"><span class="pre">audonnx.testing.create_model()</span></code>.
+Its default value is <code class="docutils literal notranslate"><span class="pre">1</span></code>,
+whereas before ONNX runtime
+was selecting all available workers</p></li>
+<li><p>Added: <code class="docutils literal notranslate"><span class="pre">session_options</span></code> argument
+to <code class="docutils literal notranslate"><span class="pre">audonnx.Model</span></code>,
+<code class="docutils literal notranslate"><span class="pre">audonnx.load()</span></code>,
+and <code class="docutils literal notranslate"><span class="pre">audonnx.testing.create_model()</span></code>
+to provide ONNX runtime options</p></li>
+</ul>
+</div>
 <div class="section" id="version-0-6-5-2023-11-10">
 <h2>Version 0.6.5 (2023-11-10)<a class="headerlink" href="#version-0-6-5-2023-11-10" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
@@ -181,6 +202,7 @@ and this project adheres to <a class="reference external" href="https://semver.o
 <ul class="simple">
 <li><p>Added: pre-processing step in the documentation
 on how to quantize an ONNX model</p></li>
+<li><p>Added: support for Python 3.11</p></li>
 <li><p>Removed: support for Python 3.7</p></li>
 </ul>
 </div>
@@ -376,7 +398,7 @@ as we no longer depend on it</p></li>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/11/10 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/12/18 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

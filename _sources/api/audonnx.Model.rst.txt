@@ -66,6 +66,10 @@ sess
 ----
 .. autoattribute:: Model.sess
     
+short\_id
+---------
+.. autoattribute:: Model.short_id
+    
 to\_dict\(\)
 ------------
 .. automethod:: Model.to_dict
