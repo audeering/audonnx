@@ -61,7 +61,7 @@ class Model(audobject.Object):
             and the ``session_options`` properties
             inter_op_num_threads_ and intra_op_num_threads_
             determine the number of threads
-            for inference on cpu and ``num_workers`` is ignored.
+            for inference on cpu and ``num_workers`` is ignored
 
     Examples:
         >>> import audiofile

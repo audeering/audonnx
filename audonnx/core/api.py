@@ -58,7 +58,7 @@ def load(
             and the ``session_options`` properties
             inter_op_num_threads_ and intra_op_num_threads_
             determine the number of threads
-            for inference on cpu and ``num_workers`` is ignored.
+            for inference on cpu and ``num_workers`` is ignored
         auto_install: install missing packages needed to create the object
 
     .. _`provider(s)`: https://onnxruntime.ai/docs/execution-providers/
