@@ -59,6 +59,7 @@ copybutton_prompt_is_regexp = True
 intersphinx_mapping = {
     'audobject': ('https://audeering.github.io/audobject/', None),
     'python': ('https://docs.python.org/3/', None),
+    'onnxruntime': ('https://onnxruntime.ai/docs/api/python/', None),
     'opensmile': ('https://audeering.github.io/opensmile-python/', None),
     'torch': ('https://pytorch.org/docs/stable/', None),
 }
