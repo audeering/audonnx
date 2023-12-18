@@ -1,6 +1,7 @@
 import os
 import typing
 
+import onnxruntime
 import oyaml as yaml
 
 import audeer
@@ -21,6 +22,7 @@ def load(
             typing.Sequence[typing.Union[str, typing.Tuple[str, typing.Dict]]],
         ] = 'cpu',
         num_workers: typing.Optional[int] = 1,
+        session_options: typing.Optional[onnxruntime.SessionOptions] = None,
         auto_install: bool = False,
 ) -> Model:
     r"""Load model from folder.
@@ -44,13 +46,28 @@ def load(
         transform_file: YAML file with transformation
         device: set device
             (``'cpu'``, ``'cuda'``, or ``'cuda:<id>'``)
-            or a (list of) provider_
+            or a (list of) `provider(s)`_
         num_workers: number of threads for running
             onnxruntime inference on cpu.
-            If ``None`` onnxruntime chooses the number of threads
+            If ``None`` and ``session_options`` is ``None``,
+            onnxruntime chooses the number of threads
+        session_options: :class:`onnxruntime.SessionOptions`
+            to use for inference.
+            If ``None`` the default options are used
+            and the number of threads
+            for running inference on cpu
+            is determined by ``num_workers``.
+            Otherwise,
+            the provided options are used
+            and the ``session_options`` properties
+            :attr:`~onnxruntime.SessionOptions.inter_op_num_threads`
+            and :attr:`~onnxruntime.SessionOptions.intra_op_num_threads`
+            determine the number of threads
+            for inference on cpu
+            and ``num_workers`` is ignored
         auto_install: install missing packages needed to create the object
 
-    .. _provider: https://onnxruntime.ai/docs/execution-providers/
+    .. _`provider(s)`: https://onnxruntime.ai/docs/execution-providers/
 
     Returns:
         model
@@ -90,6 +107,7 @@ def load(
                 override_args={
                     'device': device,
                     'num_workers': num_workers,
+                    'session_options': session_options,
                 },
             )
 
@@ -117,6 +135,7 @@ def load(
         transform=transform,
         device=device,
         num_workers=num_workers,
+        session_options=session_options,
     )
 
     return model

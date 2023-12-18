@@ -2,6 +2,7 @@ import typing
 
 import numpy as np  # noqa: F401, needed for doctest
 import onnx
+import onnxruntime
 
 from audonnx.core.function import Function
 from audonnx.core.model import Model
@@ -16,6 +17,7 @@ def create_model(
         opset_version: int = 14,
         device: Device = 'cpu',
         num_workers: typing.Optional[int] = 1,
+        session_options: typing.Optional[onnxruntime.SessionOptions] = None,
 ) -> Model:
     r"""Create test model.
 
@@ -36,10 +38,25 @@ def create_model(
         opset_version: opset version
         device: set device
             (``'cpu'``, ``'cuda'``, or ``'cuda:<id>'``)
-            or a (list of) provider(s)_
+            or a (list of) `provider(s)`_
         num_workers: number of threads for running
             onnxruntime inference on cpu.
-            If ``None`` onnxruntime chooses the number of threads
+            If ``None`` and ``session_options`` is ``None``,
+            onnxruntime chooses the number of threads
+        session_options: :class:`onnxruntime.SessionOptions`
+            to use for inference.
+            If ``None`` the default options are used
+            and the number of threads
+            for running inference on cpu
+            is determined by ``num_workers``.
+            Otherwise,
+            the provided options are used
+            and the ``session_options`` properties
+            :attr:`~onnxruntime.SessionOptions.inter_op_num_threads`
+            and :attr:`~onnxruntime.SessionOptions.intra_op_num_threads`
+            determine the number of threads
+            for inference on cpu
+            and ``num_workers`` is ignored
 
     Returns:
         model object
@@ -75,6 +92,7 @@ def create_model(
                 [0., 0.]]], dtype=float32)}
 
     .. _`supported data types`: https://onnxruntime.ai/docs/reference/operators/custom-python-operator.html#supported-data-types
+    .. _`provider(s)`: https://onnxruntime.ai/docs/execution-providers/
 
     """  # noqa: E501
     # create graph
@@ -104,6 +122,7 @@ def create_model(
         transform=transform,
         device=device,
         num_workers=num_workers,
+        session_options=session_options,
     )
 
     return model

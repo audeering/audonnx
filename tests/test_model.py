@@ -1,4 +1,5 @@
 import numpy as np
+import onnxruntime
 import pytest
 
 import audeer
@@ -230,9 +231,21 @@ def test_call_concat(model, outputs, expected):
 
 @pytest.mark.parametrize('device', ['cpu', 'cuda:0'])
 @pytest.mark.parametrize('num_workers', [None, 1, 2])
-def test_call_num_workers(device, num_workers):
+@pytest.mark.parametrize(
+    'session_options',
+    [
+        None,
+        onnxruntime.SessionOptions(),
+    ]
+)
+def test_call_num_workers_session_options(
+    device, num_workers, session_options
+):
     model = audonnx.testing.create_model(
-        [[2]], device=device, num_workers=num_workers
+        [[2]],
+        device=device,
+        num_workers=num_workers,
+        session_options=session_options,
     )
     y = model(
         pytest.SIGNAL,
