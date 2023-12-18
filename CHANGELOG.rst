@@ -19,8 +19,7 @@ Version 0.7.0 (2023-12-18)
   and ``audonnx.testing.create_model()``.
   It's default value is ``1``,
   whereas before ONNX runtime
-  was selecting as many workers
-  as were available
+  was selecting all available workers
 * Added: ``session_options`` argument
   to ``audonnx.Model``,
   ``audonnx.load()``,
