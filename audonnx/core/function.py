@@ -16,7 +16,7 @@ class Function(audobject.Object):
     Examples:
         >>> object = Function(lambda x, sr: float(x.mean()))
         >>> object
-        {'$audonnx.core.function.Function': {'func': 'lambda x, sr: x.mean()', 'func_args': {}}}
+        {'$audonnx.core.function.Function': {'func': 'lambda x, sr: float(x.mean())', 'func_args': {}}}
         >>> object(np.array([1, 2, 3]), 10)
         2.0
 
