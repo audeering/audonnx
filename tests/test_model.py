@@ -10,6 +10,7 @@ import audonnx.testing
 def min_max(x, sr):
     return [x.min(), x.max()]
 
+# Debug line to trigger test pipeline
 
 @pytest.mark.parametrize(
     'model, outputs, expected',
