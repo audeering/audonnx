@@ -18,7 +18,7 @@ class Function(audobject.Object):
         >>> object
         {'$audonnx.core.function.Function': {'func': 'lambda x, sr: x.mean()', 'func_args': {}}}
         >>> object(np.array([1, 2, 3]), 10)
-        2.0
+        np.float64(2.0)
 
     """  # noqa: E501
     @audobject.init_decorator(

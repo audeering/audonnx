@@ -15,6 +15,7 @@ def create_model(
         value: float = 0.,
         dtype: int = onnx.TensorProto.FLOAT,
         opset_version: int = 14,
+        ir_version: int = 10,
         device: Device = 'cpu',
         num_workers: typing.Optional[int] = 1,
         session_options: typing.Optional[onnxruntime.SessionOptions] = None,
@@ -36,6 +37,7 @@ def create_model(
         value: fill value
         dtype: data type, see `supported data types`_
         opset_version: opset version
+        ir_version: ir version
         device: set device
             (``'cpu'``, ``'cuda'``, or ``'cuda:<id>'``)
             or a (list of) `provider(s)`_
@@ -101,6 +103,7 @@ def create_model(
         shapes,
         dtype=dtype,
         opset_version=opset_version,
+        ir_version=ir_version
     )
 
     # create transform objects
@@ -133,6 +136,7 @@ def create_model_proto(
         *,
         dtype: int = onnx.TensorProto.FLOAT,
         opset_version: int = 14,
+        ir_version: int = 10,
 ) -> onnx.ModelProto:
     r"""Create test ONNX proto object.
 
@@ -153,16 +157,14 @@ def create_model_proto(
             input and output nodes of the model graph
         dtype: data type, see `supported data types`_
         opset_version: opset version
+        ir_version: ir version
 
     Returns:
         ONNX object
 
     Examples:
         >>> create_model_proto([[2]])
-        ir_version: 9
-        opset_import {
-          version: 14
-        }
+        ir_version: 10
         producer_name: "test"
         graph {
           node {
@@ -197,6 +199,9 @@ def create_model_proto(
               }
             }
           }
+        }
+        opset_import {
+          version: 14
         }
         <BLANKLINE>
 
@@ -244,6 +249,7 @@ def create_model_proto(
 
     model = onnx.helper.make_model(graph, producer_name='test')
     model.opset_import[0].version = opset_version
+    model.ir_version = ir_version
     onnx.checker.check_model(model)
 
     return model
