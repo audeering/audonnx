@@ -14,11 +14,11 @@ class Function(audobject.Object):
         func_args: additional arguments that will be passed to the function
 
     Examples:
-        >>> object = Function(lambda x, sr: x.mean())
+        >>> object = Function(lambda x, sr: float(x.mean()))
         >>> object
-        {'$audonnx.core.function.Function': {'func': 'lambda x, sr: x.mean()', 'func_args': {}}}
+        {'$audonnx.core.function.Function': {'func': 'lambda x, sr: float(x.mean())', 'func_args': {}}}
         >>> object(np.array([1, 2, 3]), 10)
-        np.float64(2.0)
+        2.0
 
     """  # noqa: E501
     @audobject.init_decorator(
