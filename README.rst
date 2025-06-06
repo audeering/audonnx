@@ -24,7 +24,7 @@ Have a look at the installation_ and usage_ instructions.
 .. _scikit-learn: https://scikit-learn.org
 .. _TensorFlow: https://www.tensorflow.org
 .. _Torch: https://pytorch.org/
-.. _installation: https://audeering.github.io/audonnx/install.html
+.. _installation: https://audeering.github.io/audonnx/installation.html
 .. _usage: https://audeering.github.io/audonnx/usage.html
 
 

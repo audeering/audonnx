@@ -511,10 +511,10 @@ In that case do:
 
 
 .. _audformat: https://audeering.github.io/audformat/
-.. _audinterface: http://tools.pp.audeering.com/audinterface/
-.. _audobject: http://tools.pp.audeering.com/audobject/
+.. _audinterface: https://audeering.github.io/audinterface/
+.. _audobject: https://audeering.github.io/audobject/
 .. _librosa: https://librosa.org/doc/main/index.html
-.. _MobilenetV2 example: https://github.com/microsoft/onnxruntime-inference-examples/blob/main/quantization/image_classification/cpu/ReadMe.md#onnx-runtime-quantization-example
+.. _MobilenetV2 example: https://github.com/microsoft/onnxruntime-inference-examples/blob/main/quantization/image_classification/cpu/ReadMe.md
 .. _ONNX: https://onnx.ai/
 .. _OpenSMILE: https://github.com/audeering/opensmile-python
 .. _table: https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html#requirements
