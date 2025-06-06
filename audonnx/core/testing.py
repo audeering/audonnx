@@ -15,7 +15,7 @@ def create_model(
         value: float = 0.,
         dtype: int = onnx.TensorProto.FLOAT,
         opset_version: int = 14,
-        ir_version: int = 10,
+        ir_version: int = 7,
         device: Device = 'cpu',
         num_workers: typing.Optional[int] = 1,
         session_options: typing.Optional[onnxruntime.SessionOptions] = None,
@@ -136,7 +136,7 @@ def create_model_proto(
         *,
         dtype: int = onnx.TensorProto.FLOAT,
         opset_version: int = 14,
-        ir_version: int = 10,
+        ir_version: int = 7,
 ) -> onnx.ModelProto:
     r"""Create test ONNX proto object.
 
@@ -164,7 +164,7 @@ def create_model_proto(
 
     Examples:
         >>> create_model_proto([[2]])
-        ir_version: 10
+        ir_version: 7
         producer_name: "test"
         graph {
           node {
