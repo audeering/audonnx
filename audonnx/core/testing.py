@@ -110,15 +110,11 @@ def create_model(
 
     # create transform objects
 
-    transform = {}
-    for idx, shape in enumerate(shapes):
-        transform[f'input-{idx}'] = Function(
-            reshape,
-            func_args={
-                'shape': shape,
-                'value': value,
-            },
-        )
+    transform = {
+        f'input-{idx}':
+        Function(reshape, func_args={'shape': shape, 'value': value})
+        for idx, shape in enumerate(shapes)
+    }
 
     # create model
 
