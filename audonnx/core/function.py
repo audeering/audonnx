@@ -23,16 +23,17 @@ class Function(audobject.Object):
         2.0
 
     """  # noqa: E501
+
     @audobject.init_decorator(
         resolvers={
-            'func': audobject.resolver.Function,
+            "func": audobject.resolver.Function,
         }
     )
     def __init__(
-            self,
-            func: Callable,
-            *,
-            func_args: dict[str, object] | None = None,
+        self,
+        func: Callable,
+        *,
+        func_args: dict[str, object] | None = None,
     ):
         self.func = func
         r"""Function"""
@@ -40,9 +41,9 @@ class Function(audobject.Object):
         r"""Additional function arguments"""
 
     def __call__(
-            self,
-            signal: np.ndarray,
-            sampling_rate: int,
+        self,
+        signal: np.ndarray,
+        sampling_rate: int,
     ) -> np.ndarray:
         r"""Transform input signal.
 

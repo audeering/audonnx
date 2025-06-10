@@ -5,11 +5,7 @@ import re
 
 
 def device_to_providers(
-        device: (
-            str
-            | tuple[str, dict]
-            | Sequence[str | tuple[str, dict]]
-        ),
+    device: (str | tuple[str, dict] | Sequence[str | tuple[str, dict]]),
 ) -> Sequence[str | tuple[str, dict]]:
     r"""Converts device into a list of providers.
 
@@ -23,28 +19,29 @@ def device_to_providers(
         sequence of `ONNX Runtime Execution Providers`_
 
     Examples:
-        >>> device_to_providers('cpu')
+        >>> device_to_providers("cpu")
         ['CPUExecutionProvider']
 
     .. _ONNX Runtime Execution Providers: https://onnxruntime.ai/docs/execution-providers/
 
     """
     if isinstance(device, str):
-        if device == 'cpu':
-            providers = ['CPUExecutionProvider']
-        elif device.startswith('cuda'):
-            match = re.search(r'^cuda:(\d+)$', device)
+        if device == "cpu":
+            providers = ["CPUExecutionProvider"]
+        elif device.startswith("cuda"):
+            match = re.search(r"^cuda:(\d+)$", device)
             if match:
                 device_id = match.group(1)
                 providers = [
                     (
-                        'CUDAExecutionProvider', {
-                            'device_id': device_id,
-                        }
+                        "CUDAExecutionProvider",
+                        {
+                            "device_id": device_id,
+                        },
                     ),
                 ]
             else:
-                providers = ['CUDAExecutionProvider']
+                providers = ["CUDAExecutionProvider"]
         else:
             providers = [device]
     elif isinstance(device, tuple):

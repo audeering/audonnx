@@ -11,10 +11,10 @@ import audonnx.testing
 def force_package_rescan():
     """Force a rescan of installed packages."""
     # Clear importlib.metadata caches
-    if hasattr(importlib.metadata, '_cache'):
+    if hasattr(importlib.metadata, "_cache"):
         importlib.metadata._cache.clear()
     # Clear distribution cache
-    if hasattr(importlib.metadata.distributions, 'cache_clear'):
+    if hasattr(importlib.metadata.distributions, "cache_clear"):
         importlib.metadata.distributions.cache_clear()
     # Rescan packages
     importlib.metadata.distributions()
@@ -27,9 +27,9 @@ def uninstall(
     # uninstall package
     subprocess.check_call(
         [
-            'uv',
-            'pip',
-            'uninstall',
+            "uv",
+            "pip",
+            "uninstall",
             package,
         ]
     )
@@ -42,19 +42,18 @@ def uninstall(
 
 
 def test(tmpdir):
-
     object = audonnx.testing.create_model_proto([pytest.FEATURE_SHAPE])
     model = audonnx.Model(
         object,
         transform=pytest.FEATURE,
     )
-    model_path = os.path.join(tmpdir, 'model.yaml')
+    model_path = os.path.join(tmpdir, "model.yaml")
     model.to_yaml(model_path)
 
     # Removing the package does not work under Windows
     # as the DLL file cannot be unloaded
-    if not sys.platform == 'win32':
-        uninstall('opensmile', 'opensmile')
+    if not sys.platform == "win32":
+        uninstall("opensmile", "opensmile")
 
         with pytest.raises(ModuleNotFoundError):
             audonnx.load(tmpdir)

@@ -9,9 +9,7 @@ import audiofile
 import opensmile
 
 
-pytest.ROOT = audeer.path(
-    os.path.dirname(os.path.realpath(__file__))
-)
+pytest.ROOT = audeer.path(os.path.dirname(os.path.realpath(__file__)))
 pytest.TMP = audeer.mkdir(
     os.path.join(
         pytest.ROOT,
@@ -19,7 +17,7 @@ pytest.TMP = audeer.mkdir(
     )
 )
 pytest.SIGNAL, pytest.SAMPLING_RATE = audiofile.read(
-    os.path.join(pytest.ROOT, 'test.wav'),
+    os.path.join(pytest.ROOT, "test.wav"),
     always_2d=True,
 )
 
@@ -37,12 +35,13 @@ pytest.FEATURE_SHAPE = pytest.FEATURE(
 
 # clean up
 
-@pytest.fixture(scope='session', autouse=True)
+
+@pytest.fixture(scope="session", autouse=True)
 def cleanup_session():
     path = os.path.join(
         pytest.TMP,
-        '..',
-        '.coverage.*',
+        "..",
+        ".coverage.*",
     )
     for file in glob.glob(path):
         os.remove(file)

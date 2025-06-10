@@ -75,13 +75,13 @@ class Model(audobject.Object):
         >>> import audiofile
         >>> import opensmile
         >>> transform = opensmile.Smile(
-        ...    opensmile.FeatureSet.GeMAPSv01b,
-        ...    opensmile.FeatureLevel.LowLevelDescriptors,
+        ...     opensmile.FeatureSet.GeMAPSv01b,
+        ...     opensmile.FeatureLevel.LowLevelDescriptors,
         ... )
-        >>> path = os.path.join('tests', 'model.onnx')
+        >>> path = os.path.join("tests", "model.onnx")
         >>> model = Model(
         ...     path,
-        ...     labels=['female', 'male'],
+        ...     labels=["female", "male"],
         ...     transform=transform,
         ... )
         >>> model
@@ -95,49 +95,48 @@ class Model(audobject.Object):
             shape: [2]
             dtype: tensor(float)
             labels: [female, male]
-        >>> path = os.path.join('tests', 'test.wav')
+        >>> path = os.path.join("tests", "test.wav")
         >>> signal, sampling_rate = audiofile.read(path)
         >>> model(
         ...     signal,
         ...     sampling_rate,
-        ...     outputs='gender',
+        ...     outputs="gender",
         ... ).round(1)
         array([-195.1,   73.3], dtype=float32)
 
     .. _`provider(s)`: https://onnxruntime.ai/docs/execution-providers/
 
     """
+
     @audobject.init_decorator(
         borrow={
-            'labels': '_original_args',
-            'transform': '_original_args',
+            "labels": "_original_args",
+            "transform": "_original_args",
         },
         resolvers={
-            'path': audobject.resolver.FilePath,
+            "path": audobject.resolver.FilePath,
         },
         hide=[
-            'device',
-            'num_workers',
-            'session_options',
+            "device",
+            "num_workers",
+            "session_options",
         ],
     )
     def __init__(
-            self,
-            path: str | onnx.ModelProto,
-            *,
-            labels: Labels | None = None,
-            transform: Transform | None = None,
-            device: Device = 'cpu',
-            num_workers: int | None = 1,
-            session_options: (
-                onnxruntime.SessionOptions | None
-            ) = None,
+        self,
+        path: str | onnx.ModelProto,
+        *,
+        labels: Labels | None = None,
+        transform: Transform | None = None,
+        device: Device = "cpu",
+        num_workers: int | None = 1,
+        session_options: (onnxruntime.SessionOptions | None) = None,
     ):
         # keep original arguments to store them
         # when object is serialized
         self._original_args = {
-            'labels': labels,
-            'transform': transform,
+            "labels": labels,
+            "transform": transform,
         }
 
         self.path = audeer.path(path) if isinstance(path, str) else None
@@ -165,10 +164,10 @@ class Model(audobject.Object):
             if len(inputs) != 1:
                 names = [input.name for input in inputs]
                 raise ValueError(
-                    f'Model has multiple input nodes. '
-                    f'Please use a dictionary to assign '
-                    f'transform object to one of '
-                    f'{names}.'
+                    f"Model has multiple input nodes. "
+                    f"Please use a dictionary to assign "
+                    f"transform object to one of "
+                    f"{names}."
                 )
             transform = {inputs[0].name: transform}
 
@@ -177,10 +176,10 @@ class Model(audobject.Object):
             if len(outputs) != 1:
                 names = [output.name for output in outputs]
                 raise ValueError(
-                    f'Model has multiple output nodes. '
-                    f'Please use a dictionary to assign '
-                    f'labels to one of '
-                    f'{names}.'
+                    f"Model has multiple output nodes. "
+                    f"Please use a dictionary to assign "
+                    f"labels to one of "
+                    f"{names}."
                 )
             labels = {outputs[0].name: labels}
 
@@ -215,8 +214,7 @@ class Model(audobject.Object):
             elif dim_size == 1:
                 lab = [output.name]
             else:
-                lab = [f'{output.name}-{idx}'
-                       for idx in range(dim_size)]
+                lab = [f"{output.name}-{idx}" for idx in range(dim_size)]
             self.outputs[output.name] = OutputNode(
                 shape,
                 output.type,
@@ -224,21 +222,19 @@ class Model(audobject.Object):
             )
 
     @audeer.deprecated_keyword_argument(
-        deprecated_argument='output_names',
-        removal_version='1.2.0',
-        new_argument='outputs',
+        deprecated_argument="output_names",
+        removal_version="1.2.0",
+        new_argument="outputs",
     )
     def __call__(
-            self,
-            signal: np.ndarray,
-            sampling_rate: int,
-            *,
-            outputs: str | Sequence[str] | None = None,
-            concat: bool = False,
-            squeeze: bool = False,
-    ) -> (
-        np.ndarray | dict[str, np.ndarray]
-    ):
+        self,
+        signal: np.ndarray,
+        sampling_rate: int,
+        *,
+        outputs: str | Sequence[str] | None = None,
+        concat: bool = False,
+        squeeze: bool = False,
+    ) -> np.ndarray | dict[str, np.ndarray]:
         r"""Compute output for one or more nodes.
 
         If ``outputs`` is a plain string,
@@ -303,18 +299,14 @@ class Model(audobject.Object):
         if isinstance(outputs, str):
             z = z[0]
         else:
-            z = {
-                name: values for name, values in zip(outputs, z)
-            }
+            z = {name: values for name, values in zip(outputs, z)}
             if concat:
                 shapes = [self.outputs[node].shape for node in outputs]
                 z = _concat(z, shapes)
 
         if squeeze:
             if isinstance(z, dict):
-                z = {
-                    name: values.squeeze() for name, values in z.items()
-                }
+                z = {name: values.squeeze() for name, values in z.items()}
             else:
                 z = z.squeeze()
 
@@ -323,12 +315,8 @@ class Model(audobject.Object):
     def __repr__(self) -> str:
         r"""Printable representation of model."""
         d = {
-            'Input': {
-                name: node._dict() for name, node in self.inputs.items()
-            },
-            'Output': {
-                name: node._dict() for name, node in self.outputs.items()
-            }
+            "Input": {name: node._dict() for name, node in self.inputs.items()},
+            "Output": {name: node._dict() for name, node in self.outputs.items()},
         }
         return yaml.dump(d, default_flow_style=None).strip()
 
@@ -337,8 +325,8 @@ class Model(audobject.Object):
         return repr(self)
 
     def labels(
-            self,
-            outputs: str | Sequence[str] | None = None,
+        self,
+        outputs: str | Sequence[str] | None = None,
     ) -> Sequence[str]:
         r"""Collect labels of output nodes.
 
@@ -360,10 +348,10 @@ class Model(audobject.Object):
         return names
 
     def to_yaml(
-            self,
-            path: str,
-            *,
-            include_version: bool = True,
+        self,
+        path: str,
+        *,
+        include_version: bool = True,
     ):
         r"""Save model to YAML file.
 
@@ -381,23 +369,23 @@ class Model(audobject.Object):
 
         """
         path = audeer.path(path)
-        if not audeer.file_extension(path) == 'yaml':
+        if not audeer.file_extension(path) == "yaml":
             raise ValueError(f"Model path {path} does not end on '.yaml'")
 
         if self.path is None:
             # if model was loaded from a byte stream,
             # we have to save it first
-            self.path = audeer.replace_file_extension(path, 'onnx')
+            self.path = audeer.replace_file_extension(path, "onnx")
             audeer.mkdir(os.path.dirname(path))
             onnx.save(self.sess._model_bytes, self.path)
 
-        with open(path, 'w') as fp:
+        with open(path, "w") as fp:
             super().to_yaml(fp, include_version=include_version)
 
 
 def _concat(
-        y: dict[str, np.ndarray],
-        shapes: Sequence[list[int]],
+    y: dict[str, np.ndarray],
+    shapes: Sequence[list[int]],
 ):
     r"""Flatten dictionary by concatenating values."""
     y = list(y.values())
@@ -409,13 +397,13 @@ def _concat(
     axis = _concat_axis(shapes)
     if axis is None:
         raise RuntimeError(
-            f'To concatenate outputs '
-            f'number of dimensions, '
-            f'position of dynamic axis, '
-            f'and all dimensions except the last non-dynamic axis '
-            f'must match. '
-            f'This does not apply to: '
-            f'{shapes}'
+            f"To concatenate outputs "
+            f"number of dimensions, "
+            f"position of dynamic axis, "
+            f"and all dimensions except the last non-dynamic axis "
+            f"must match. "
+            f"This does not apply to: "
+            f"{shapes}"
         )
 
     return np.concatenate(y, axis=axis)
@@ -435,7 +423,7 @@ def _concat_axis(shapes: Sequence[int]) -> int | None:
     axis = len(shapes[0]) - (2 if shapes[0][-1] == -1 else 1)
 
     # remove concat axis
-    shapes_wo_axis = [shape[:axis] + shape[axis + 1:] for shape in shapes]
+    shapes_wo_axis = [shape[:axis] + shape[axis + 1 :] for shape in shapes]
 
     # non-concat dimensions do not match
     if not all(map(shapes_wo_axis[0].__eq__, shapes_wo_axis)):
@@ -453,7 +441,7 @@ def _dynamic_axis(shape: Sequence[int]) -> int | None:
 
 
 def _last_static_dim_size(
-        shape: list[int],
+    shape: list[int],
 ) -> int:
     r"""Return size of last static dimension."""
     shape = list(filter((-1).__ne__, shape))
@@ -461,7 +449,7 @@ def _last_static_dim_size(
 
 
 def _shape(
-        shape: list[int | str],
+    shape: list[int | str],
 ) -> list[int]:
     r"""Replace dynamic dimensions with -1."""
     return [-1 if not isinstance(x, int) else x for x in shape]

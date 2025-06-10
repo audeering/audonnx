@@ -13,19 +13,15 @@ from audonnx.core.model import Model
 
 
 def load(
-        root: str,
-        *,
-        model_file: str = 'model.yaml',
-        labels_file: str = 'labels.yaml',
-        transform_file: str = 'transform.yaml',
-        device: (
-            str
-            | tuple[str, dict]
-            | Sequence[str | tuple[str, dict]]
-        ) = 'cpu',
-        num_workers: int | None = 1,
-        session_options: onnxruntime.SessionOptions | None = None,
-        auto_install: bool = False,
+    root: str,
+    *,
+    model_file: str = "model.yaml",
+    labels_file: str = "labels.yaml",
+    transform_file: str = "transform.yaml",
+    device: (str | tuple[str, dict] | Sequence[str | tuple[str, dict]]) = "cpu",
+    num_workers: int | None = 1,
+    session_options: onnxruntime.SessionOptions | None = None,
+    auto_install: bool = False,
 ) -> Model:
     r"""Load model from folder.
 
@@ -75,7 +71,7 @@ def load(
         model
 
     Examples:
-        >>> model = load('tests')
+        >>> model = load("tests")
         >>> model
         Input:
           feature:
@@ -91,9 +87,9 @@ def load(
     """  # noqa: E501
     root = audeer.path(root)
     model_file = os.path.join(root, model_file)
-    model_file_yaml = audeer.replace_file_extension(model_file, 'yaml')
-    if audeer.file_extension(model_file) == 'yaml':
-        model_file_onnx = audeer.replace_file_extension(model_file, 'onnx')
+    model_file_yaml = audeer.replace_file_extension(model_file, "yaml")
+    if audeer.file_extension(model_file) == "yaml":
+        model_file_onnx = audeer.replace_file_extension(model_file, "onnx")
     else:
         model_file_onnx = model_file
 
@@ -102,14 +98,14 @@ def load(
     if os.path.exists(model_file_yaml):
         with open(model_file_yaml) as f:
             first_line = f.readline()
-        if first_line.startswith('$audonnx'):  # ensure correct object
+        if first_line.startswith("$audonnx"):  # ensure correct object
             return audobject.from_yaml(
                 model_file_yaml,
                 auto_install=auto_install,
                 override_args={
-                    'device': device,
-                    'num_workers': num_workers,
-                    'session_options': session_options,
+                    "device": device,
+                    "num_workers": num_workers,
+                    "session_options": session_options,
                 },
             )
 
@@ -121,7 +117,7 @@ def load(
 
     labels = None
     if os.path.exists(labels_file):
-        with open(labels_file, 'r') as fp:
+        with open(labels_file, "r") as fp:
             labels = yaml.load(fp, yaml.BaseLoader)
 
     transform = None
