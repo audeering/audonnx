@@ -122,15 +122,13 @@ def create_model(
 
     # create model
 
-    model = Model(
+    return Model(
         object,
         transform=transform,
         device=device,
         num_workers=num_workers,
         session_options=session_options,
     )
-
-    return model
 
 
 def create_model_proto(
