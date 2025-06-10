@@ -1,4 +1,4 @@
-name: Test onnxruntime
+name: onnxruntime
 
 on:
   push:
