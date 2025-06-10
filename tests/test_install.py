@@ -1,11 +1,23 @@
+import importlib.metadata
 import os
 import subprocess
 import sys
 
-import pkg_resources
 import pytest
 
 import audonnx.testing
+
+
+def force_package_rescan():
+    """Force a rescan of installed packages."""
+    # Clear importlib.metadata caches
+    if hasattr(importlib.metadata, '_cache'):
+        importlib.metadata._cache.clear()
+    # Clear distribution cache
+    if hasattr(importlib.metadata.distributions, 'cache_clear'):
+        importlib.metadata.distributions.cache_clear()
+    # Rescan packages
+    importlib.metadata.distributions()
 
 
 def uninstall(
@@ -26,7 +38,7 @@ def uninstall(
         if m.startswith(package):
             sys.modules.pop(m)
     # force pkg_resources to re-scan site packages
-    pkg_resources._initialize_master_working_set()
+    force_package_rescan()
 
 
 def test(tmpdir):
