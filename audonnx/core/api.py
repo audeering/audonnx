@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 import os
-import typing
+from collections.abc import Sequence
 
 import onnxruntime
 import oyaml as yaml
@@ -16,13 +18,13 @@ def load(
         model_file: str = 'model.yaml',
         labels_file: str = 'labels.yaml',
         transform_file: str = 'transform.yaml',
-        device: typing.Union[
-            str,
-            typing.Tuple[str, typing.Dict],
-            typing.Sequence[typing.Union[str, typing.Tuple[str, typing.Dict]]],
-        ] = 'cpu',
-        num_workers: typing.Optional[int] = 1,
-        session_options: typing.Optional[onnxruntime.SessionOptions] = None,
+        device: (
+            str
+            | tuple[str, dict]
+            | Sequence[str | tuple[str, dict]]
+        ) = 'cpu',
+        num_workers: int | None = 1,
+        session_options: onnxruntime.SessionOptions | None = None,
         auto_install: bool = False,
 ) -> Model:
     r"""Load model from folder.

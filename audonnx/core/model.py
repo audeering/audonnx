@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 import os
-import typing
+from collections.abc import Sequence
 
 import numpy as np
 import onnx
@@ -121,15 +123,15 @@ class Model(audobject.Object):
     )
     def __init__(
             self,
-            path: typing.Union[str, onnx.ModelProto],
+            path: str | onnx.ModelProto,
             *,
             labels: Labels = None,
             transform: Transform = None,
             device: Device = 'cpu',
-            num_workers: typing.Optional[int] = 1,
-            session_options: typing.Optional[
-                onnxruntime.SessionOptions
-            ] = None,
+            num_workers: int | None = 1,
+            session_options: (
+                onnxruntime.SessionOptions | None
+            ) = None,
     ):
         # keep original arguments to store them
         # when object is serialized
@@ -231,13 +233,12 @@ class Model(audobject.Object):
             signal: np.ndarray,
             sampling_rate: int,
             *,
-            outputs: typing.Union[str, typing.Sequence[str]] = None,
+            outputs: str | Sequence[str] = None,
             concat: bool = False,
             squeeze: bool = False,
-    ) -> typing.Union[
-        np.ndarray,
-        typing.Dict[str, np.ndarray],
-    ]:
+    ) -> (
+        np.ndarray | dict[str, np.ndarray]
+    ):
         r"""Compute output for one or more nodes.
 
         If ``outputs`` is a plain string,
@@ -337,8 +338,8 @@ class Model(audobject.Object):
 
     def labels(
             self,
-            outputs: typing.Union[str, typing.Sequence[str]] = None,
-    ) -> typing.Sequence[str]:
+            outputs: str | Sequence[str] = None,
+    ) -> Sequence[str]:
         r"""Collect labels of output nodes.
 
         Args:
@@ -395,8 +396,8 @@ class Model(audobject.Object):
 
 
 def _concat(
-        y: typing.Dict[str, np.ndarray],
-        shapes: typing.Sequence[typing.List[int]],
+        y: dict[str, np.ndarray],
+        shapes: Sequence[list[int]],
 ):
     r"""Flatten dictionary by concatenating values."""
     y = list(y.values())
@@ -420,7 +421,7 @@ def _concat(
     return np.concatenate(y, axis=axis)
 
 
-def _concat_axis(shapes: typing.Sequence[int]) -> typing.Optional[int]:
+def _concat_axis(shapes: Sequence[int]) -> int | None:
     r"""Return concat dimension or None if not possible."""
     # number of dimensions do not match
     if not len(set(map(len, shapes))) == 1:
@@ -443,7 +444,7 @@ def _concat_axis(shapes: typing.Sequence[int]) -> typing.Optional[int]:
     return axis
 
 
-def _dynamic_axis(shape: typing.Sequence[int]) -> typing.Optional[int]:
+def _dynamic_axis(shape: Sequence[int]) -> int | None:
     r"""Return dimension of dynamic axis or None if none."""
     for idx, dim in enumerate(shape):
         if dim == -1:
@@ -452,7 +453,7 @@ def _dynamic_axis(shape: typing.Sequence[int]) -> typing.Optional[int]:
 
 
 def _last_static_dim_size(
-        shape: typing.List[int],
+        shape: list[int],
 ) -> int:
     r"""Return size of last static dimension."""
     shape = list(filter((-1).__ne__, shape))
@@ -460,7 +461,7 @@ def _last_static_dim_size(
 
 
 def _shape(
-        shape: typing.List[typing.Union[int, str]],
-) -> typing.List[int]:
+        shape: list[int | str],
+) -> list[int]:
     r"""Replace dynamic dimensions with -1."""
     return [-1 if not isinstance(x, int) else x for x in shape]

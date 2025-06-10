@@ -1,14 +1,16 @@
+from __future__ import annotations
+
 import re
-import typing
+from collections.abc import Sequence
 
 
 def device_to_providers(
-        device: typing.Union[
-            str,
-            typing.Tuple[str, typing.Dict],
-            typing.Sequence[typing.Union[str, typing.Tuple[str, typing.Dict]]],
-        ],
-) -> typing.Sequence[typing.Union[str, typing.Tuple[str, typing.Dict]]]:
+        device: (
+            str
+            | tuple[str, dict]
+            | Sequence[str | tuple[str, dict]]
+        ),
+) -> Sequence[str | tuple[str, dict]]:
     r"""Converts device into a list of providers.
 
     Args:

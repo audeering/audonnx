@@ -1,4 +1,6 @@
-import typing
+from __future__ import annotations
+
+from collections.abc import Sequence
 
 import numpy as np  # noqa: F401, needed for doctest
 import onnx
@@ -10,15 +12,15 @@ from audonnx.core.typing import Device
 
 
 def create_model(
-        shapes: typing.Sequence[typing.Sequence[int]],
+        shapes: Sequence[Sequence[int]],
         *,
         value: float = 0.,
         dtype: int = onnx.TensorProto.FLOAT,
         opset_version: int = 14,
         ir_version: int = 7,
         device: Device = 'cpu',
-        num_workers: typing.Optional[int] = 1,
-        session_options: typing.Optional[onnxruntime.SessionOptions] = None,
+        num_workers: int | None = 1,
+        session_options: onnxruntime.SessionOptions | None = None,
 ) -> Model:
     r"""Create test model.
 
@@ -132,7 +134,7 @@ def create_model(
 
 
 def create_model_proto(
-        shapes: typing.Sequence[typing.Sequence[int]],
+        shapes: Sequence[Sequence[int]],
         *,
         dtype: int = onnx.TensorProto.FLOAT,
         opset_version: int = 14,
