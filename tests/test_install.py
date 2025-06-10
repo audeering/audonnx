@@ -15,11 +15,9 @@ def uninstall(
     # uninstall package
     subprocess.check_call(
         [
-            sys.executable,
-            '-m',
+            'uv',
             'pip',
             'uninstall',
-            '--yes',
             package,
         ]
     )

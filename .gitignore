@@ -8,3 +8,4 @@ venv/
 coverage.xml
 .coverage
 docs/api/
+uv.lock
