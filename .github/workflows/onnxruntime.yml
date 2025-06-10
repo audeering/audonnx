@@ -23,7 +23,7 @@ jobs:
             os: ubuntu-latest
             python-version: '3.9'
           - onnxruntime-version: '1.9.1'
-           os: ubuntu-latest
+            os: ubuntu-latest
             python-version: '3.9'
           - onnxruntime-version: '1.8.0'
             os: ubuntu-latest
