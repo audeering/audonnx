@@ -13,34 +13,34 @@ import audonnx.testing
 
 def min_max(x, sr):
     import numpy as np
+
     return np.array([x.min(), x.max()], np.float32)
 
 
 @pytest.mark.parametrize(
-    'object, transform, labels, expected',
+    "object, transform, labels, expected",
     [
         (
             audonnx.testing.create_model_proto([[2]]),
             audonnx.Function(min_max),
-            {'output-0': ['min', 'max']},
+            {"output-0": ["min", "max"]},
             min_max(pytest.SIGNAL, pytest.SAMPLING_RATE),
         ),
-    ]
+    ],
 )
 def test_load_legacy(tmpdir, object, transform, labels, expected):
-
     root = tmpdir
 
-    onnx_path = os.path.join(root, 'model.onnx')
+    onnx_path = os.path.join(root, "model.onnx")
     onnx.save(object, onnx_path)
 
     # create from onnx
 
-    transform_path = os.path.join(root, 'transform.yaml')
+    transform_path = os.path.join(root, "transform.yaml")
     transform.to_yaml(transform_path)
 
-    labels_path = os.path.join(root, 'labels.yaml')
-    with open(labels_path, 'w') as fp:
+    labels_path = os.path.join(root, "labels.yaml")
+    with open(labels_path, "w") as fp:
         yaml.dump(labels, fp)
 
     model = audonnx.load(
@@ -59,7 +59,7 @@ def test_load_legacy(tmpdir, object, transform, labels, expected):
 
     model = audonnx.load(
         root,
-        model_file=audeer.replace_file_extension(onnx_path, 'yaml'),
+        model_file=audeer.replace_file_extension(onnx_path, "yaml"),
     )
     y = model(pytest.SIGNAL, pytest.SAMPLING_RATE)
 
@@ -69,7 +69,7 @@ def test_load_legacy(tmpdir, object, transform, labels, expected):
 
     # store wrong model YAML
 
-    model_path = os.path.join(tmpdir, 'single.yaml')
+    model_path = os.path.join(tmpdir, "single.yaml")
     audobject.Object().to_yaml(model_path)
     model = audonnx.load(
         root,
@@ -78,13 +78,13 @@ def test_load_legacy(tmpdir, object, transform, labels, expected):
 
     # file extension does not end on '.yaml'
 
-    model_path = os.path.join(tmpdir, 'model.yml')
+    model_path = os.path.join(tmpdir, "model.yml")
     with pytest.raises(ValueError):
         model.to_yaml(model_path)
 
     # create from YAML
 
-    model_path = os.path.join(tmpdir, 'model.yaml')
+    model_path = os.path.join(tmpdir, "model.yaml")
     model.to_yaml(model_path)
 
     model = audonnx.load(tmpdir)

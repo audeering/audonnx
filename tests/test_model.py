@@ -12,7 +12,7 @@ def min_max(x, sr):
 
 
 @pytest.mark.parametrize(
-    'model, outputs, expected',
+    "model, outputs, expected",
     [
         (
             audonnx.Model(audonnx.testing.create_model_proto([[1, -1]])),
@@ -26,51 +26,51 @@ def min_max(x, sr):
         ),
         (
             audonnx.testing.create_model([[2]]),
-            'output-0',
+            "output-0",
             np.array([0.0, 0.0], np.float32),
         ),
         (
             audonnx.testing.create_model([[2]]),
-            ['output-0'],
-            {'output-0': np.array([0.0, 0.0], np.float32)},
+            ["output-0"],
+            {"output-0": np.array([0.0, 0.0], np.float32)},
         ),
         (
             audonnx.testing.create_model([[2], [1, 3]]),
             None,
             {
-                'output-0': np.array([0.0, 0.0], np.float32),
-                'output-1': np.array([[0.0, 0.0, 0.0]], np.float32),
+                "output-0": np.array([0.0, 0.0], np.float32),
+                "output-1": np.array([[0.0, 0.0, 0.0]], np.float32),
             },
         ),
         (
             audonnx.testing.create_model([[2], [1, 3]]),
-            'output-1',
+            "output-1",
             np.array([[0.0, 0.0, 0.0]], np.float32),
         ),
         (
             audonnx.testing.create_model([[2], [1, 3]]),
-            ['output-1'],
+            ["output-1"],
             {
-                'output-1': np.array([[0.0, 0.0, 0.0]], np.float32),
+                "output-1": np.array([[0.0, 0.0, 0.0]], np.float32),
             },
         ),
         (
             audonnx.testing.create_model([[2], [1, 3]]),
-            ['output-1', 'output-0'],
+            ["output-1", "output-0"],
             {
-                'output-1': np.array([[0.0, 0.0, 0.0]], np.float32),
-                'output-0': np.array([0.0, 0.0], np.float32),
+                "output-1": np.array([[0.0, 0.0, 0.0]], np.float32),
+                "output-0": np.array([0.0, 0.0], np.float32),
             },
         ),
         (
             audonnx.testing.create_model([[2], [1, 3]]),
-            ['output-1', 'output-0', 'output-1'],
+            ["output-1", "output-0", "output-1"],
             {
-                'output-1': np.array([[0.0, 0.0, 0.0]], np.float32),
-                'output-0': np.array([0.0, 0.0], np.float32),
+                "output-1": np.array([[0.0, 0.0, 0.0]], np.float32),
+                "output-0": np.array([0.0, 0.0], np.float32),
             },
         ),
-    ]
+    ],
 )
 def test_call(model, outputs, expected):
     for squeeze in [False, True]:
@@ -94,27 +94,24 @@ def test_call(model, outputs, expected):
 
 
 @pytest.mark.parametrize(
-    'model, output_names',
+    "model, output_names",
     [
         (
             audonnx.testing.create_model([[2], [1, 3]]),
-            'output-1',
+            "output-1",
         ),
-    ]
+    ],
 )
 def test_call_deprecated(model, output_names):
-    if (
-            audeer.LooseVersion(audonnx.__version__)
-            < audeer.LooseVersion('1.2.0')
-    ):
-        with pytest.warns(UserWarning, match='is deprecated'):
+    if audeer.LooseVersion(audonnx.__version__) < audeer.LooseVersion("1.2.0"):
+        with pytest.warns(UserWarning, match="is deprecated"):
             model(
                 pytest.SIGNAL,
                 pytest.SAMPLING_RATE,
                 output_names=output_names,
             )
     else:
-        with pytest.raises(TypeError, match='unexpected keyword argument'):
+        with pytest.raises(TypeError, match="unexpected keyword argument"):
             model(
                 pytest.SIGNAL,
                 pytest.SAMPLING_RATE,
@@ -123,7 +120,7 @@ def test_call_deprecated(model, output_names):
 
 
 @pytest.mark.parametrize(
-    'model, outputs, expected',
+    "model, outputs, expected",
     [
         (
             audonnx.Model(audonnx.testing.create_model_proto([[1, -1]])),
@@ -172,17 +169,17 @@ def test_call_deprecated(model, output_names):
         ),
         (
             audonnx.testing.create_model([[1, 3], [2]]),
-            'output-0',
+            "output-0",
             np.array([[0, 0, 0]], dtype=np.float32),
         ),
         (
             audonnx.testing.create_model([[1, 3], [2]]),
-            ['output-0'],
+            ["output-0"],
             np.array([[0, 0, 0]], dtype=np.float32),
         ),
         (
             audonnx.testing.create_model([[1, 3], [2], [3]]),
-            ['output-1', 'output-2'],
+            ["output-1", "output-2"],
             np.array([0, 0, 0, 0, 0], dtype=np.float32),
         ),
         # shapes do not match
@@ -212,7 +209,7 @@ def test_call_deprecated(model, output_names):
             None,
             marks=pytest.mark.xfail(raises=RuntimeError),
         ),
-    ]
+    ],
 )
 def test_call_concat(model, outputs, expected):
     for squeeze in [False, True]:
@@ -229,18 +226,16 @@ def test_call_concat(model, outputs, expected):
             np.testing.assert_equal(y, expected)
 
 
-@pytest.mark.parametrize('device', ['cpu', 'cuda:0'])
-@pytest.mark.parametrize('num_workers', [None, 1, 2])
+@pytest.mark.parametrize("device", ["cpu", "cuda:0"])
+@pytest.mark.parametrize("num_workers", [None, 1, 2])
 @pytest.mark.parametrize(
-    'session_options',
+    "session_options",
     [
         None,
         onnxruntime.SessionOptions(),
-    ]
+    ],
 )
-def test_call_num_workers_session_options(
-    device, num_workers, session_options
-):
+def test_call_num_workers_session_options(device, num_workers, session_options):
     model = audonnx.testing.create_model(
         [[2]],
         device=device,
@@ -256,32 +251,32 @@ def test_call_num_workers_session_options(
 
 
 @pytest.mark.parametrize(
-    'device',
+    "device",
     [
-        'cpu',
-        'CPUExecutionProvider',
-        'cuda',
-        'cuda:0',
+        "cpu",
+        "CPUExecutionProvider",
+        "cuda",
+        "cuda:0",
         (
-            'CUDAExecutionProvider',
+            "CUDAExecutionProvider",
             {
-                'device_id': 0,
+                "device_id": 0,
             },
         ),
         [
-            'CUDAExecutionProvider',
-            'CPUExecutionProvider',
+            "CUDAExecutionProvider",
+            "CPUExecutionProvider",
         ],
         [
             (
-                'CUDAExecutionProvider',
+                "CUDAExecutionProvider",
                 {
-                    'device_id': 0,
+                    "device_id": 0,
                 },
             ),
-            'CPUExecutionProvider',
+            "CPUExecutionProvider",
         ],
-    ]
+    ],
 )
 def test_device_or_providers(device):
     model = audonnx.testing.create_model([[2]], device=device)
@@ -294,7 +289,6 @@ def test_device_or_providers(device):
 
 
 def test_init(tmpdir):
-
     # create model from ONNX object
 
     object = audonnx.testing.create_model_proto([[1, -1]])
@@ -303,9 +297,9 @@ def test_init(tmpdir):
 
     # save model to YAML
 
-    yaml_path = audeer.path(tmpdir, 'model.yaml')
+    yaml_path = audeer.path(tmpdir, "model.yaml")
     model.to_yaml(yaml_path)
-    onnx_path = audeer.replace_file_extension(yaml_path, 'onnx')
+    onnx_path = audeer.replace_file_extension(yaml_path, "onnx")
     assert model.path == onnx_path
 
     # create model from ONNX file
@@ -320,29 +314,29 @@ def test_init(tmpdir):
 
 
 @pytest.mark.parametrize(
-    'model, outputs, expected',
+    "model, outputs, expected",
     [
         (
             audonnx.testing.create_model([[2]]),
             None,
-            ['output-0-0', 'output-0-1'],
+            ["output-0-0", "output-0-1"],
         ),
         (
             audonnx.testing.create_model([[2], [1]]),
             None,
-            ['output-0-0', 'output-0-1', 'output-1'],
+            ["output-0-0", "output-0-1", "output-1"],
         ),
         (
             audonnx.testing.create_model([[2], [1]]),
-            'output-1',
-            ['output-1'],
+            "output-1",
+            ["output-1"],
         ),
         (
             audonnx.testing.create_model([[2], [1]]),
-            ['output-1', 'output-0'],
-            ['output-1', 'output-0-0', 'output-0-1'],
+            ["output-1", "output-0"],
+            ["output-1", "output-0-0", "output-0-1"],
         ),
-    ]
+    ],
 )
 def test_labels(model, outputs, expected):
     labels = model.labels(outputs)
@@ -350,52 +344,52 @@ def test_labels(model, outputs, expected):
 
 
 @pytest.mark.parametrize(
-    'object, transform, labels, expected',
+    "object, transform, labels, expected",
     [
         (
             audonnx.testing.create_model_proto([[1, -1]]),
             None,
             None,
-            {'output-0': ['output-0']},
+            {"output-0": ["output-0"]},
         ),
         (
             audonnx.testing.create_model_proto([[2]]),
             min_max,
             None,
-            {'output-0': ['output-0-0', 'output-0-1']},
+            {"output-0": ["output-0-0", "output-0-1"]},
         ),
         (
             audonnx.testing.create_model_proto([[2]]),
             min_max,
-            ['min', 'max'],
-            {'output-0': ['min', 'max']},
+            ["min", "max"],
+            {"output-0": ["min", "max"]},
         ),
         (
             audonnx.testing.create_model_proto([[1, -1], [2]]),
-            {'input-1': min_max},
+            {"input-1": min_max},
             None,
             {
-                'output-0': ['output-0'],
-                'output-1': ['output-1-0', 'output-1-1'],
+                "output-0": ["output-0"],
+                "output-1": ["output-1-0", "output-1-1"],
             },
         ),
         (
             audonnx.testing.create_model_proto([[1, -1], [2]]),
-            {'input-1': min_max},
-            {'output-1': ['min', 'max']},
+            {"input-1": min_max},
+            {"output-1": ["min", "max"]},
             {
-                'output-0': ['output-0'],
-                'output-1': ['min', 'max'],
+                "output-0": ["output-0"],
+                "output-1": ["min", "max"],
             },
         ),
         pytest.param(
             audonnx.testing.create_model_proto([[2]]),
             min_max,
-            ['too', 'many', 'labels'],
+            ["too", "many", "labels"],
             None,
             marks=pytest.mark.xfail(raises=ValueError),
         ),
-    ]
+    ],
 )
 def test_outputs(object, transform, labels, expected):
     model = audonnx.Model(
@@ -409,7 +403,7 @@ def test_outputs(object, transform, labels, expected):
 
 
 @pytest.mark.parametrize(
-    'object, labels, transform',
+    "object, labels, transform",
     [
         (
             audonnx.testing.create_model_proto([[1, -1]]),
@@ -418,38 +412,38 @@ def test_outputs(object, transform, labels, expected):
         ),
         (
             audonnx.testing.create_model_proto([[1, -1]]),
-            ['signal'],
+            ["signal"],
             None,
         ),
         (
             audonnx.testing.create_model_proto([[1, -1]]),
-            ['signal'],
+            ["signal"],
             lambda x, sr: x.T,
         ),
         (
             audonnx.testing.create_model_proto([[1, -1]]),
-            ['signal'],
+            ["signal"],
             lambda x, sr: np.atleast_3d(),
         ),
         (
             audonnx.testing.create_model_proto([[2]]),
-            ['min', 'max'],
+            ["min", "max"],
             min_max,
         ),
         (
             audonnx.testing.create_model_proto([[2], [1, -1]]),
             {
-                'input-0': ['min', 'max'],
-                'input-1': None,
+                "input-0": ["min", "max"],
+                "input-1": None,
             },
             {
-                'output-0': min_max,
-                'output-1': None,
+                "output-0": min_max,
+                "output-1": None,
             },
         ),
         pytest.param(  # plain list of labels but multiple output nodes
             audonnx.testing.create_model_proto([[2], [1, -1]]),
-            ['min', 'max'],
+            ["min", "max"],
             None,
             marks=pytest.mark.xfail(raises=ValueError),
         ),
@@ -462,7 +456,6 @@ def test_outputs(object, transform, labels, expected):
     ],
 )
 def test_nodes(object, labels, transform):
-
     model = audonnx.Model(
         object,
         labels=labels,
@@ -491,12 +484,13 @@ def test_nodes(object, labels, transform):
 
 
 @pytest.mark.parametrize(
-    'model, expected',
+    "model, expected",
     [
         (
             audonnx.Model(
                 audonnx.testing.create_model_proto([[1, -1]]),
-            ), r'''Input:
+            ),
+            r"""Input:
   input-0:
     shape: [1, -1]
     dtype: tensor(float)
@@ -505,14 +499,15 @@ Output:
   output-0:
     shape: [1, -1]
     dtype: tensor(float)
-    labels: [output-0]'''
+    labels: [output-0]""",
         ),
         (
             audonnx.Model(
                 audonnx.testing.create_model_proto([[2]]),
-                labels=['min', 'max'],
+                labels=["min", "max"],
                 transform=lambda x, sr: [x.min(), x.max()],
-            ), r'''Input:
+            ),
+            r"""Input:
   input-0:
     shape: [2]
     dtype: tensor(float)
@@ -521,14 +516,15 @@ Output:
   output-0:
     shape: [2]
     dtype: tensor(float)
-    labels: [min, max]'''
+    labels: [min, max]""",
         ),
         (
             audonnx.Model(
                 audonnx.testing.create_model_proto([[2]]),
-                labels=['min', 'max'],
+                labels=["min", "max"],
                 transform=audonnx.Function(lambda x, sr: [x.min(), x.max()]),
-            ), r'''Input:
+            ),
+            r"""Input:
   input-0:
     shape: [2]
     dtype: tensor(float)
@@ -537,14 +533,15 @@ Output:
   output-0:
     shape: [2]
     dtype: tensor(float)
-    labels: [min, max]'''
+    labels: [min, max]""",
         ),
         (
             audonnx.Model(
                 audonnx.testing.create_model_proto([[2]]),
-                labels=['min', 'max'],
+                labels=["min", "max"],
                 transform=audonnx.Function(min_max),
-            ), r'''Input:
+            ),
+            r"""Input:
   input-0:
     shape: [2]
     dtype: tensor(float)
@@ -553,12 +550,13 @@ Output:
   output-0:
     shape: [2]
     dtype: tensor(float)
-    labels: [min, max]'''
+    labels: [min, max]""",
         ),
         (
             audonnx.testing.create_model(
-                [[2], [None], [1, -1, 3], [99, 'time']],
-            ), r'''Input:
+                [[2], [None], [1, -1, 3], [99, "time"]],
+            ),
+            r"""Input:
   input-0:
     shape: [2]
     dtype: tensor(float)
@@ -592,8 +590,8 @@ Output:
     shape: [99, -1]
     dtype: tensor(float)
     labels: [output-3-0, output-3-1, output-3-2, (...), output-3-96, output-3-97,
-      output-3-98]'''  # noqa: E501
-        )
+      output-3-98]""",  # noqa: E501
+        ),
     ],
 )
 def test_str(model, expected):

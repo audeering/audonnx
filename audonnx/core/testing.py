@@ -12,15 +12,15 @@ from audonnx.core.typing import Device
 
 
 def create_model(
-        shapes: Sequence[Sequence[int]],
-        *,
-        value: float = 0.,
-        dtype: int = onnx.TensorProto.FLOAT,
-        opset_version: int = 14,
-        ir_version: int = 7,
-        device: Device = 'cpu',
-        num_workers: int | None = 1,
-        session_options: onnxruntime.SessionOptions | None = None,
+    shapes: Sequence[Sequence[int]],
+    *,
+    value: float = 0.0,
+    dtype: int = onnx.TensorProto.FLOAT,
+    opset_version: int = 14,
+    ir_version: int = 7,
+    device: Device = "cpu",
+    num_workers: int | None = 1,
+    session_options: onnxruntime.SessionOptions | None = None,
 ) -> Model:
     r"""Create test model.
 
@@ -102,17 +102,13 @@ def create_model(
     # create graph
 
     obj = create_model_proto(
-        shapes,
-        dtype=dtype,
-        opset_version=opset_version,
-        ir_version=ir_version
+        shapes, dtype=dtype, opset_version=opset_version, ir_version=ir_version
     )
 
     # create transform objects
 
     transform = {
-        f'input-{idx}':
-        Function(reshape, func_args={'shape': shape, 'value': value})
+        f"input-{idx}": Function(reshape, func_args={"shape": shape, "value": value})
         for idx, shape in enumerate(shapes)
     }
 
@@ -128,11 +124,11 @@ def create_model(
 
 
 def create_model_proto(
-        shapes: Sequence[Sequence[int]],
-        *,
-        dtype: int = onnx.TensorProto.FLOAT,
-        opset_version: int = 14,
-        ir_version: int = 7,
+    shapes: Sequence[Sequence[int]],
+    *,
+    dtype: int = onnx.TensorProto.FLOAT,
+    opset_version: int = 14,
+    ir_version: int = 7,
 ) -> onnx.ModelProto:
     r"""Create test ONNX proto object.
 
@@ -212,21 +208,21 @@ def create_model_proto(
 
     for idx, shape in enumerate(shapes):
         input = onnx.helper.make_tensor_value_info(
-            f'input-{idx}',
+            f"input-{idx}",
             dtype,
             shape,
         )
         inputs.append(input)
 
         output = onnx.helper.make_tensor_value_info(
-            f'output-{idx}',
+            f"output-{idx}",
             dtype,
             shape,
         )
         outputs.append(output)
 
         node = onnx.helper.make_node(
-            'Identity',
+            "Identity",
             [input.name],
             [output.name],
         )
@@ -236,14 +232,14 @@ def create_model_proto(
 
     graph = onnx.helper.make_graph(
         nodes,
-        'test',
+        "test",
         inputs,
         outputs,
     )
 
     # model
 
-    model = onnx.helper.make_model(graph, producer_name='test')
+    model = onnx.helper.make_model(graph, producer_name="test")
     model.opset_import[0].version = opset_version
     model.ir_version = ir_version
     onnx.checker.check_model(model)
@@ -254,6 +250,6 @@ def create_model_proto(
 def reshape(signal, _, shape, value):
     r"""Return array with zeros of given shape."""
     import numpy as np  # noqa: F811
-    shape = [signal.shape[-1] if not isinstance(s, int) or s < 0
-             else s for s in shape]
+
+    shape = [signal.shape[-1] if not isinstance(s, int) or s < 0 else s for s in shape]
     return (np.ones(shape) * value).astype(signal.dtype)

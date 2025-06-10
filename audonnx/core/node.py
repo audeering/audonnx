@@ -18,16 +18,18 @@ class InputNode:
             into the desired representation
 
     """
+
     def __init__(
-            self,
-            shape: list[int],
-            dtype: str,
-            transform: (
-                Callable[
-                    [np.ndarray, int],
-                    np.ndarray,
-                ] | None
-            ),
+        self,
+        shape: list[int],
+        dtype: str,
+        transform: (
+            Callable[
+                [np.ndarray, int],
+                np.ndarray,
+            ]
+            | None
+        ),
     ):
         self.dtype = dtype
         r"""Data type of node"""
@@ -39,21 +41,22 @@ class InputNode:
         r"""Transform object"""
 
     def _dict(self) -> dict:
-
         if self.transform is None:
-            transform = 'None'
+            transform = "None"
         else:
-            transform = f'{self.transform.__class__.__module__}' \
-                        f'.' \
-                        f'{self.transform.__class__.__name__}'
+            transform = (
+                f"{self.transform.__class__.__module__}"
+                f"."
+                f"{self.transform.__class__.__name__}"
+            )
 
         if isinstance(self.transform, Function):
-            transform += f'({self.transform.func.__name__})'
+            transform += f"({self.transform.func.__name__})"
 
         return {
-            'shape': self.shape,
-            'dtype': self.dtype,
-            'transform': transform,
+            "shape": self.shape,
+            "dtype": self.dtype,
+            "transform": transform,
         }
 
     def __repr__(self):
@@ -70,11 +73,12 @@ class OutputNode:
         labels: list with names of last non-dynamic output dimension
 
     """
+
     def __init__(
-            self,
-            shape: list[int],
-            dtype: str,
-            labels: list[str],
+        self,
+        shape: list[int],
+        dtype: str,
+        labels: list[str],
     ):
         self.shape = shape
         r"""Shape of node"""
@@ -86,16 +90,15 @@ class OutputNode:
         r"""Labels of last non-dynamic output dimension."""
 
     def _dict(self) -> dict:
-
         if len(self.labels) > 6:
-            labels = self.labels[:3] + ['(...)'] + self.labels[-3:]
+            labels = self.labels[:3] + ["(...)"] + self.labels[-3:]
         else:
             labels = self.labels
 
         return {
-            'shape': self.shape,
-            'dtype': self.dtype,
-            'labels': labels,
+            "shape": self.shape,
+            "dtype": self.dtype,
+            "labels": labels,
         }
 
     def __repr__(self):
