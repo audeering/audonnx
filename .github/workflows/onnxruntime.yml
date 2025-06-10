@@ -1,4 +1,4 @@
-name: Test
+name: Test onnxruntime
 
 on:
   push:
@@ -12,22 +12,22 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
+        onnxruntime-version: [ '1.12.1', '1.13.1', '1.14.1', '1.15.1', '1.16.3', '1.17.3', '1.18.1', '1.19.2', '1.20.2', '1.21.1', '1.22' ]
         os: [ ubuntu-latest ]
         python-version: [ '3.10' ]
-        onnxruntime-version: [ '1.12.1', '1.13.1', '1.14.1', '1.15.1', '1.16.3', '1.17.3', '1.18.1', '1.19.2', '1.20.2', '1.21.1', '1.22' ]
         include:
-          - os: ubuntu-latest
+          - onnxruntime-version: '1.11.1'
+            os: ubuntu-latest
             python-version: '3.9'
-            onnxruntime-version: '1.11.1'
-          - os: ubuntu-latest
+          - onnxruntime-version: '1.10.0'
+            os: ubuntu-latest
             python-version: '3.9'
-            onnxruntime-version: '1.10.0'
-          - os: ubuntu-latest
+          - onnxruntime-version: '1.9.1'
+           os: ubuntu-latest
             python-version: '3.9'
-            onnxruntime-version: '1.9.1'
-          - os: ubuntu-latest
+          - onnxruntime-version: '1.8.0'
+            os: ubuntu-latest
             python-version: '3.9'
-            onnxruntime-version: '1.8.0'
 
     steps:
     - uses: actions/checkout@v4
@@ -50,4 +50,4 @@ jobs:
       run: uv sync
 
     - name: Test with pytest
-      run: uv run --with "onnxruntime=={{ matrix.onnxruntime-version }}" pytest
+      run: uv run --with "onnxruntime==${{ matrix.onnxruntime-version }}" pytest
