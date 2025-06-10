@@ -1,0 +1,53 @@
+name: Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ]
+        python-version: [ '3.10' ]
+        onnxruntime-version: [ '1.12.1', '1.13.1', '1.14.1', '1.15.1', '1.16.3', '1.17.3', '1.18.1', '1.19.2', '1.20.2', '1.21.1', '1.22' ]
+        include:
+          - os: ubuntu-latest
+            python-version: '3.9'
+            onnxruntime-version: '1.11.1'
+          - os: ubuntu-latest
+            python-version: '3.9'
+            onnxruntime-version: '1.10.0'
+          - os: ubuntu-latest
+            python-version: '3.9'
+            onnxruntime-version: '1.9.1'
+          - os: ubuntu-latest
+            python-version: '3.9'
+            onnxruntime-version: '1.8.0'
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v5
+
+    - name: Prepare Ubuntu
+      run: |
+        sudo apt-get update
+        sudo apt-get install --no-install-recommends --yes libsndfile1 sox
+      if: matrix.os == 'ubuntu-latest'
+
+    - name: Sync Python environment
+      run: uv sync
+
+    - name: Test with pytest
+      run: uv run --with "onnxruntime=={{ matrix.onnxruntime-version }}" pytest
