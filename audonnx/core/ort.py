@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import re
 from collections.abc import Sequence
+import re
 
 
 def device_to_providers(

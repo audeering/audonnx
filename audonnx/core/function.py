@@ -32,7 +32,7 @@ class Function(audobject.Object):
             self,
             func: Callable,
             *,
-            func_args: dict[str, object] = None,
+            func_args: dict[str, object] | None = None,
     ):
         self.func = func
         r"""Function"""

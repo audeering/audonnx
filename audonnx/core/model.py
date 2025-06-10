@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-import os
 from collections.abc import Sequence
+import os
 
 import numpy as np
-import onnx
 import onnxruntime
 import yaml
 
@@ -17,6 +16,7 @@ from audonnx.core.ort import device_to_providers
 from audonnx.core.typing import Device
 from audonnx.core.typing import Labels
 from audonnx.core.typing import Transform
+import onnx
 
 
 class Model(audobject.Object):
@@ -125,8 +125,8 @@ class Model(audobject.Object):
             self,
             path: str | onnx.ModelProto,
             *,
-            labels: Labels = None,
-            transform: Transform = None,
+            labels: Labels | None = None,
+            transform: Transform | None = None,
             device: Device = 'cpu',
             num_workers: int | None = 1,
             session_options: (
@@ -233,7 +233,7 @@ class Model(audobject.Object):
             signal: np.ndarray,
             sampling_rate: int,
             *,
-            outputs: str | Sequence[str] = None,
+            outputs: str | Sequence[str] | None = None,
             concat: bool = False,
             squeeze: bool = False,
     ) -> (
@@ -338,7 +338,7 @@ class Model(audobject.Object):
 
     def labels(
             self,
-            outputs: str | Sequence[str] = None,
+            outputs: str | Sequence[str] | None = None,
     ) -> Sequence[str]:
         r"""Collect labels of output nodes.
 

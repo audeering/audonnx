@@ -1,7 +1,6 @@
 import os
 
 import numpy as np
-import onnx
 import oyaml as yaml
 import pytest
 
@@ -9,6 +8,7 @@ import audeer
 import audobject
 
 import audonnx.testing
+import onnx
 
 
 def min_max(x, sr):
