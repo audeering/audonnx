@@ -1,37 +1,31 @@
-from __future__ import annotations
-
 from collections.abc import Callable
 from collections.abc import Sequence
+from typing import Optional
+from typing import Union
 
 import numpy as np
 
 
-Device = (
-    str
-    | tuple[str, dict]
-    | Sequence[str | tuple[str, dict]]
-)
+Device = Union[
+    str,
+    tuple[str, dict],
+    Sequence[Union[str, tuple[str, dict]]],
+]
 
 
-Labels = (
-    Sequence[str]
-    | dict[
-        str,
-        Sequence[str] | None,
-    ]
-)
+Labels = Union[
+    Sequence[str],
+    dict[str, Optional[Sequence[str]]],
+]
 
 
-Transform = (
+Transform = Union[
     Callable[
         [np.ndarray, int],
         np.ndarray,
-    ]
-    | dict[
+    ],
+    dict[
         str,
-        Callable[
-            [np.ndarray, int],
-            np.ndarray,
-        ] | None,
-    ]
-)
+        Optional[Callable[[np.ndarray, int], np.ndarray]],
+    ],
+]
