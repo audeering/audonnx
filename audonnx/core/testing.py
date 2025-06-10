@@ -1,4 +1,6 @@
-import typing
+from __future__ import annotations
+
+from collections.abc import Sequence
 
 import numpy as np  # noqa: F401, needed for doctest
 import onnx
@@ -10,15 +12,15 @@ from audonnx.core.typing import Device
 
 
 def create_model(
-        shapes: typing.Sequence[typing.Sequence[int]],
+        shapes: Sequence[Sequence[int]],
         *,
         value: float = 0.,
         dtype: int = onnx.TensorProto.FLOAT,
         opset_version: int = 14,
         ir_version: int = 7,
         device: Device = 'cpu',
-        num_workers: typing.Optional[int] = 1,
-        session_options: typing.Optional[onnxruntime.SessionOptions] = None,
+        num_workers: int | None = 1,
+        session_options: onnxruntime.SessionOptions | None = None,
 ) -> Model:
     r"""Create test model.
 
@@ -99,7 +101,7 @@ def create_model(
     """  # noqa: E501
     # create graph
 
-    object = create_model_proto(
+    obj = create_model_proto(
         shapes,
         dtype=dtype,
         opset_version=opset_version,
@@ -108,31 +110,25 @@ def create_model(
 
     # create transform objects
 
-    transform = {}
-    for idx, shape in enumerate(shapes):
-        transform[f'input-{idx}'] = Function(
-            reshape,
-            func_args={
-                'shape': shape,
-                'value': value,
-            },
-        )
+    transform = {
+        f'input-{idx}':
+        Function(reshape, func_args={'shape': shape, 'value': value})
+        for idx, shape in enumerate(shapes)
+    }
 
     # create model
 
-    model = Model(
-        object,
+    return Model(
+        obj,
         transform=transform,
         device=device,
         num_workers=num_workers,
         session_options=session_options,
     )
 
-    return model
-
 
 def create_model_proto(
-        shapes: typing.Sequence[typing.Sequence[int]],
+        shapes: Sequence[Sequence[int]],
         *,
         dtype: int = onnx.TensorProto.FLOAT,
         opset_version: int = 14,

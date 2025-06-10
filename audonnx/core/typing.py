@@ -1,39 +1,31 @@
-import typing
+from collections.abc import Callable
+from collections.abc import Sequence
+from typing import Optional
+from typing import Union
 
 import numpy as np
 
 
-Device = typing.Union[
+Device = Union[
     str,
-    typing.Tuple[str, typing.Dict],
-    typing.Sequence[
-        typing.Union[str, typing.Tuple[str, typing.Dict]]],
+    tuple[str, dict],
+    Sequence[Union[str, tuple[str, dict]]],
 ]
 
 
-Labels = typing.Union[
-    typing.Sequence[str],
-    typing.Dict[
-        str,
-        typing.Optional[
-            typing.Sequence[str]
-        ],
-    ],
+Labels = Union[
+    Sequence[str],
+    dict[str, Optional[Sequence[str]]],
 ]
 
 
-Transform = typing.Union[
-    typing.Callable[
+Transform = Union[
+    Callable[
         [np.ndarray, int],
         np.ndarray,
     ],
-    typing.Dict[
+    dict[
         str,
-        typing.Optional[
-            typing.Callable[
-                [np.ndarray, int],
-                np.ndarray,
-            ]
-        ],
+        Optional[Callable[[np.ndarray, int], np.ndarray]],
     ],
 ]

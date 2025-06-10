@@ -1,4 +1,6 @@
-import typing
+from __future__ import annotations
+
+from collections.abc import Callable
 
 import numpy as np
 import oyaml as yaml
@@ -18,14 +20,14 @@ class InputNode:
     """
     def __init__(
             self,
-            shape: typing.List[typing.Union[int]],
+            shape: list[int],
             dtype: str,
-            transform: typing.Optional[
-                typing.Callable[
+            transform: (
+                Callable[
                     [np.ndarray, int],
                     np.ndarray,
-                ]
-            ],
+                ] | None
+            ),
     ):
         self.dtype = dtype
         r"""Data type of node"""
@@ -36,7 +38,7 @@ class InputNode:
         self.transform = transform
         r"""Transform object"""
 
-    def _dict(self) -> typing.Dict:
+    def _dict(self) -> dict:
 
         if self.transform is None:
             transform = 'None'
@@ -70,9 +72,9 @@ class OutputNode:
     """
     def __init__(
             self,
-            shape: typing.List[int],
+            shape: list[int],
             dtype: str,
-            labels: typing.List[str],
+            labels: list[str],
     ):
         self.shape = shape
         r"""Shape of node"""
@@ -83,7 +85,7 @@ class OutputNode:
         self.labels = labels
         r"""Labels of last non-dynamic output dimension."""
 
-    def _dict(self) -> typing.Dict:
+    def _dict(self) -> dict:
 
         if len(self.labels) > 6:
             labels = self.labels[:3] + ['(...)'] + self.labels[-3:]

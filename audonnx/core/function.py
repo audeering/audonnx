@@ -1,4 +1,6 @@
-import typing
+from __future__ import annotations
+
+from collections.abc import Callable
 
 import numpy as np
 
@@ -28,9 +30,9 @@ class Function(audobject.Object):
     )
     def __init__(
             self,
-            func: typing.Callable,
+            func: Callable,
             *,
-            func_args: typing.Dict[str, typing.Any] = None,
+            func_args: dict[str, object] | None = None,
     ):
         self.func = func
         r"""Function"""
