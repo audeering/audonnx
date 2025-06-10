@@ -1,6 +1,0 @@
-opensmile >=2.3.0
-audobject >=0.7.12
-pytest
-pytest-doctestplus
-pytest-console-scripts
-pytest-cov
