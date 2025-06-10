@@ -162,7 +162,7 @@ class Model(audobject.Object):
 
         transform = transform or {}
         if not isinstance(transform, dict):
-            if not len(inputs) == 1:
+            if len(inputs) != 1:
                 names = [input.name for input in inputs]
                 raise ValueError(
                     f'Model has multiple input nodes. '
@@ -174,7 +174,7 @@ class Model(audobject.Object):
 
         labels = labels or {}
         if not isinstance(labels, dict):
-            if not len(outputs) == 1:
+            if len(outputs) != 1:
                 names = [output.name for output in outputs]
                 raise ValueError(
                     f'Model has multiple output nodes. '
