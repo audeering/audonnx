@@ -101,7 +101,7 @@ def create_model(
     """  # noqa: E501
     # create graph
 
-    object = create_model_proto(
+    obj = create_model_proto(
         shapes,
         dtype=dtype,
         opset_version=opset_version,
@@ -119,7 +119,7 @@ def create_model(
     # create model
 
     return Model(
-        object,
+        obj,
         transform=transform,
         device=device,
         num_workers=num_workers,
