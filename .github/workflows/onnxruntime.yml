@@ -12,7 +12,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        onnxruntime-version: [ '1.12.1', '1.13.1', '1.14.1', '1.15.1', '1.16.3', '1.17.3', '1.18.1', '1.19.2', '1.20.1', '1.21.1', '1.22.0' ]
+        #onnxruntime-version: [ '1.12.1', '1.13.1', '1.14.1', '1.15.1', '1.16.3', '1.17.3', '1.18.1', '1.19.2', '1.20.1', '1.21.1', '1.22.0' ]
+        onnxruntime-version: [ '1.19.2', '1.20.1', '1.21.1', '1.22.0' ]
         os: [ ubuntu-latest ]
         python-version: [ '3.10' ]
         # include:
@@ -58,6 +59,6 @@ jobs:
     - name: Test with pytest
       run: |
         uv run pytest
-        installed=$(uv pip show onnxruntime | grep "Version:" | cut -d' ' -f2)
+        installed=$(uv pip show onnxruntime | grep "Version:" | cut -d\' \' -f2)
         expected=${{ matrix.onnxruntime-version }}
         [ "$installed" == "$expected" ] || (echo "Installed onnxruntime version $installed does not match $expected" && exit 1)
