@@ -25,13 +25,10 @@ def uninstall(
     module: str,
 ):
     # uninstall package
-    subprocess.run(["uv", "sync", "--active"])
     subprocess.run(["uv", "pip", "uninstall", package])
-    subprocess.run(["uv", "pip", "show", package])
     # remove module
     for m in list(sys.modules):
         if m.startswith(package):
-            print(f"{m} stats with opensmile")
             sys.modules.pop(m)
 
     # force pkg_resources to re-scan site packages
@@ -50,7 +47,6 @@ def test(tmpdir):
     # Removing the package does not work under Windows
     # as the DLL file cannot be unloaded
     if not sys.platform == "win32":
-        print("Start uninstall")
         uninstall("opensmile", "opensmile")
 
         with pytest.raises(ModuleNotFoundError):
