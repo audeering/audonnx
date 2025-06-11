@@ -15,19 +15,19 @@ jobs:
         onnxruntime-version: [ '1.12.1', '1.13.1', '1.14.1', '1.15.1', '1.16.3', '1.17.3', '1.18.1', '1.19.2', '1.20.1', '1.21.1', '1.22.0' ]
         os: [ ubuntu-latest ]
         python-version: [ '3.10' ]
-        include:
-          - onnxruntime-version: '1.11.1'
-            os: ubuntu-latest
-            python-version: '3.9'
-          - onnxruntime-version: '1.10.0'
-            os: ubuntu-latest
-            python-version: '3.9'
-          - onnxruntime-version: '1.9.0'
-            os: ubuntu-latest
-            python-version: '3.9'
-          - onnxruntime-version: '1.8.0'
-            os: ubuntu-latest
-            python-version: '3.9'
+        # include:
+        #   - onnxruntime-version: '1.11.1'
+        #     os: ubuntu-latest
+        #     python-version: '3.9'
+        #   - onnxruntime-version: '1.10.0'
+        #     os: ubuntu-latest
+        #     python-version: '3.9'
+        #   - onnxruntime-version: '1.9.0'
+        #     os: ubuntu-latest
+        #     python-version: '3.9'
+        #   - onnxruntime-version: '1.8.0'
+        #     os: ubuntu-latest
+        #     python-version: '3.9'
 
     steps:
     - uses: actions/checkout@v4
