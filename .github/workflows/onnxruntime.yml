@@ -50,7 +50,7 @@ jobs:
     - name: Setup Python environment
       run: |
         uv python pin ${{ matrix.python-version }}
-        uv sync --frozen
+        uv sync --python ${{ matrix.python-version }}
         uv add "onnxruntime==${{ matrix.onnxruntime-version }}"
 
     - name: Test with pytest
