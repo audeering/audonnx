@@ -60,3 +60,6 @@ jobs:
       run: |
         uv run --python .venv pytest
         uv pip show --python .venv onnxruntime
+        installed=$(uv pip show onnxruntime | grep "Version:" | cut -d' ' -f2)
+        expected=${{ matrix.onnxruntime-version }}
+        [ "$installed" == "$expected" ] || (echo "onnxruntime version $installed does not match $expected" && exit 1)
