@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                v0.7.0
+                v0.8.0
               </div>
             
           
@@ -141,26 +141,27 @@
            <div itemprop="articleBody">
             
   <h1>Source code for audonnx.core.testing</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">typing</span>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>  <span class="c1"># noqa: F401, needed for doctest</span>
-<span class="kn">import</span> <span class="nn">onnx</span>
-<span class="kn">import</span> <span class="nn">onnxruntime</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>  <span class="c1"># noqa: F401, needed for doctest</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">onnx</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">onnxruntime</span>
 
-<span class="kn">from</span> <span class="nn">audonnx.core.function</span> <span class="kn">import</span> <span class="n">Function</span>
-<span class="kn">from</span> <span class="nn">audonnx.core.model</span> <span class="kn">import</span> <span class="n">Model</span>
-<span class="kn">from</span> <span class="nn">audonnx.core.typing</span> <span class="kn">import</span> <span class="n">Device</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">audonnx.core.function</span><span class="w"> </span><span class="kn">import</span> <span class="n">Function</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">audonnx.core.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">Model</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">audonnx.core.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Device</span>
 
 
-<div class="viewcode-block" id="create_model"><a class="viewcode-back" href="../../../api/audonnx.testing.create_model.html#audonnx.testing.create_model">[docs]</a><span class="k">def</span> <span class="nf">create_model</span><span class="p">(</span>
-        <span class="n">shapes</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
-        <span class="o">*</span><span class="p">,</span>
-        <span class="n">value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">,</span>
-        <span class="n">dtype</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">onnx</span><span class="o">.</span><span class="n">TensorProto</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">,</span>
-        <span class="n">opset_version</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">14</span><span class="p">,</span>
-        <span class="n">device</span><span class="p">:</span> <span class="n">Device</span> <span class="o">=</span> <span class="s1">&#39;cpu&#39;</span><span class="p">,</span>
-        <span class="n">num_workers</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-        <span class="n">session_options</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">onnxruntime</span><span class="o">.</span><span class="n">SessionOptions</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="create_model"><a class="viewcode-back" href="../../../api/audonnx.testing.create_model.html#audonnx.testing.create_model">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">create_model</span><span class="p">(</span>
+    <span class="n">shapes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">onnx</span><span class="o">.</span><span class="n">TensorProto</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">,</span>
+    <span class="n">opset_version</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">14</span><span class="p">,</span>
+    <span class="n">ir_version</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">7</span><span class="p">,</span>
+    <span class="n">device</span><span class="p">:</span> <span class="n">Device</span> <span class="o">=</span> <span class="s2">&quot;cpu&quot;</span><span class="p">,</span>
+    <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">session_options</span><span class="p">:</span> <span class="n">onnxruntime</span><span class="o">.</span><span class="n">SessionOptions</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Model</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create test model.</span>
 
@@ -179,6 +180,7 @@
 <span class="sd">        value: fill value</span>
 <span class="sd">        dtype: data type, see `supported data types`_</span>
 <span class="sd">        opset_version: opset version</span>
+<span class="sd">        ir_version: ir version</span>
 <span class="sd">        device: set device</span>
 <span class="sd">            (``&#39;cpu&#39;``, ``&#39;cuda&#39;``, or ``&#39;cuda:&lt;id&gt;&#39;``)</span>
 <span class="sd">            or a (list of) `provider(s)`_</span>
@@ -240,42 +242,34 @@
 <span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
     <span class="c1"># create graph</span>
 
-    <span class="nb">object</span> <span class="o">=</span> <span class="n">create_model_proto</span><span class="p">(</span>
-        <span class="n">shapes</span><span class="p">,</span>
-        <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span>
-        <span class="n">opset_version</span><span class="o">=</span><span class="n">opset_version</span><span class="p">,</span>
+    <span class="n">obj</span> <span class="o">=</span> <span class="n">create_model_proto</span><span class="p">(</span>
+        <span class="n">shapes</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">opset_version</span><span class="o">=</span><span class="n">opset_version</span><span class="p">,</span> <span class="n">ir_version</span><span class="o">=</span><span class="n">ir_version</span>
     <span class="p">)</span>
 
     <span class="c1"># create transform objects</span>
 
-    <span class="n">transform</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">shape</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">shapes</span><span class="p">):</span>
-        <span class="n">transform</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;input-</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Function</span><span class="p">(</span>
-            <span class="n">reshape</span><span class="p">,</span>
-            <span class="n">func_args</span><span class="o">=</span><span class="p">{</span>
-                <span class="s1">&#39;shape&#39;</span><span class="p">:</span> <span class="n">shape</span><span class="p">,</span>
-                <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">value</span><span class="p">,</span>
-            <span class="p">},</span>
-        <span class="p">)</span>
+    <span class="n">transform</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="sa">f</span><span class="s2">&quot;input-</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">:</span> <span class="n">Function</span><span class="p">(</span><span class="n">reshape</span><span class="p">,</span> <span class="n">func_args</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;shape&quot;</span><span class="p">:</span> <span class="n">shape</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">shape</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">shapes</span><span class="p">)</span>
+    <span class="p">}</span>
 
     <span class="c1"># create model</span>
 
-    <span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span>
-        <span class="nb">object</span><span class="p">,</span>
+    <span class="k">return</span> <span class="n">Model</span><span class="p">(</span>
+        <span class="n">obj</span><span class="p">,</span>
         <span class="n">transform</span><span class="o">=</span><span class="n">transform</span><span class="p">,</span>
         <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
         <span class="n">num_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">,</span>
         <span class="n">session_options</span><span class="o">=</span><span class="n">session_options</span><span class="p">,</span>
-    <span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">model</span></div>
+    <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="create_model_proto"><a class="viewcode-back" href="../../../api/audonnx.testing.create_model_proto.html#audonnx.testing.create_model_proto">[docs]</a><span class="k">def</span> <span class="nf">create_model_proto</span><span class="p">(</span>
-        <span class="n">shapes</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
-        <span class="o">*</span><span class="p">,</span>
-        <span class="n">dtype</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">onnx</span><span class="o">.</span><span class="n">TensorProto</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">,</span>
-        <span class="n">opset_version</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">14</span><span class="p">,</span>
+<div class="viewcode-block" id="create_model_proto"><a class="viewcode-back" href="../../../api/audonnx.testing.create_model_proto.html#audonnx.testing.create_model_proto">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">create_model_proto</span><span class="p">(</span>
+    <span class="n">shapes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">onnx</span><span class="o">.</span><span class="n">TensorProto</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">,</span>
+    <span class="n">opset_version</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">14</span><span class="p">,</span>
+    <span class="n">ir_version</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">7</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">onnx</span><span class="o">.</span><span class="n">ModelProto</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create test ONNX proto object.</span>
 
@@ -296,16 +290,14 @@
 <span class="sd">            input and output nodes of the model graph</span>
 <span class="sd">        dtype: data type, see `supported data types`_</span>
 <span class="sd">        opset_version: opset version</span>
+<span class="sd">        ir_version: ir version</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        ONNX object</span>
 
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; create_model_proto([[2]])</span>
-<span class="sd">        ir_version: 9</span>
-<span class="sd">        opset_import {</span>
-<span class="sd">          version: 14</span>
-<span class="sd">        }</span>
+<span class="sd">        ir_version: 7</span>
 <span class="sd">        producer_name: &quot;test&quot;</span>
 <span class="sd">        graph {</span>
 <span class="sd">          node {</span>
@@ -341,6 +333,9 @@
 <span class="sd">            }</span>
 <span class="sd">          }</span>
 <span class="sd">        }</span>
+<span class="sd">        opset_import {</span>
+<span class="sd">          version: 14</span>
+<span class="sd">        }</span>
 <span class="sd">        &lt;BLANKLINE&gt;</span>
 
 <span class="sd">    .. _`supported data types`: https://onnxruntime.ai/docs/reference/operators/custom-python-operator.html#supported-data-types</span>
@@ -354,21 +349,21 @@
 
     <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">shape</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">shapes</span><span class="p">):</span>
         <span class="nb">input</span> <span class="o">=</span> <span class="n">onnx</span><span class="o">.</span><span class="n">helper</span><span class="o">.</span><span class="n">make_tensor_value_info</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s1">&#39;input-</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;input-</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="n">dtype</span><span class="p">,</span>
             <span class="n">shape</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">inputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
 
         <span class="n">output</span> <span class="o">=</span> <span class="n">onnx</span><span class="o">.</span><span class="n">helper</span><span class="o">.</span><span class="n">make_tensor_value_info</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s1">&#39;output-</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;output-</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="n">dtype</span><span class="p">,</span>
             <span class="n">shape</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
 
         <span class="n">node</span> <span class="o">=</span> <span class="n">onnx</span><span class="o">.</span><span class="n">helper</span><span class="o">.</span><span class="n">make_node</span><span class="p">(</span>
-            <span class="s1">&#39;Identity&#39;</span><span class="p">,</span>
+            <span class="s2">&quot;Identity&quot;</span><span class="p">,</span>
             <span class="p">[</span><span class="nb">input</span><span class="o">.</span><span class="n">name</span><span class="p">],</span>
             <span class="p">[</span><span class="n">output</span><span class="o">.</span><span class="n">name</span><span class="p">],</span>
         <span class="p">)</span>
@@ -378,25 +373,26 @@
 
     <span class="n">graph</span> <span class="o">=</span> <span class="n">onnx</span><span class="o">.</span><span class="n">helper</span><span class="o">.</span><span class="n">make_graph</span><span class="p">(</span>
         <span class="n">nodes</span><span class="p">,</span>
-        <span class="s1">&#39;test&#39;</span><span class="p">,</span>
+        <span class="s2">&quot;test&quot;</span><span class="p">,</span>
         <span class="n">inputs</span><span class="p">,</span>
         <span class="n">outputs</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="c1"># model</span>
 
-    <span class="n">model</span> <span class="o">=</span> <span class="n">onnx</span><span class="o">.</span><span class="n">helper</span><span class="o">.</span><span class="n">make_model</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">producer_name</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">)</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">onnx</span><span class="o">.</span><span class="n">helper</span><span class="o">.</span><span class="n">make_model</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">producer_name</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="p">)</span>
     <span class="n">model</span><span class="o">.</span><span class="n">opset_import</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">version</span> <span class="o">=</span> <span class="n">opset_version</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">ir_version</span> <span class="o">=</span> <span class="n">ir_version</span>
     <span class="n">onnx</span><span class="o">.</span><span class="n">checker</span><span class="o">.</span><span class="n">check_model</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">model</span></div>
 
 
-<span class="k">def</span> <span class="nf">reshape</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">reshape</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return array with zeros of given shape.&quot;&quot;&quot;</span>
-    <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>  <span class="c1"># noqa: F811</span>
-    <span class="n">shape</span> <span class="o">=</span> <span class="p">[</span><span class="n">signal</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">s</span> <span class="o">&lt;</span> <span class="mi">0</span>
-             <span class="k">else</span> <span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">shape</span><span class="p">]</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>  <span class="c1"># noqa: F811</span>
+
+    <span class="n">shape</span> <span class="o">=</span> <span class="p">[</span><span class="n">signal</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">s</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">shape</span><span class="p">]</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="o">*</span> <span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 </pre></div>
 
@@ -413,7 +409,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/12/18 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2025/06/11 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -421,7 +417,7 @@
   <div role="contentinfo">
     <p>
         
-      &copy; 2021-2023 audEERING GmbH
+      &copy; 2021-2025 audEERING GmbH
     </p>
   </div> 
 

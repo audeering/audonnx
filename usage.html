@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                v0.7.0
+                v0.8.0
               </div>
             
           
@@ -165,7 +165,7 @@ Models with single or multiple input and output nodes are supported.</p>
 a file path, a signal array and an index in <a class="reference external" href="https://audeering.github.io/audformat/">audformat</a>.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">audiofile</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">audiofile</span>
 
 
 <span class="n">file</span> <span class="o">=</span> <span class="s1">&#39;./docs/_static/test.wav&#39;</span>
@@ -204,19 +204,19 @@ a file path, a signal array and an index in <a class="reference external" href="
 <p>Create <a class="reference external" href="https://pytorch.org/">Torch</a> model with a single input and output node.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
 
 
-<span class="k">class</span> <span class="nc">TorchModelSingle</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">TorchModelSingle</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hidden</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">out</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
         <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">))</span>
         <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">out</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">y</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
@@ -233,7 +233,7 @@ a file path, a signal array and an index in <a class="reference external" href="
 raw audio signal to a sequence of low-level descriptors.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">opensmile</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">opensmile</span>
 
 
 <span class="n">smile</span> <span class="o">=</span> <span class="n">opensmile</span><span class="o">.</span><span class="n">Smile</span><span class="p">(</span>
@@ -257,7 +257,7 @@ raw audio signal to a sequence of low-level descriptors.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>tensor([  29.3742, -214.7639])
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>tensor([-149.9306, -193.1696])
 </pre></div>
 </div>
 </div>
@@ -276,8 +276,8 @@ of the input has a dynamic size.
 And we assign meaningful names to the nodes.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">audeer</span>
-<span class="kn">import</span> <span class="nn">os</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">audeer</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
 
 <span class="n">onnx_root</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="s1">&#39;onnx&#39;</span><span class="p">)</span>
@@ -309,7 +309,7 @@ Printing the model provides a summary of
 the input and output nodes.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">audonnx</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">audonnx</span>
 
 
 <span class="n">onnx_model</span> <span class="o">=</span> <span class="n">audonnx</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span>
@@ -402,7 +402,7 @@ Output:
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([  29.374172, -214.76393 ], dtype=float32)
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([-149.93054, -193.16959], dtype=float32)
 </pre></div>
 </div>
 </div>
@@ -411,11 +411,11 @@ Output:
 <div class="section" id="create-interface">
 <h2>Create interface<a class="headerlink" href="#create-interface" title="Permalink to this heading">¶</a></h2>
 <p><code class="xref py py-class docutils literal notranslate"><span class="pre">onnx.Model</span></code> does not come with a fancy interface itself,
-but we can use <a class="reference external" href="http://tools.pp.audeering.com/audinterface/">audinterface</a> to create one.</p>
+but we can use <a class="reference external" href="https://audeering.github.io/audinterface/">audinterface</a> to create one.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">audinterface</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">audinterface</span>
 
 
 <span class="n">interface</span> <span class="o">=</span> <span class="n">audinterface</span><span class="o">.</span><span class="n">Feature</span><span class="p">(</span>
@@ -463,14 +463,14 @@ but we can use <a class="reference external" href="http://tools.pp.audeering.com
       <th rowspan="2" valign="top">./docs/_static/test.wav</th>
       <th>0 days 00:00:00</th>
       <th>0 days 00:00:03</th>
-      <td>30.218712</td>
-      <td>-214.255234</td>
+      <td>-150.971313</td>
+      <td>-195.905106</td>
     </tr>
     <tr>
       <th>0 days 00:00:03</th>
       <th>0 days 00:00:05</th>
-      <td>28.661716</td>
-      <td>-211.555435</td>
+      <td>-152.493729</td>
+      <td>-194.431107</td>
     </tr>
   </tbody>
 </table>
@@ -545,13 +545,13 @@ but we can use <a class="reference external" href="http://tools.pp.audeering.com
 </div>
 <div class="jupyter_cell docutils container">
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>$audonnx.core.model.Model==0.7.0:
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>$audonnx.core.model.Model==0.8.0:
   path: model.onnx
   labels:
   - female
   - male
   transform:
-    $opensmile.core.smile.Smile==2.5.0:
+    $opensmile.core.smile.Smile==2.5.1:
       feature_set: GeMAPSv01b
       feature_level: LowLevelDescriptors
       options: {}
@@ -568,7 +568,7 @@ but we can use <a class="reference external" href="http://tools.pp.audeering.com
 <p>Load the model from a YAML file.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">audobject</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">audobject</span>
 
 <span class="n">onnx_model_2</span> <span class="o">=</span> <span class="n">audobject</span><span class="o">.</span><span class="n">from_yaml</span><span class="p">(</span><span class="n">onnx_meta_path</span><span class="p">)</span>
 <span class="n">onnx_model_2</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">sampling_rate</span><span class="p">)</span>
@@ -576,7 +576,7 @@ but we can use <a class="reference external" href="http://tools.pp.audeering.com
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([  29.374172, -214.76393 ], dtype=float32)
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([-149.93054, -193.16959], dtype=float32)
 </pre></div>
 </div>
 </div>
@@ -590,7 +590,7 @@ but we can use <a class="reference external" href="http://tools.pp.audeering.com
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([  29.374172, -214.76393 ], dtype=float32)
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([-149.93054, -193.16959], dtype=float32)
 </pre></div>
 </div>
 </div>
@@ -600,7 +600,7 @@ but we can use <a class="reference external" href="http://tools.pp.audeering.com
 <h2>Quantize weights<a class="headerlink" href="#quantize-weights" title="Permalink to this heading">¶</a></h2>
 <p>To reduce the memory print of a model,
 we can quantize it,
-compare the <a class="reference external" href="https://github.com/microsoft/onnxruntime-inference-examples/blob/main/quantization/image_classification/cpu/ReadMe.md#onnx-runtime-quantization-example">MobilenetV2 example</a>.
+compare the <a class="reference external" href="https://github.com/microsoft/onnxruntime-inference-examples/blob/main/quantization/image_classification/cpu/ReadMe.md">MobilenetV2 example</a>.
 For instance, we can store model weights as 8 bit integers.
 For quantization make sure
 you have installed
@@ -609,7 +609,7 @@ as well as
 <code class="docutils literal notranslate"><span class="pre">onnxruntime</span></code>.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">onnxruntime.quantization</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">onnxruntime.quantization</span>
 
 
 <span class="n">onnx_infer_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">onnx_root</span><span class="p">,</span> <span class="s1">&#39;model_infer.onnx&#39;</span><span class="p">)</span>
@@ -642,7 +642,7 @@ as well as
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([  29.231592, -212.91867 ], dtype=float32)
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([-152.43523, -193.69127], dtype=float32)
 </pre></div>
 </div>
 </div>
@@ -652,10 +652,10 @@ as well as
 <h2>Custom transform<a class="headerlink" href="#custom-transform" title="Permalink to this heading">¶</a></h2>
 <p>So far,
 we have used
-<a class="reference external" href="https://audeering.github.io/opensmile-python/api/opensmile.Smile.html#opensmile.Smile" title="(in opensmile vv2.5.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">opensmile.Smile</span></code></a>
+<a class="reference external" href="https://audeering.github.io/opensmile-python/api/opensmile.Smile.html#opensmile.Smile" title="(in opensmile vv2.5.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">opensmile.Smile</span></code></a>
 as feature extractor.
 It derives from
-<a class="reference external" href="https://audeering.github.io/audobject/api/audobject.Object.html#audobject.Object" title="(in audobject)"><code class="xref py py-class docutils literal notranslate"><span class="pre">audobject.Object</span></code></a>
+<a class="reference external" href="https://audeering.github.io/audobject/api/audobject.Object.html#audobject.Object" title="(in audobject vv0.7.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">audobject.Object</span></code></a>
 and is therefore serializable by default.
 However,
 using
@@ -668,8 +668,8 @@ Mel-frequency cepstral coefficients (MFCCs)
 with <a class="reference external" href="https://librosa.org/doc/main/index.html">librosa</a>.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">mfcc</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">sr</span><span class="p">):</span>
-    <span class="kn">import</span> <span class="nn">librosa</span>  <span class="c1"># import here to make function self-contained</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">mfcc</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">sr</span><span class="p">):</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">librosa</span>  <span class="c1"># import here to make function self-contained</span>
     <span class="n">y</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">mfcc</span><span class="p">(</span>
         <span class="n">y</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(),</span>
         <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span>
@@ -740,7 +740,7 @@ Output:
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([-32.218803,  47.5395  ], dtype=float32)
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([-14.920653,  11.709653], dtype=float32)
 </pre></div>
 </div>
 </div>
@@ -754,9 +754,9 @@ and provides two more output nodes -
 the output from the hidden layer and a confidence value.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">TorchModelMulti</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">TorchModelMulti</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
     <span class="p">):</span>
 
@@ -771,7 +771,7 @@ the output from the hidden layer and a confidence value.</p>
             <span class="p">}</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">feature</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">feature</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
 
         <span class="n">y_left</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_left</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">))</span>
         <span class="n">y_right</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_right</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">))</span>
@@ -865,11 +865,11 @@ returns a dictionary with output for every node.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>{&#39;hidden&#39;: array([ 7.6027595e-02, -8.8102180e-01, -4.5986521e-01, -2.4757692e-01,
-        -3.5762204e+02, -6.2052740e+02, -6.6322235e+02, -2.5100070e+02],
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>{&#39;hidden&#39;: array([-3.5536501e-01, -7.5197285e-03,  8.8085598e-01, -2.2098681e-01,
+        -8.7387543e+02, -1.7764543e+02, -1.6927556e+02,  5.1869006e+02],
        dtype=float32),
- &#39;gender&#39;: array([-85.367584, 330.33902 ], dtype=float32),
- &#39;confidence&#39;: array([-17.792288], dtype=float32)}
+ &#39;gender&#39;: array([-190.09314, -417.8987 ], dtype=float32),
+ &#39;confidence&#39;: array([-159.2137], dtype=float32)}
 </pre></div>
 </div>
 </div>
@@ -886,7 +886,7 @@ returns a dictionary with output for every node.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([-85.367584, 330.33902 ], dtype=float32)
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([-190.09314, -417.8987 ], dtype=float32)
 </pre></div>
 </div>
 </div>
@@ -903,8 +903,8 @@ returns a dictionary with output for every node.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>{&#39;gender&#39;: array([-85.367584, 330.33902 ], dtype=float32),
- &#39;confidence&#39;: array([-17.792288], dtype=float32)}
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>{&#39;gender&#39;: array([-190.09314, -417.8987 ], dtype=float32),
+ &#39;confidence&#39;: array([-159.2137], dtype=float32)}
 </pre></div>
 </div>
 </div>
@@ -923,7 +923,7 @@ do:</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([-85.367584, 330.33902 , -17.792288], dtype=float32)
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>array([-190.09314, -417.8987 , -159.2137 ], dtype=float32)
 </pre></div>
 </div>
 </div>
@@ -983,9 +983,9 @@ do:</p>
       <th>./docs/_static/test.wav</th>
       <th>0 days</th>
       <th>0 days 00:00:05.247687500</th>
-      <td>-85.367584</td>
-      <td>330.33902</td>
-      <td>-17.792288</td>
+      <td>-190.09314</td>
+      <td>-417.898712</td>
+      <td>-159.213699</td>
     </tr>
   </tbody>
 </table>
@@ -998,8 +998,8 @@ do:</p>
 Note that the version has to fit the CUDA installation.
 We can get the information from this <a class="reference external" href="https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html#requirements">table</a>.</p>
 <p>Then select CUDA device when loading the model:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">audonnx</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">audonnx</span>
 
 <span class="n">model</span> <span class="o">=</span> <span class="n">audonnx</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cuda:2&#39;</span><span class="p">)</span>
 </pre></div>
@@ -1038,7 +1038,7 @@ In that case do:</p>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/12/18 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2025/06/11 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -1046,7 +1046,7 @@ In that case do:</p>
   <div role="contentinfo">
     <p>
         
-      &copy; 2021-2023 audEERING GmbH
+      &copy; 2021-2025 audEERING GmbH
     </p>
   </div> 
 

@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                v0.7.0
+                v0.8.0
               </div>
             
           
@@ -141,32 +141,28 @@
            <div itemprop="articleBody">
             
   <h1>Source code for audonnx.core.api</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">typing</span>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
-<span class="kn">import</span> <span class="nn">onnxruntime</span>
-<span class="kn">import</span> <span class="nn">oyaml</span> <span class="k">as</span> <span class="nn">yaml</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">onnxruntime</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">oyaml</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">yaml</span>
 
-<span class="kn">import</span> <span class="nn">audeer</span>
-<span class="kn">import</span> <span class="nn">audobject</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">audeer</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">audobject</span>
 
-<span class="kn">from</span> <span class="nn">audonnx.core.model</span> <span class="kn">import</span> <span class="n">Model</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">audonnx.core.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">Model</span>
 
 
-<div class="viewcode-block" id="load"><a class="viewcode-back" href="../../../api/audonnx.load.html#audonnx.load">[docs]</a><span class="k">def</span> <span class="nf">load</span><span class="p">(</span>
-        <span class="n">root</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
-        <span class="n">model_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;model.yaml&#39;</span><span class="p">,</span>
-        <span class="n">labels_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;labels.yaml&#39;</span><span class="p">,</span>
-        <span class="n">transform_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;transform.yaml&#39;</span><span class="p">,</span>
-        <span class="n">device</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span>
-            <span class="nb">str</span><span class="p">,</span>
-            <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">],</span>
-            <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">]]],</span>
-        <span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;cpu&#39;</span><span class="p">,</span>
-        <span class="n">num_workers</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-        <span class="n">session_options</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">onnxruntime</span><span class="o">.</span><span class="n">SessionOptions</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">auto_install</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<div class="viewcode-block" id="load"><a class="viewcode-back" href="../../../api/audonnx.load.html#audonnx.load">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">(</span>
+    <span class="n">root</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">model_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;model.yaml&quot;</span><span class="p">,</span>
+    <span class="n">labels_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;labels.yaml&quot;</span><span class="p">,</span>
+    <span class="n">transform_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;transform.yaml&quot;</span><span class="p">,</span>
+    <span class="n">device</span><span class="p">:</span> <span class="p">(</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]])</span> <span class="o">=</span> <span class="s2">&quot;cpu&quot;</span><span class="p">,</span>
+    <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">session_options</span><span class="p">:</span> <span class="n">onnxruntime</span><span class="o">.</span><span class="n">SessionOptions</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">auto_install</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Model</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Load model from folder.</span>
 
@@ -216,7 +212,7 @@
 <span class="sd">        model</span>
 
 <span class="sd">    Examples:</span>
-<span class="sd">        &gt;&gt;&gt; model = load(&#39;tests&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; model = load(&quot;tests&quot;)</span>
 <span class="sd">        &gt;&gt;&gt; model</span>
 <span class="sd">        Input:</span>
 <span class="sd">          feature:</span>
@@ -232,9 +228,9 @@
 <span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
     <span class="n">root</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
     <span class="n">model_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">model_file</span><span class="p">)</span>
-    <span class="n">model_file_yaml</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">replace_file_extension</span><span class="p">(</span><span class="n">model_file</span><span class="p">,</span> <span class="s1">&#39;yaml&#39;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">audeer</span><span class="o">.</span><span class="n">file_extension</span><span class="p">(</span><span class="n">model_file</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;yaml&#39;</span><span class="p">:</span>
-        <span class="n">model_file_onnx</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">replace_file_extension</span><span class="p">(</span><span class="n">model_file</span><span class="p">,</span> <span class="s1">&#39;onnx&#39;</span><span class="p">)</span>
+    <span class="n">model_file_yaml</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">replace_file_extension</span><span class="p">(</span><span class="n">model_file</span><span class="p">,</span> <span class="s2">&quot;yaml&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">audeer</span><span class="o">.</span><span class="n">file_extension</span><span class="p">(</span><span class="n">model_file</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;yaml&quot;</span><span class="p">:</span>
+        <span class="n">model_file_onnx</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">replace_file_extension</span><span class="p">(</span><span class="n">model_file</span><span class="p">,</span> <span class="s2">&quot;onnx&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">model_file_onnx</span> <span class="o">=</span> <span class="n">model_file</span>
 
@@ -243,14 +239,14 @@
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">model_file_yaml</span><span class="p">):</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">model_file_yaml</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">first_line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">first_line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;$audonnx&#39;</span><span class="p">):</span>  <span class="c1"># ensure correct object</span>
+        <span class="k">if</span> <span class="n">first_line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;$audonnx&quot;</span><span class="p">):</span>  <span class="c1"># ensure correct object</span>
             <span class="k">return</span> <span class="n">audobject</span><span class="o">.</span><span class="n">from_yaml</span><span class="p">(</span>
                 <span class="n">model_file_yaml</span><span class="p">,</span>
                 <span class="n">auto_install</span><span class="o">=</span><span class="n">auto_install</span><span class="p">,</span>
                 <span class="n">override_args</span><span class="o">=</span><span class="p">{</span>
-                    <span class="s1">&#39;device&#39;</span><span class="p">:</span> <span class="n">device</span><span class="p">,</span>
-                    <span class="s1">&#39;num_workers&#39;</span><span class="p">:</span> <span class="n">num_workers</span><span class="p">,</span>
-                    <span class="s1">&#39;session_options&#39;</span><span class="p">:</span> <span class="n">session_options</span><span class="p">,</span>
+                    <span class="s2">&quot;device&quot;</span><span class="p">:</span> <span class="n">device</span><span class="p">,</span>
+                    <span class="s2">&quot;num_workers&quot;</span><span class="p">:</span> <span class="n">num_workers</span><span class="p">,</span>
+                    <span class="s2">&quot;session_options&quot;</span><span class="p">:</span> <span class="n">session_options</span><span class="p">,</span>
                 <span class="p">},</span>
             <span class="p">)</span>
 
@@ -262,7 +258,7 @@
 
     <span class="n">labels</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">labels_file</span><span class="p">):</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">labels_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">labels_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
             <span class="n">labels</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">yaml</span><span class="o">.</span><span class="n">BaseLoader</span><span class="p">)</span>
 
     <span class="n">transform</span> <span class="o">=</span> <span class="kc">None</span>
@@ -297,7 +293,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/12/18 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2025/06/11 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -305,7 +301,7 @@
   <div role="contentinfo">
     <p>
         
-      &copy; 2021-2023 audEERING GmbH
+      &copy; 2021-2025 audEERING GmbH
     </p>
   </div> 
 

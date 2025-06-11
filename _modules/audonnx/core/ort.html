@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                v0.7.0
+                v0.8.0
               </div>
             
           
@@ -141,17 +141,13 @@
            <div itemprop="articleBody">
             
   <h1>Source code for audonnx.core.ort</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">import</span> <span class="nn">typing</span>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
 
 
-<div class="viewcode-block" id="device_to_providers"><a class="viewcode-back" href="../../../api/audonnx.device_to_providers.html#audonnx.device_to_providers">[docs]</a><span class="k">def</span> <span class="nf">device_to_providers</span><span class="p">(</span>
-        <span class="n">device</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span>
-            <span class="nb">str</span><span class="p">,</span>
-            <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">],</span>
-            <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">]]],</span>
-        <span class="p">],</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">]]]:</span>
+<div class="viewcode-block" id="device_to_providers"><a class="viewcode-back" href="../../../api/audonnx.device_to_providers.html#audonnx.device_to_providers">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">device_to_providers</span><span class="p">(</span>
+    <span class="n">device</span><span class="p">:</span> <span class="p">(</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]]),</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Converts device into a list of providers.</span>
 
 <span class="sd">    Args:</span>
@@ -164,28 +160,29 @@
 <span class="sd">        sequence of `ONNX Runtime Execution Providers`_</span>
 
 <span class="sd">    Examples:</span>
-<span class="sd">        &gt;&gt;&gt; device_to_providers(&#39;cpu&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; device_to_providers(&quot;cpu&quot;)</span>
 <span class="sd">        [&#39;CPUExecutionProvider&#39;]</span>
 
 <span class="sd">    .. _ONNX Runtime Execution Providers: https://onnxruntime.ai/docs/execution-providers/</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">device</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">device</span> <span class="o">==</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
-            <span class="n">providers</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;CPUExecutionProvider&#39;</span><span class="p">]</span>
-        <span class="k">elif</span> <span class="n">device</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;cuda&#39;</span><span class="p">):</span>
-            <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^cuda:(\d+)$&#39;</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">device</span> <span class="o">==</span> <span class="s2">&quot;cpu&quot;</span><span class="p">:</span>
+            <span class="n">providers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;CPUExecutionProvider&quot;</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">device</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;cuda&quot;</span><span class="p">):</span>
+            <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^cuda:(\d+)$&quot;</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
                 <span class="n">device_id</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
                 <span class="n">providers</span> <span class="o">=</span> <span class="p">[</span>
                     <span class="p">(</span>
-                        <span class="s1">&#39;CUDAExecutionProvider&#39;</span><span class="p">,</span> <span class="p">{</span>
-                            <span class="s1">&#39;device_id&#39;</span><span class="p">:</span> <span class="n">device_id</span><span class="p">,</span>
-                        <span class="p">}</span>
+                        <span class="s2">&quot;CUDAExecutionProvider&quot;</span><span class="p">,</span>
+                        <span class="p">{</span>
+                            <span class="s2">&quot;device_id&quot;</span><span class="p">:</span> <span class="n">device_id</span><span class="p">,</span>
+                        <span class="p">},</span>
                     <span class="p">),</span>
                 <span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">providers</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;CUDAExecutionProvider&#39;</span><span class="p">]</span>
+                <span class="n">providers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;CUDAExecutionProvider&quot;</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">providers</span> <span class="o">=</span> <span class="p">[</span><span class="n">device</span><span class="p">]</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">device</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
@@ -208,7 +205,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/12/18 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2025/06/11 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -216,7 +213,7 @@
   <div role="contentinfo">
     <p>
         
-      &copy; 2021-2023 audEERING GmbH
+      &copy; 2021-2025 audEERING GmbH
     </p>
   </div> 
 
