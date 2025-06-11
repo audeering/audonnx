@@ -12,7 +12,7 @@ Version 0.8.0 (2025-06-11)
 
 * Added: ``ir_version`` argument
   to ``audonnx.testing.create_model()``
-  with an default value of ``7``
+  with a default value of ``7``
 * Added: support for Python 3.13
 * Added: support for Python 3.12
 * Changed: require ``onnxruntime>=1.12.0``
