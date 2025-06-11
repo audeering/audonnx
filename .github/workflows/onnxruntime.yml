@@ -59,6 +59,6 @@ jobs:
     - name: Test with pytest
       run: |
         uv run --frozen pytest
-        installed=$(uv pip show onnxruntime | grep "Version:" | cut -d\' \' -f2)
+        installed=$(uv pip show onnxruntime | grep "Version:" | cut -d' ' -f2)
         expected=${{ matrix.onnxruntime-version }}
         [ "$installed" == "$expected" ] || (echo "Installed onnxruntime version $installed does not match $expected" && exit 1)
