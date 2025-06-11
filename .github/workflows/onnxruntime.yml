@@ -49,12 +49,13 @@ jobs:
 
     - name: Setup Python environment
       run: |
-        uv sync --python ${{ matrix.python-version }}
-        uv add --python ${{ matrix.python-version }} "onnxruntime==${{ matrix.onnxruntime-version }}"
+        uv python pin ${{ matrix.python-version }}
+        uv sync
+        uv add "onnxruntime==${{ matrix.onnxruntime-version }}"
 
     - name: Test with pytest
       run: |
-        uv run --python ${{ matrix.python-version }} pytest
+        uv run pytest
         installed=$(uv pip show onnxruntime | grep "Version:" | cut -d' ' -f2)
         expected=${{ matrix.onnxruntime-version }}
         [ "$installed" == "$expected" ] || (echo "Installed onnxruntime version $installed does not match $expected" && exit 1)
