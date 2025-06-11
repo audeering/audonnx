@@ -46,8 +46,17 @@ jobs:
         sudo apt-get install --no-install-recommends --yes libsndfile1 sox
       if: matrix.os == 'ubuntu-latest'
 
-    - name: Sync Python environment
-      run: uv sync
+    # The test need to have access to the underlying virtual environment
+    # to (un)install opensmile,
+    # which is blocked if we use `uv run --with "onnxruntime==x.y.z"`.
+    # Instead we manage the virtual environment ourselves
+    - name: Setup Python environment
+      run: |
+        uv venv
+        source .venv/bin/activate
+        uv pip install --python .venv "onnxruntime==${{ matrix.onnxruntime-version }}"
 
     - name: Test with pytest
-      run: uv run --with "onnxruntime==${{ matrix.onnxruntime-version }}" pytest
+      run: |
+        uv run --python .venv pytest
+        deactivate
