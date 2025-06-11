@@ -25,18 +25,12 @@ def uninstall(
     module: str,
 ):
     # uninstall package
-    subprocess.check_call(
-        [
-            "uv",
-            "pip",
-            "uninstall",
-            package,
-        ]
-    )
+    subprocess.run(["uv", "pip", "uninstall", package])
     # remove module
     for m in list(sys.modules):
         if m.startswith(package):
             sys.modules.pop(m)
+
     # force pkg_resources to re-scan site packages
     force_package_rescan()
 

@@ -1,0 +1,51 @@
+name: onnxruntime
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        onnxruntime-version: [ '1.12.0', '1.13.1', '1.14.1', '1.15.1', '1.16.3', '1.17.3', '1.18.1', '1.19.2', '1.20.1', '1.21.1', '1.22.0' ]
+        os: [ ubuntu-latest ]
+        python-version: [ '3.10' ]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v5
+
+    - name: Prepare Ubuntu
+      run: |
+        sudo apt-get update
+        sudo apt-get install --no-install-recommends --yes libsndfile1 sox
+      if: matrix.os == 'ubuntu-latest'
+
+    - name: Setup Python environment
+      run: |
+        uv sync
+        uv add "onnxruntime==${{ matrix.onnxruntime-version }}"
+
+    - name: Install numpy<2.0.0
+      run: |
+        uv add "numpy<2.0.0"
+      if: matrix.onnxruntime-version <= '1.19.0'
+
+    - name: Test with pytest
+      run: |
+        uv run pytest
+        installed=$(uv pip show onnxruntime | grep "Version:" | cut -d' ' -f2)
+        expected=${{ matrix.onnxruntime-version }}
+        [ "$installed" == "$expected" ] || (echo "Installed onnxruntime version $installed does not match $expected" && exit 1)
