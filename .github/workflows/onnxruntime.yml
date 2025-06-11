@@ -53,11 +53,12 @@ jobs:
     - name: Setup Python environment
       run: |
         uv venv
+        uv sync --python .venv
         uv pip install --python .venv "onnxruntime==${{ matrix.onnxruntime-version }}"
 
     - name: Test with pytest
       run: |
-        uv run --python .venv pytest
+        uv run --no-project --python .venv pytest
         installed=$(uv pip show onnxruntime | grep "Version:" | cut -d' ' -f2)
         expected=${{ matrix.onnxruntime-version }}
         [ "$installed" == "$expected" ] || (echo "Installed onnxruntime version $installed does not match $expected" && exit 1)
