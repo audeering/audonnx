@@ -53,7 +53,7 @@ jobs:
     - name: Setup Python environment
       run: |
         uv venv
-        # uv sync --python .venv
+        uv sync --python .venv
         uv pip install --python .venv "onnxruntime==${{ matrix.onnxruntime-version }}"
 
     - name: Test with pytest
