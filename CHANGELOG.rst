@@ -7,6 +7,19 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.8.0 (2025-06-11)
+--------------------------
+
+* Added: ``ir_version`` argument
+  to ``audonnx.testing.create_model()``
+  with a default value of ``7``
+* Added: support for Python 3.13
+* Added: support for Python 3.12
+* Changed: require ``onnxruntime>=1.12.0``
+* Removed: support for Python 3.9
+* Removed: support for Python 3.8
+
+
 Version 0.7.0 (2023-12-18)
 --------------------------
 
