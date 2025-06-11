@@ -38,6 +38,11 @@ jobs:
         uv sync
         uv add "onnxruntime==${{ matrix.onnxruntime-version }}"
 
+    - name: Install numpy<2.0.0
+      run: |
+        uv add "numpy<2.0.0"
+      if: matrix.onnxruntime-version <= '1.19.0'
+
     - name: Test with pytest
       run: |
         uv run pytest
