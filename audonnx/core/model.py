@@ -305,13 +305,13 @@ class Model(audobject.Object):
 
         y = {}
 
-        for name, input in self.inputs.items():
-            if input.transform is not None:
+        for name, input_node in self.inputs.items():
+            if input_node.transform is not None:
                 transform_args, transform_kwargs = _transform_args(
-                    input.transform, inputs, sampling_rate
+                    input_node.transform, inputs, sampling_rate
                 )
                 try:
-                    x = input.transform(*transform_args, **transform_kwargs)
+                    x = input_node.transform(*transform_args, **transform_kwargs)
                 except TypeError as e:
                     raise ValueError(f"The input transformation for {name} failed: {e}")
             else:
