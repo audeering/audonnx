@@ -1,5 +1,6 @@
 from audonnx.core.api import load
 from audonnx.core.function import Function
+from audonnx.core.function import VariableFunction
 from audonnx.core.model import Model
 from audonnx.core.node import InputNode
 from audonnx.core.node import OutputNode

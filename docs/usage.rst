@@ -399,7 +399,8 @@ we do not set a transform for it.
 
 .. jupyter-execute::
 
-    onnx_multi_path = os.path.join(onnx_root, 'model.onnx')
+    onnx_multi_root = audeer.mkdir('onnx_multi')
+    onnx_multi_path = os.path.join(onnx_multi_root, 'model.onnx')
 
     torch.onnx.export(
         TorchModelMulti(),
@@ -481,6 +482,112 @@ Create interface and process a file.
         },
     )
     interface.process_file(file)
+
+
+Additional input values
+-----------------------
+
+In some cases it may be useful to
+pass inputs to the model
+without applying a transform
+on a signal to a model.
+
+Here we create the same model as before
+but without setting a transform
+for the ``feature`` input.
+
+.. jupyter-execute::
+
+    onnx_model_8 = audonnx.Model(
+        onnx_multi_path,
+        labels={
+            'gender': ['female', 'male']
+        },
+    )
+    onnx_model_8
+
+We can then pass all inputs
+as a dictionary when calling the model.
+
+.. jupyter-execute::
+
+    onnx_model_8(
+        {'signal': signal, 'feature': y},
+        sampling_rate,
+    )
+
+It is also possible to create a model
+that doesn't use a ``signal`` as input.
+
+.. jupyter-execute::
+
+    onnx_model_9 = audonnx.Model(
+        onnx_model_path,
+        labels=['female', 'male'],
+    )
+    onnx_model_9
+
+When calling this model,
+we only need to supply the ``feature`` input
+and can ignore the ``sampling_rate``.
+
+.. jupyter-execute::
+
+    onnx_model_9(y)
+
+If we want to apply a custom transform
+on a non-signal input,
+we can use a :class:`audonnx.VariableFunction`.
+This class works similar to :class:`audonnx.Function`,
+but it supports functions with various arguments,
+not just the arguments for signal and sampling rate.
+
+.. jupyter-execute::
+
+    def feature_addition(my_input, offset=0):
+        return my_input + offset
+
+    var_transform = audonnx.VariableFunction(feature_addition)
+    print(var_transform)
+
+We use this transform for the ``feature`` input
+of our multi-input model:
+
+.. jupyter-execute::
+
+    onnx_model_10 = audonnx.Model(
+        onnx_multi_path,
+        labels={
+            'gender': ['female', 'male']
+        },
+        transform={
+            'feature': var_transform
+        }
+    )
+    onnx_model_10
+
+When calling this model,
+the keys of the input dictionary
+need to match the signature of our function.
+In this case, we need to pass the ``my_input``
+input.
+
+.. jupyter-execute::
+
+    onnx_model_10(
+        {'signal': signal, 'my_input': y},
+        sampling_rate
+    )
+
+We can optionally set keyword arguments with default values,
+in this case ``offset``.
+
+.. jupyter-execute::
+
+    onnx_model_10(
+        {'signal': signal, 'my_input': y, 'offset': 1},
+        sampling_rate
+    )
 
 
 Run on the GPU

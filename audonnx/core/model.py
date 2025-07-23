@@ -9,6 +9,7 @@ import yaml
 import audeer
 import audobject
 
+from audonnx.core.function import VariableFunction
 from audonnx.core.node import InputNode
 from audonnx.core.node import OutputNode
 from audonnx.core.ort import device_to_providers
@@ -226,8 +227,8 @@ class Model(audobject.Object):
     )
     def __call__(
         self,
-        signal: np.ndarray,
-        sampling_rate: int,
+        inputs: np.ndarray | dict[str, object],
+        sampling_rate: int | None = None,
         *,
         outputs: str | Sequence[str] | None = None,
         concat: bool = False,
@@ -260,7 +261,11 @@ class Model(audobject.Object):
         output nodes.
 
         Args:
-            signal: input signal
+            inputs: model inputs. If inputs is a :class:`numpy.ndarray`,
+                it is treated as the input signal.
+                If inputs is a dictionary,
+                the dictionary entries
+                correspond to the input name and input values
             sampling_rate: sampling rate in Hz
             outputs: name of output or list with output names
             concat: if ``True``,
@@ -284,10 +289,25 @@ class Model(audobject.Object):
         y = {}
         for name, input in self.inputs.items():
             if input.transform is not None:
-                x = input.transform(signal, sampling_rate)
+                if isinstance(input.transform, VariableFunction):
+                    transform_input = inputs
+                    if sampling_rate is not None:
+                        transform_input = dict(
+                            transform_input, **{"sampling_rate": sampling_rate}
+                        )
+                    x = input.transform(transform_input)
+                else:
+                    if isinstance(inputs, dict):
+                        signal = inputs["signal"]
+                    else:
+                        signal = inputs
+                    x = input.transform(signal, sampling_rate)
             else:
-                x = signal
-            y[name] = x.reshape(self.inputs[name].shape)
+                if isinstance(inputs, dict):
+                    x = inputs[name]
+                else:
+                    x = inputs
+            y[name] = np.asarray(x).reshape(self.inputs[name].shape)
 
         z = self.sess.run(
             audeer.to_list(outputs),

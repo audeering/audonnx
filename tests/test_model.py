@@ -11,6 +11,26 @@ def min_max(x, sr):
     return [x.min(), x.max()]
 
 
+def signal_identity(signal, sampling_rate):
+    return signal
+
+
+def signal_negation(signal, sampling_rate):
+    return -signal
+
+
+def signal_addition(signal, sampling_rate, offset=1):
+    return signal + offset
+
+
+def feature_negation(feature):
+    return -feature
+
+
+def feature_addition(feature, offset=1):
+    return feature + offset
+
+
 @pytest.mark.parametrize(
     "model, outputs, expected",
     [
@@ -224,6 +244,178 @@ def test_call_concat(model, outputs, expected):
             np.testing.assert_equal(y, expected.squeeze())
         else:
             np.testing.assert_equal(y, expected)
+
+
+@pytest.mark.parametrize(
+    "model, inputs, sampling_rate, expected",
+    [
+        # Input signal as dict
+        (
+            audonnx.Model(
+                audonnx.testing.create_model_proto([[1, -1]]),
+                transform={"input-0": audonnx.Function(signal_identity)},
+            ),
+            {"signal": pytest.SIGNAL},
+            pytest.SAMPLING_RATE,
+            pytest.SIGNAL,
+        ),
+        # Non-signal input name
+        (
+            audonnx.Model(audonnx.testing.create_model_proto([[1, -1]])),
+            {"input-0": pytest.SIGNAL},
+            None,
+            pytest.SIGNAL,
+        ),
+        # Signal and non-signal input
+        (
+            audonnx.Model(
+                audonnx.testing.create_model_proto([[1, -1], [2]]),
+                transform={"input-0": audonnx.Function(signal_identity)},
+            ),
+            {
+                "signal": pytest.SIGNAL,
+                "input-1": np.array([1.0, 2.0], dtype=np.float32),
+            },
+            None,
+            {
+                "output-0": pytest.SIGNAL,
+                "output-1": np.array([1.0, 2.0], dtype=np.float32),
+            },
+        ),
+        # Two non signal inputs
+        (
+            audonnx.Model(
+                audonnx.testing.create_model_proto([[3], [2]]),
+            ),
+            {
+                "input-0": np.array([1.0, 1.0, 1.0], dtype=np.float32),
+                "input-1": np.array([1.0, 2.0], dtype=np.float32),
+            },
+            None,
+            {
+                "output-0": np.array([1.0, 1.0, 1.0], dtype=np.float32),
+                "output-1": np.array([1.0, 2.0], dtype=np.float32),
+            },
+        ),
+    ],
+)
+def test_call_dict(model, inputs, sampling_rate, expected):
+    y = model(
+        inputs,
+        sampling_rate,
+    )
+    if isinstance(y, dict):
+        for key, values in y.items():
+            np.testing.assert_equal(values, expected[key])
+    else:
+        np.testing.assert_equal(y, expected)
+
+
+@pytest.mark.parametrize(
+    "model, inputs, sampling_rate, expected",
+    [
+        # Input transformed with single argument transform
+        (
+            audonnx.Model(
+                audonnx.testing.create_model_proto([[2]]),
+                transform={"input-0": audonnx.VariableFunction(feature_negation)},
+            ),
+            np.array([1.0, 2.0], dtype=np.float32),
+            None,
+            np.array([-1.0, -2.0], dtype=np.float32),
+        ),
+        # Signal transformed with additional argument
+        (
+            audonnx.Model(
+                audonnx.testing.create_model_proto([[1, -1]]),
+                transform={"input-0": audonnx.VariableFunction(signal_addition)},
+            ),
+            {"signal": pytest.SIGNAL, "offset": 2},
+            pytest.SAMPLING_RATE,
+            pytest.SIGNAL + 2,
+        ),
+        # Feature transformed with additional argument
+        (
+            audonnx.Model(
+                audonnx.testing.create_model_proto([[2]]),
+                transform={"input-0": audonnx.VariableFunction(feature_addition)},
+            ),
+            {"feature": np.array([1.0, 2.0], dtype=np.float32), "offset": 2},
+            pytest.SAMPLING_RATE,
+            np.array([3.0, 4.0], dtype=np.float32),
+        ),
+        # Feature transformed with single argument
+        (
+            audonnx.Model(
+                audonnx.testing.create_model_proto([[2]]),
+                transform={"input-0": audonnx.VariableFunction(feature_negation)},
+            ),
+            {"feature": np.array([1.0, 2.0], dtype=np.float32)},
+            None,
+            np.array([-1.0, -2.0], dtype=np.float32),
+        ),
+        # Feature transformed with func_args set
+        (
+            audonnx.Model(
+                audonnx.testing.create_model_proto([[2]]),
+                transform={
+                    "input-0": audonnx.VariableFunction(
+                        feature_addition, func_args={"offset": 2}
+                    )
+                },
+            ),
+            {"feature": np.array([1.0, 2.0], dtype=np.float32)},
+            pytest.SAMPLING_RATE,
+            np.array([3.0, 4.0], dtype=np.float32),
+        ),
+        # Provided input argument should take priority over func_args
+        (
+            audonnx.Model(
+                audonnx.testing.create_model_proto([[2]]),
+                transform={
+                    "input-0": audonnx.VariableFunction(
+                        feature_addition, func_args={"offset": 2}
+                    )
+                },
+            ),
+            {"feature": np.array([1.0, 2.0], dtype=np.float32), "offset": 1},
+            pytest.SAMPLING_RATE,
+            np.array([2.0, 3.0], dtype=np.float32),
+        ),
+        # Fail when required argument (sampling_rate) is missing
+        pytest.param(
+            audonnx.Model(
+                audonnx.testing.create_model_proto([[2]]),
+                transform={"input-0": audonnx.VariableFunction(signal_addition)},
+            ),
+            np.array([1.0, 2.0], dtype=np.float32),
+            None,
+            None,
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        # Fail when required argument (feature) is missing for dict input
+        pytest.param(
+            audonnx.Model(
+                audonnx.testing.create_model_proto([[2]]),
+                transform={"input-0": audonnx.VariableFunction(feature_addition)},
+            ),
+            {"signal": np.array([1.0, 2.0], dtype=np.float32)},
+            pytest.SAMPLING_RATE,
+            None,
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+    ],
+)
+def test_call_varfunc(model, inputs, sampling_rate, expected):
+    y = model(
+        inputs,
+        sampling_rate,
+    )
+    if isinstance(y, dict):
+        for key, values in y.items():
+            np.testing.assert_equal(values, expected[key])
+    else:
+        np.testing.assert_equal(y, expected)
 
 
 @pytest.mark.parametrize("device", ["cpu", "cuda:0"])
