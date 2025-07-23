@@ -276,7 +276,7 @@ def test_call_concat(model, outputs, expected):
                 "signal": pytest.SIGNAL,
                 "input-1": np.array([1.0, 2.0], dtype=np.float32),
             },
-            None,
+            pytest.SAMPLING_RATE,
             {
                 "output-0": pytest.SIGNAL,
                 "output-1": np.array([1.0, 2.0], dtype=np.float32),
@@ -296,6 +296,27 @@ def test_call_concat(model, outputs, expected):
                 "output-0": np.array([1.0, 1.0, 1.0], dtype=np.float32),
                 "output-1": np.array([1.0, 2.0], dtype=np.float32),
             },
+        ),
+        # Fail when required input is missing
+        pytest.param(
+            audonnx.Model(
+                audonnx.testing.create_model_proto([[2]]),
+            ),
+            {"feature": np.array([1.0, 2.0], dtype=np.float32)},
+            pytest.SAMPLING_RATE,
+            None,
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        # Fail when required input is named incorrectly for transform
+        pytest.param(
+            audonnx.Model(
+                audonnx.testing.create_model_proto([[1, -1]]),
+                transform={"input-0": audonnx.Function(signal_identity)},
+            ),
+            {"feature": pytest.SIGNAL},
+            pytest.SAMPLING_RATE,
+            None,
+            marks=pytest.mark.xfail(raises=ValueError),
         ),
     ],
 )

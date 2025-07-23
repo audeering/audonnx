@@ -1,3 +1,4 @@
+from collections.abc import Callable
 from collections.abc import Sequence
 import os
 
@@ -236,6 +237,25 @@ class Model(audobject.Object):
     ) -> np.ndarray | dict[str, np.ndarray]:
         r"""Compute output for one or more nodes.
 
+        If ``inputs`` is a :class:`numpy.ndarray`,
+        it is treated as the input signal.
+
+        If ``inputs`` is a dictionary,
+        the dictionary entries
+        correspond to the input name and input values,
+        or the argument names and values
+        for input transformation.
+        If the input transformation is a
+        :class:`audonnx.VariableFunction`,
+        the argument names are user defined.
+        Otherwise, it is assumed
+        that the input transformation
+        accepts arguments for signal and sampling rate.
+        In that case,
+        the input dictionary
+        must contain the ``"signal"`` key
+        and the ``sampling_rate`` argument must be set.
+
         If ``outputs`` is a plain string,
         the output of the according node is returned.
 
@@ -261,11 +281,8 @@ class Model(audobject.Object):
         output nodes.
 
         Args:
-            inputs: model inputs. If inputs is a :class:`numpy.ndarray`,
-                it is treated as the input signal.
-                If inputs is a dictionary,
-                the dictionary entries
-                correspond to the input name and input values
+            inputs: model input signal
+                or dictionary with multiple inputs
             sampling_rate: sampling rate in Hz
             outputs: name of output or list with output names
             concat: if ``True``,
@@ -279,7 +296,7 @@ class Model(audobject.Object):
         Raises:
             RuntimeError: if ``concat`` is ``True``,
                 but output of requested nodes cannot be concatenated
-
+            ValueError: if a required model input is missing
         """
         if outputs is None:
             outputs = list(self.outputs)
@@ -287,32 +304,28 @@ class Model(audobject.Object):
                 outputs = outputs[0]
 
         y = {}
+
         for name, input in self.inputs.items():
             if input.transform is not None:
-                if isinstance(input.transform, VariableFunction):
-                    transform_input = inputs
-                    if sampling_rate is not None:
-                        transform_input = dict(
-                            transform_input, **{"sampling_rate": sampling_rate}
-                        )
-                    x = input.transform(transform_input)
-                else:
-                    if isinstance(inputs, dict):
-                        signal = inputs["signal"]
-                    else:
-                        signal = inputs
-                    x = input.transform(signal, sampling_rate)
+                transform_args, transform_kwargs = _transform_args(
+                    input.transform, inputs, sampling_rate
+                )
+                try:
+                    x = input.transform(*transform_args, **transform_kwargs)
+                except TypeError as e:
+                    raise ValueError(f"The input transformation for {name} failed: {e}")
             else:
                 if isinstance(inputs, dict):
+                    if name not in inputs:
+                        raise ValueError(
+                            f"The input {name} is missing from the input dictionary"
+                        )
                     x = inputs[name]
                 else:
                     x = inputs
             y[name] = np.asarray(x).reshape(self.inputs[name].shape)
 
-        z = self.sess.run(
-            audeer.to_list(outputs),
-            y,
-        )
+        z = self.sess.run(audeer.to_list(outputs), y)
 
         if isinstance(outputs, str):
             z = z[0]
@@ -471,3 +484,27 @@ def _shape(
 ) -> list[int]:
     r"""Replace dynamic dimensions with -1."""
     return [-1 if not isinstance(x, int) else x for x in shape]
+
+
+def _transform_args(
+    transform: Callable,
+    inputs: np.ndarray | dict[str, object],
+    sampling_rate: None | int,
+) -> tuple[list, dict[str, object]]:
+    kwargs = {}
+    args = []
+    if isinstance(inputs, np.ndarray):
+        args.append(inputs)
+    else:
+        if isinstance(transform, VariableFunction):
+            kwargs.update(inputs)
+        else:
+            if "signal" not in inputs:
+                raise ValueError(
+                    "Key 'signal' is missing from the input dictionary "
+                    "but is required for the transformation"
+                )
+            args.append(inputs["signal"])
+    if sampling_rate is not None:
+        kwargs["sampling_rate"] = sampling_rate
+    return args, kwargs
