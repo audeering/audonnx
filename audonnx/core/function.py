@@ -107,7 +107,7 @@ class VariableFunction(audobject.Object):
         ]
 
     def _match_arguments(
-        self, inputs: np.ndarray | dict[str, np.ndarray | float]
+        self, inputs: np.ndarray | dict[str, object]
     ) -> tuple[Sequence, dict]:
         r"""Match the inputs to the function arguments and keyword arguments."""
         args = ()
@@ -140,9 +140,7 @@ class VariableFunction(audobject.Object):
                 )
         return args, kwargs
 
-    def __call__(
-        self, inputs: np.ndarray | dict[str, np.ndarray | float]
-    ) -> np.ndarray:
+    def __call__(self, inputs: np.ndarray | dict[str, object]) -> np.ndarray:
         r"""Apply function on inputs.
 
         When ``inputs`` is a dictionary,
