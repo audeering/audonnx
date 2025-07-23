@@ -71,12 +71,13 @@ class VariableFunction(audobject.Object):
 
     Args:
         func: function with variable arguments.
-        func_args: fixed arguments that will be passed to the function
+        default_args: default arguments that will be passed to the function.
+            Can be overridden by arguments passed in the object call
 
     Examples:
         >>> object = VariableFunction(lambda x, sr, offset: float(x.mean() + offset))
         >>> object
-        {'$audonnx.core.function.VariableFunction': {'func': 'lambda x, sr, offset: float(x.mean() + offset)', 'func_args': {}}}
+        {'$audonnx.core.function.VariableFunction': {'func': 'lambda x, sr, offset: float(x.mean() + offset)', 'default_args': {}}}
         >>> object(x=np.array([1, 2, 3]), sr=10, offset=1)
         3.0
 
@@ -91,13 +92,15 @@ class VariableFunction(audobject.Object):
         self,
         func: Callable,
         *,
-        func_args: dict[str, object] | None = None,
+        default_args: dict[str, object] | None = None,
     ):
         self.func = func
         r"""Function"""
-        self.func_args = func_args or {}
-        r"""Function arguments"""
+        self.default_args = default_args or {}
+        r"""Default set function arguments"""
         self._signature = inspect.signature(func)
+        self.parameters = self._signature.parameters
+        r"""Function parameters"""
 
     def _match_arguments(self, *args, **kwargs) -> tuple[Sequence, dict]:
         r"""Match the inputs to the function arguments and keyword arguments.
@@ -109,13 +112,10 @@ class VariableFunction(audobject.Object):
         Raises:
             TypeError: if a required function argument is missing
         """
-        sig = self._signature
-        combined_kwargs = self.func_args.copy()
-        # Filter out unknown keyword arguments
-        combined_kwargs.update(
-            **{k: v for k, v in kwargs.items() if k in sig.parameters}
-        )
-        bound = sig.bind(*args, **combined_kwargs)
+        combined_kwargs = self.default_args.copy()
+        # Passed kwargs should overwrite the defaults in func_args
+        combined_kwargs.update(**kwargs)
+        bound = self._signature.bind(*args, **combined_kwargs)
         return bound.args, bound.kwargs
 
     def __call__(self, *args, **kwargs) -> np.ndarray:

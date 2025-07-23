@@ -493,11 +493,16 @@ def _transform_args(
 ) -> tuple[list, dict[str, object]]:
     kwargs = {}
     args = []
+    if sampling_rate is not None:
+        kwargs["sampling_rate"] = sampling_rate
     if isinstance(inputs, np.ndarray):
         args.append(inputs)
     else:
         if isinstance(transform, VariableFunction):
             kwargs.update(inputs)
+            # Filter out arguments that are required for this transformation
+            required_kwargs = transform.parameters
+            kwargs = {k: v for k, v in kwargs.items() if k in required_kwargs}
         else:
             if "signal" not in inputs:
                 raise ValueError(
@@ -505,6 +510,5 @@ def _transform_args(
                     "but is required for the transformation"
                 )
             args.append(inputs["signal"])
-    if sampling_rate is not None:
-        kwargs["sampling_rate"] = sampling_rate
+
     return args, kwargs

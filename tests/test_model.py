@@ -375,13 +375,13 @@ def test_call_dict(model, inputs, sampling_rate, expected):
             None,
             np.array([-1.0, -2.0], dtype=np.float32),
         ),
-        # Feature transformed with func_args set
+        # Feature transformed with default_args set
         (
             audonnx.Model(
                 audonnx.testing.create_model_proto([[2]]),
                 transform={
                     "input-0": audonnx.VariableFunction(
-                        feature_addition, func_args={"offset": 2}
+                        feature_addition, default_args={"offset": 2}
                     )
                 },
             ),
@@ -389,13 +389,13 @@ def test_call_dict(model, inputs, sampling_rate, expected):
             pytest.SAMPLING_RATE,
             np.array([3.0, 4.0], dtype=np.float32),
         ),
-        # Provided input argument should take priority over func_args
+        # Provided input argument should take priority over default_args
         (
             audonnx.Model(
                 audonnx.testing.create_model_proto([[2]]),
                 transform={
                     "input-0": audonnx.VariableFunction(
-                        feature_addition, func_args={"offset": 2}
+                        feature_addition, default_args={"offset": 2}
                     )
                 },
             ),
