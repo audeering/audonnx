@@ -307,6 +307,7 @@ class Model(audobject.Object):
 
         for name, input_node in self.inputs.items():
             if input_node.transform is not None:
+                # Get the positional and keyword arguments that the transform needs
                 arg_res = _transform_args(input_node.transform, inputs, sampling_rate)
                 error_message = (
                     f"The input transformation for {name} "
