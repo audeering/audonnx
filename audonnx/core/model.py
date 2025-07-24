@@ -243,7 +243,7 @@ class Model(audobject.Object):
         If ``inputs`` is a dictionary,
         the dictionary entries
         correspond to the input name and input values,
-        or the argument names and values
+        and the argument names and values
         for input transformation.
         If the input transformation is a
         :class:`audonnx.VariableFunction`,
@@ -252,8 +252,8 @@ class Model(audobject.Object):
         that the input transformation
         accepts arguments for signal and sampling rate.
         In that case,
-        the input dictionary
-        must contain the ``"signal"`` key
+        if using a dictionary,
+        it must contain the ``"signal"`` key
         and the ``sampling_rate`` argument must be set.
 
         If ``outputs`` is a plain string,
@@ -307,13 +307,18 @@ class Model(audobject.Object):
 
         for name, input_node in self.inputs.items():
             if input_node.transform is not None:
-                transform_args, transform_kwargs = _transform_args(
-                    input_node.transform, inputs, sampling_rate
+                arg_res = _transform_args(input_node.transform, inputs, sampling_rate)
+                error_message = (
+                    f"The input transformation for {name} "
+                    "is missing required arguments."
                 )
+                if arg_res is None:
+                    raise ValueError(error_message)
+                transform_args, transform_kwargs = arg_res
                 try:
                     x = input_node.transform(*transform_args, **transform_kwargs)
                 except TypeError as e:
-                    raise ValueError(f"The input transformation for {name} failed: {e}")
+                    raise ValueError(error_message) from e
             else:
                 if isinstance(inputs, dict):
                     if name not in inputs:
@@ -490,7 +495,8 @@ def _transform_args(
     transform: Callable,
     inputs: np.ndarray | dict[str, object],
     sampling_rate: None | int,
-) -> tuple[list, dict[str, object]]:
+) -> tuple[list, dict[str, object]] | None:
+    r"""Return the matching positional and keyword arguments for the transform."""
     kwargs = {}
     args = []
     if sampling_rate is not None:
@@ -505,10 +511,7 @@ def _transform_args(
             kwargs = {k: v for k, v in kwargs.items() if k in required_kwargs}
         else:
             if "signal" not in inputs:
-                raise ValueError(
-                    "Key 'signal' is missing from the input dictionary "
-                    "but is required for the transformation"
-                )
+                return None
             args.append(inputs["signal"])
 
     return args, kwargs
