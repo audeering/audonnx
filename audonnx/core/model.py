@@ -328,7 +328,7 @@ class Model(audobject.Object):
                 x = inputs[name]
             else:
                 x = inputs
-            y[name] = np.asarray(x).reshape(self.inputs[name].shape)
+            y[name] = x.reshape(self.inputs[name].shape)
 
         z = self.sess.run(audeer.to_list(outputs), y)
 
