@@ -490,7 +490,7 @@ Additional input values
 In some cases it may be useful to
 pass inputs to the model
 without applying a transform
-on a signal to a model.
+on a signal.
 
 Here we create the same model as before
 but without setting a transform
