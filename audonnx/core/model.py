@@ -319,15 +319,14 @@ class Model(audobject.Object):
                     x = input_node.transform(*transform_args, **transform_kwargs)
                 except TypeError as e:
                     raise ValueError(error_message) from e
+            elif isinstance(inputs, dict):
+                if name not in inputs:
+                    raise ValueError(
+                        f"The input {name} is missing from the input dictionary"
+                    )
+                x = inputs[name]
             else:
-                if isinstance(inputs, dict):
-                    if name not in inputs:
-                        raise ValueError(
-                            f"The input {name} is missing from the input dictionary"
-                        )
-                    x = inputs[name]
-                else:
-                    x = inputs
+                x = inputs
             y[name] = np.asarray(x).reshape(self.inputs[name].shape)
 
         z = self.sess.run(audeer.to_list(outputs), y)
@@ -503,15 +502,12 @@ def _transform_args(
         kwargs["sampling_rate"] = sampling_rate
     if isinstance(inputs, np.ndarray):
         args.append(inputs)
+    elif isinstance(transform, VariableFunction):
+        kwargs = kwargs | inputs
+        # Filter out arguments that are not required for this transformation
+        kwargs = {k: v for k, v in kwargs.items() if k in transform.parameters}
+    elif "signal" not in inputs:
+        return None
     else:
-        if isinstance(transform, VariableFunction):
-            kwargs.update(inputs)
-            # Filter out arguments that are required for this transformation
-            required_kwargs = transform.parameters
-            kwargs = {k: v for k, v in kwargs.items() if k in required_kwargs}
-        else:
-            if "signal" not in inputs:
-                return None
-            args.append(inputs["signal"])
-
+        args.append(inputs["signal"])
     return args, kwargs

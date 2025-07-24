@@ -1,5 +1,4 @@
 from collections.abc import Callable
-from collections.abc import Sequence
 import inspect
 
 import numpy as np
@@ -66,8 +65,8 @@ class VariableFunction(audobject.Object):
     r"""Turn function with variable arguments into an :class:`audobject.Object`.
 
     The exact names of the function's arguments
-    must be used when calling this
-    object with keyword arguments.
+    must be used when calling
+    this object with keyword arguments.
 
     Args:
         func: function with variable arguments.
@@ -98,25 +97,8 @@ class VariableFunction(audobject.Object):
         r"""Function"""
         self.default_args = default_args or {}
         r"""Default set function arguments"""
-        self._signature = inspect.signature(func)
-        self.parameters = self._signature.parameters
+        self.parameters = inspect.signature(func).parameters
         r"""Function parameters"""
-
-    def _match_arguments(self, *args, **kwargs) -> tuple[Sequence, dict]:
-        r"""Match the inputs to the function arguments and keyword arguments.
-
-        Args:
-            args: positional arguments
-            kwargs: keyword arguments
-
-        Raises:
-            TypeError: if a required function argument is missing
-        """
-        combined_kwargs = self.default_args.copy()
-        # Passed kwargs should overwrite the defaults in func_args
-        combined_kwargs.update(**kwargs)
-        bound = self._signature.bind(*args, **combined_kwargs)
-        return bound.args, bound.kwargs
 
     def __call__(self, *args, **kwargs) -> np.ndarray:
         r"""Apply function on inputs.
@@ -136,5 +118,4 @@ class VariableFunction(audobject.Object):
         Raises:
             TypeError: if a required function argument is missing
         """
-        args, kwargs = self._match_arguments(*args, **kwargs)
-        return self.func(*args, **kwargs)
+        return self.func(*args, **(self.default_args | kwargs))
