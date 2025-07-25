@@ -8,7 +8,6 @@ audonnx
     :nosignatures:
 
     Function
-    VariableFunction
     Model
     InputNode
     OutputNode
