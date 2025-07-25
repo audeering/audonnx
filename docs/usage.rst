@@ -537,9 +537,9 @@ and can ignore the ``sampling_rate``.
 
 If we want to apply a custom transform
 on a non-signal input,
-we can use a :class:`audonnx.VariableFunction`.
-This class works similar to :class:`audonnx.Function`,
-but it supports functions with various arguments,
+we can set ``fixed_signature`` to ``False``
+when creating our :class:`audonnx.Function`.
+This allows us to use a function with any arguments,
 not just the arguments for signal and sampling rate.
 
 .. jupyter-execute::
@@ -547,8 +547,8 @@ not just the arguments for signal and sampling rate.
     def feature_addition(my_input, offset=0):
         return my_input + offset
 
-    var_transform = audonnx.VariableFunction(feature_addition)
-    print(var_transform)
+    transform = audonnx.Function(feature_addition, fixed_signature=False)
+    print(transform)
 
 We use this transform for the ``feature`` input
 of our multi-input model:
@@ -561,7 +561,7 @@ of our multi-input model:
             'gender': ['female', 'male']
         },
         transform={
-            'feature': var_transform
+            'feature': transform
         }
     )
     onnx_model_10
