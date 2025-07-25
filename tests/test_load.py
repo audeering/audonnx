@@ -106,7 +106,9 @@ def test_load_legacy(tmpdir, object, transform, labels, expected):
         (
             audonnx.Model(
                 audonnx.testing.create_model_proto([[2]]),
-                transform={"input-0": audonnx.VariableFunction(feature_addition)},
+                transform={
+                    "input-0": audonnx.Function(feature_addition, fixed_signature=False)
+                },
             ),
             {"feature": np.array([1.0, 2.0], dtype=np.float32), "offset": 2},
             pytest.SAMPLING_RATE,
@@ -114,7 +116,7 @@ def test_load_legacy(tmpdir, object, transform, labels, expected):
         ),
     ],
 )
-def test_load_varfunc(tmpdir, model, inputs, sampling_rate, expected):
+def test_load_custom_signature(tmpdir, model, inputs, sampling_rate, expected):
     yaml_path = audeer.path(tmpdir, "model.yaml")
     model.to_yaml(yaml_path)
 

@@ -339,7 +339,9 @@ def test_call_dict(model, inputs, sampling_rate, expected):
         (
             audonnx.Model(
                 audonnx.testing.create_model_proto([[2]]),
-                transform={"input-0": audonnx.VariableFunction(feature_negation)},
+                transform={
+                    "input-0": audonnx.Function(feature_negation, fixed_signature=False)
+                },
             ),
             np.array([1.0, 2.0], dtype=np.float32),
             None,
@@ -349,7 +351,9 @@ def test_call_dict(model, inputs, sampling_rate, expected):
         (
             audonnx.Model(
                 audonnx.testing.create_model_proto([[1, -1]]),
-                transform={"input-0": audonnx.VariableFunction(signal_addition)},
+                transform={
+                    "input-0": audonnx.Function(signal_addition, fixed_signature=False)
+                },
             ),
             {"signal": pytest.SIGNAL, "offset": 2},
             pytest.SAMPLING_RATE,
@@ -359,7 +363,9 @@ def test_call_dict(model, inputs, sampling_rate, expected):
         (
             audonnx.Model(
                 audonnx.testing.create_model_proto([[2]]),
-                transform={"input-0": audonnx.VariableFunction(feature_addition)},
+                transform={
+                    "input-0": audonnx.Function(feature_addition, fixed_signature=False)
+                },
             ),
             {"feature": np.array([1.0, 2.0], dtype=np.float32), "offset": 2},
             pytest.SAMPLING_RATE,
@@ -369,7 +375,9 @@ def test_call_dict(model, inputs, sampling_rate, expected):
         (
             audonnx.Model(
                 audonnx.testing.create_model_proto([[2]]),
-                transform={"input-0": audonnx.VariableFunction(feature_negation)},
+                transform={
+                    "input-0": audonnx.Function(feature_negation, fixed_signature=False)
+                },
             ),
             {"feature": np.array([1.0, 2.0], dtype=np.float32)},
             None,
@@ -380,8 +388,8 @@ def test_call_dict(model, inputs, sampling_rate, expected):
             audonnx.Model(
                 audonnx.testing.create_model_proto([[2]]),
                 transform={
-                    "input-0": audonnx.VariableFunction(
-                        feature_addition, default_args={"offset": 2}
+                    "input-0": audonnx.Function(
+                        feature_addition, func_args={"offset": 2}, fixed_signature=False
                     )
                 },
             ),
@@ -394,8 +402,8 @@ def test_call_dict(model, inputs, sampling_rate, expected):
             audonnx.Model(
                 audonnx.testing.create_model_proto([[2]]),
                 transform={
-                    "input-0": audonnx.VariableFunction(
-                        feature_addition, default_args={"offset": 2}
+                    "input-0": audonnx.Function(
+                        feature_addition, func_args={"offset": 2}, fixed_signature=False
                     )
                 },
             ),
@@ -403,11 +411,26 @@ def test_call_dict(model, inputs, sampling_rate, expected):
             pytest.SAMPLING_RATE,
             np.array([2.0, 3.0], dtype=np.float32),
         ),
+        # Fail when required sampling_rate is missing for fixed_signature
+        pytest.param(
+            audonnx.Model(
+                audonnx.testing.create_model_proto([[2]]),
+                transform={
+                    "input-0": audonnx.Function(signal_negation, fixed_signature=True)
+                },
+            ),
+            np.array([1.0, 2.0], dtype=np.float32),
+            None,
+            None,
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
         # Fail when required argument (sampling_rate) is missing
         pytest.param(
             audonnx.Model(
                 audonnx.testing.create_model_proto([[2]]),
-                transform={"input-0": audonnx.VariableFunction(signal_addition)},
+                transform={
+                    "input-0": audonnx.Function(signal_addition, fixed_signature=False)
+                },
             ),
             np.array([1.0, 2.0], dtype=np.float32),
             None,
@@ -418,7 +441,9 @@ def test_call_dict(model, inputs, sampling_rate, expected):
         pytest.param(
             audonnx.Model(
                 audonnx.testing.create_model_proto([[2]]),
-                transform={"input-0": audonnx.VariableFunction(feature_addition)},
+                transform={
+                    "input-0": audonnx.Function(feature_addition, fixed_signature=False)
+                },
             ),
             {"signal": np.array([1.0, 2.0], dtype=np.float32)},
             pytest.SAMPLING_RATE,
@@ -427,7 +452,7 @@ def test_call_dict(model, inputs, sampling_rate, expected):
         ),
     ],
 )
-def test_call_varfunc(model, inputs, sampling_rate, expected):
+def test_call_transform(model, inputs, sampling_rate, expected):
     y = model(
         inputs,
         sampling_rate,
