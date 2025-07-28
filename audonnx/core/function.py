@@ -50,7 +50,7 @@ class Function(audobject.Object):
         self.func_args = func_args or {}
         r"""Default set function arguments"""
         self.fixed_signature = fixed_signature
-        r"""Whether fixed arguments of signal and sampling rate is used"""
+        r"""Whether the function has fixed arguments of signal and sampling rate"""
         self._signature = inspect.signature(func)
         self.parameters = self._signature.parameters
         r"""Function parameters"""

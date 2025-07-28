@@ -244,7 +244,9 @@ class Model(audobject.Object):
         and the argument names and values
         for input transformation.
         If the input transformation is a
-        :class:`audonnx.VariableFunction`,
+        :class:`audonnx.Function`
+        with :attr:`audonnx.Function.fixed_signature`
+        set to `False`,
         the argument names are user defined.
         Otherwise, it is assumed
         that the input transformation
