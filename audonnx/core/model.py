@@ -240,7 +240,7 @@ class Model(audobject.Object):
 
         If ``inputs`` is a dictionary,
         the dictionary entries
-        correspond to the input name and input values,
+        correspond to the input names and input values,
         and the argument names and values
         for input transformation.
         If the input transformation is a
