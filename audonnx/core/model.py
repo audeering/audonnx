@@ -21,8 +21,8 @@ class Model(audobject.Object):
     r"""Model with multiple input and output nodes.
 
     For input nodes an optional transform can be given
-    that transforms the raw signal into the desired representation,
-    otherwise the raw signal is used as input.
+    that transforms the input into the desired representation,
+    otherwise the raw input is used.
     Use dictionary to assign transform objects to specific nodes
     if model has multiple input nodes.
 
