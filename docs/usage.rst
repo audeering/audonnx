@@ -488,7 +488,7 @@ Additional input values
 -----------------------
 
 In some cases it may be useful to
-pass inputs to the model
+pass additional inputs to the model
 without applying a transform
 on a signal.
 
@@ -535,11 +535,8 @@ and can ignore the ``sampling_rate``.
 
     onnx_model_9(y)
 
-If we want to apply a custom transform
-on a non-signal input,
-we can set ``fixed_signature`` to ``False``
-when creating our :class:`audonnx.Function`.
-This allows us to use a function with any arguments,
+We can also use :class:`audonnx.Function`
+with a function with any arguments,
 not just the arguments for signal and sampling rate.
 
 .. jupyter-execute::
@@ -547,7 +544,7 @@ not just the arguments for signal and sampling rate.
     def feature_addition(my_input, offset=0):
         return my_input + offset
 
-    transform = audonnx.Function(feature_addition, fixed_signature=False)
+    transform = audonnx.Function(feature_addition)
     print(transform)
 
 We use this transform for the ``feature`` input

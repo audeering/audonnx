@@ -243,18 +243,6 @@ class Model(audobject.Object):
         correspond to the input names and input values,
         and the argument names and values
         for input transformation.
-        If the input transformation is a
-        :class:`audonnx.Function`
-        with :attr:`audonnx.Function.fixed_signature`
-        set to `False`,
-        the argument names are user defined.
-        Otherwise, it is assumed
-        that the input transformation
-        accepts arguments for signal and sampling rate.
-        In that case,
-        if using a dictionary,
-        it must contain the ``"signal"`` key
-        and the ``sampling_rate`` argument must be set.
 
         If ``outputs`` is a plain string,
         the output of the according node is returned.

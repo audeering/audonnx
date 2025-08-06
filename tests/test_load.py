@@ -106,9 +106,7 @@ def test_load_legacy(tmpdir, object, transform, labels, expected):
         (
             audonnx.Model(
                 audonnx.testing.create_model_proto([[2]]),
-                transform={
-                    "input-0": audonnx.Function(feature_addition, fixed_signature=False)
-                },
+                transform={"input-0": audonnx.Function(feature_addition)},
             ),
             {"feature": np.array([1.0, 2.0], dtype=np.float32), "offset": 2},
             pytest.SAMPLING_RATE,
