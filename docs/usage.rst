@@ -19,6 +19,8 @@ Usage
         return self.to_frame(index=False)._repr_html_()
     setattr(pd.Index, '_repr_html_', index_to_html)
 
+    # Comment to trigger pipeline
+
 
 :mod:`audonnx` offers a simple interface
 to load and use models in ONNX_ format.
