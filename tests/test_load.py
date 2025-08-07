@@ -11,6 +11,10 @@ import audobject
 import audonnx.testing
 
 
+def feature_addition(feature, offset=1):
+    return feature + offset
+
+
 def min_max(x, sr):
     import numpy as np
 
@@ -93,3 +97,33 @@ def test_load_legacy(tmpdir, object, transform, labels, expected):
     np.testing.assert_equal(y, expected)
     for key, values in labels.items():
         assert model.outputs[key].labels == labels[key]
+
+
+@pytest.mark.parametrize(
+    "model, inputs, sampling_rate, expected",
+    [
+        # Feature transformed with additional argument
+        (
+            audonnx.Model(
+                audonnx.testing.create_model_proto([[2]]),
+                transform={"input-0": audonnx.Function(feature_addition)},
+            ),
+            {"feature": np.array([1.0, 2.0], dtype=np.float32), "offset": 2},
+            pytest.SAMPLING_RATE,
+            np.array([3.0, 4.0], dtype=np.float32),
+        ),
+    ],
+)
+def test_load_custom_signature(tmpdir, model, inputs, sampling_rate, expected):
+    yaml_path = audeer.path(tmpdir, "model.yaml")
+    model.to_yaml(yaml_path)
+
+    # Load from onnx and check that results are as expected
+    loaded_model = audonnx.load(tmpdir)
+
+    y = loaded_model(inputs, sampling_rate)
+    if isinstance(y, dict):
+        for key, values in y.items():
+            np.testing.assert_equal(values, expected[key])
+    else:
+        np.testing.assert_equal(y, expected)

@@ -21,8 +21,8 @@ class Model(audobject.Object):
     r"""Model with multiple input and output nodes.
 
     For input nodes an optional transform can be given
-    that transforms the raw signal into the desired representation,
-    otherwise the raw signal is used as input.
+    that transforms the input into the desired representation,
+    otherwise the raw input is used.
     Use dictionary to assign transform objects to specific nodes
     if model has multiple input nodes.
 
@@ -226,14 +226,23 @@ class Model(audobject.Object):
     )
     def __call__(
         self,
-        signal: np.ndarray,
-        sampling_rate: int,
+        inputs: np.ndarray | dict[str, object],
+        sampling_rate: int | None = None,
         *,
         outputs: str | Sequence[str] | None = None,
         concat: bool = False,
         squeeze: bool = False,
     ) -> np.ndarray | dict[str, np.ndarray]:
         r"""Compute output for one or more nodes.
+
+        If ``inputs`` is a :class:`numpy.ndarray`,
+        it is treated as the input signal.
+
+        If ``inputs`` is a dictionary,
+        the dictionary entries
+        correspond to the input names and input values,
+        and the argument names and values
+        for input transformation.
 
         If ``outputs`` is a plain string,
         the output of the according node is returned.
@@ -260,7 +269,8 @@ class Model(audobject.Object):
         output nodes.
 
         Args:
-            signal: input signal
+            inputs: model input signal
+                or dictionary with multiple inputs
             sampling_rate: sampling rate in Hz
             outputs: name of output or list with output names
             concat: if ``True``,
@@ -274,7 +284,7 @@ class Model(audobject.Object):
         Raises:
             RuntimeError: if ``concat`` is ``True``,
                 but output of requested nodes cannot be concatenated
-
+            ValueError: if a required model input is missing
         """
         if outputs is None:
             outputs = list(self.outputs)
@@ -282,17 +292,21 @@ class Model(audobject.Object):
                 outputs = outputs[0]
 
         y = {}
-        for name, input in self.inputs.items():
-            if input.transform is not None:
-                x = input.transform(signal, sampling_rate)
+
+        for name, input_node in self.inputs.items():
+            if input_node.transform is not None:
+                x = input_node.transform(inputs, sampling_rate)
+            elif isinstance(inputs, dict):
+                if name not in inputs:
+                    raise ValueError(
+                        f"The input {name} is missing from the input dictionary"
+                    )
+                x = inputs[name]
             else:
-                x = signal
+                x = inputs
             y[name] = x.reshape(self.inputs[name].shape)
 
-        z = self.sess.run(
-            audeer.to_list(outputs),
-            y,
-        )
+        z = self.sess.run(audeer.to_list(outputs), y)
 
         if isinstance(outputs, str):
             z = z[0]

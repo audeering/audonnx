@@ -12,7 +12,7 @@ class InputNode:
     Args:
         shape: list with dimensions
         dtype: data type
-        transform: callable object that transforms the raw signal
+        transform: callable object that transforms the input
             into the desired representation
 
     """
@@ -23,7 +23,7 @@ class InputNode:
         dtype: str,
         transform: (
             Callable[
-                [np.ndarray, int],
+                ...,
                 np.ndarray,
             ]
             | None
