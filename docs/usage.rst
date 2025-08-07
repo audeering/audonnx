@@ -5,6 +5,8 @@ Usage
     :hide-code:
     :hide-output:
 
+    import warnings
+
     import pandas as pd
 
 
@@ -19,7 +21,8 @@ Usage
         return self.to_frame(index=False)._repr_html_()
     setattr(pd.Index, '_repr_html_', index_to_html)
 
-    # Comment to trigger pipeline
+    # Ignore warning for using legacy torch to onnx export
+    warnings.simplefilter(action="ignore", category=DeprecationWarning)
 
 
 :mod:`audonnx` offers a simple interface
