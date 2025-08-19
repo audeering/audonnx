@@ -7,6 +7,29 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 1.0.0 (2025-08-19)
+--------------------------
+
+* Added: support multiple model inputs
+  when calling ``audonnx.Model``
+  by allowing to pass them as a dictionary
+* Added: support for multiple transform inputs
+  when calling ``audonnx.Function``
+  by allowing to pass them as a dictionary
+* Changed: renamed first positional argument of
+  ``audonnx.Model.__call__()``
+  from ``signal``
+  to ``inputs``
+* Changed: set default value of ``None``
+  for ``sampling_rate``,
+  the second positional argument of
+  ``audonnx.Model.__call__()``
+* Changed: renamed first positional argument of
+  ``audonnx.Function.__call__()``
+  from ``signal``
+  to ``inputs``
+
+
 Version 0.8.0 (2025-06-11)
 --------------------------
 
