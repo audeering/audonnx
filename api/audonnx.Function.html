@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                v0.8.0
+                v1.0.0
               </div>
             
           
@@ -111,6 +111,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#hidden-arguments">hidden_arguments</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id">id</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#is-loaded-from-dict">is_loaded_from_dict</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#parameters">parameters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#resolvers">resolvers</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#short-id">short_id</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#to-dict">to_dict()</a></li>
@@ -178,9 +179,8 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>func</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Callable</span></code></a>) – function that expects input signal and sampling rate as
-first two arguments</p></li>
-<li><p><strong>func_args</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>]]) – additional arguments that will be passed to the function</p></li>
+<li><p><strong>func</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Callable</span></code></a>) – function to apply</p></li>
+<li><p><strong>func_args</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>]]) – default values for arguments that will be passed to the function</p></li>
 </ul>
 </dd>
 </dl>
@@ -190,6 +190,13 @@ first two arguments</p></li>
 <span class="go">{&#39;$audonnx.core.function.Function&#39;: {&#39;func&#39;: &#39;lambda x, sr: float(x.mean())&#39;, &#39;func_args&#39;: {}}}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">object</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]),</span> <span class="mi">10</span><span class="p">)</span>
 <span class="go">2.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">feature_addition</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">+</span> <span class="n">offset</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">object</span> <span class="o">=</span> <span class="n">Function</span><span class="p">(</span><span class="n">feature_addition</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">object</span>
+<span class="go">{&#39;$audonnx.core.function.Function&#39;: {&#39;func&#39;: &#39;def feature_addition(x, offset=1):\n    return float(x.mean() + offset)\n&#39;, &#39;func_args&#39;: {}}}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">object</span><span class="p">({</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]),</span> <span class="s2">&quot;offset&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">})</span>
+<span class="go">3.0</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -198,20 +205,38 @@ first two arguments</p></li>
 <h2>__call__()<a class="headerlink" href="#call" title="Permalink to this heading">¶</a></h2>
 <dl class="py method">
 <dt class="sig sig-object py" id="audonnx.Function.__call__">
-<span class="sig-prename descclassname"><span class="pre">Function.</span></span><span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling_rate</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/audonnx/core/function.html#Function.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audonnx.Function.__call__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Transform input signal.</p>
+<span class="sig-prename descclassname"><span class="pre">Function.</span></span><span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/audonnx/core/function.html#Function.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audonnx.Function.__call__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply function on inputs.</p>
+<p>All required arguments of the function
+that are not already set in the <a class="reference internal" href="#audonnx.Function.func_args" title="audonnx.Function.func_args"><code class="xref py py-attr docutils literal notranslate"><span class="pre">func_args</span></code></a>
+must be provided.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">inputs</span></code> is a <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>,
+it is passed as a positional argument to the function,
+and the <code class="docutils literal notranslate"><span class="pre">sampling_rate</span></code>, if provided,
+is passed as the second positional argument.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">inputs</span></code> is a dictionary,
+the dictionary entries
+are matched to the function arguments
+and passed as keyword arguments.
+Keys that don’t occur in the function arguments
+are ignored.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>signal</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – input signal</p></li>
-<li><p><strong>sampling_rate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – sampling rate in Hz</p></li>
+<li><p><strong>inputs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code> | <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>]) – input signal
+or dictionary with multiple inputs</p></li>
+<li><p><strong>sampling_rate</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]) – sampling rate in Hz</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>transformed signal</p>
+<dd class="field-odd"><p>transformed inputs</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – if the passed input could not be matched
+    to the function arguments</p>
 </dd>
 </dl>
 </dd></dl>
@@ -309,7 +334,7 @@ first two arguments</p></li>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="audonnx.Function.func_args">
 <span class="sig-prename descclassname"><span class="pre">Function.</span></span><span class="sig-name descname"><span class="pre">func_args</span></span><a class="headerlink" href="#audonnx.Function.func_args" title="Permalink to this definition">¶</a></dt>
-<dd><p>Additional function arguments</p>
+<dd><p>Default set function arguments</p>
 </dd></dl>
 
 </div>
@@ -376,6 +401,15 @@ e.g. after loading it from a YAML file.</p>
 </p>
 </dd>
 </dl>
+</dd></dl>
+
+</div>
+<div class="section" id="parameters">
+<h2>parameters<a class="headerlink" href="#parameters" title="Permalink to this heading">¶</a></h2>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="audonnx.Function.parameters">
+<span class="sig-prename descclassname"><span class="pre">Function.</span></span><span class="sig-name descname"><span class="pre">parameters</span></span><a class="headerlink" href="#audonnx.Function.parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function parameters</p>
 </dd></dl>
 
 </div>
@@ -537,7 +571,7 @@ However, if <code class="docutils literal notranslate"><span class="pre">flatten
         
         
         
-          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2025/06/11 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2025/08/19 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

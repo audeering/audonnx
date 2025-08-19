@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                v0.8.0
+                v1.0.0
               </div>
             
           
@@ -142,6 +142,7 @@
             
   <h1>Source code for audonnx.core.function</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
@@ -152,9 +153,8 @@
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Turn function into an :class:`audobject.Object`.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        func: function that expects input signal and sampling rate as</span>
-<span class="sd">            first two arguments</span>
-<span class="sd">        func_args: additional arguments that will be passed to the function</span>
+<span class="sd">        func: function to apply</span>
+<span class="sd">        func_args: default values for arguments that will be passed to the function</span>
 
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; object = Function(lambda x, sr: float(x.mean()))</span>
@@ -162,7 +162,13 @@
 <span class="sd">        {&#39;$audonnx.core.function.Function&#39;: {&#39;func&#39;: &#39;lambda x, sr: float(x.mean())&#39;, &#39;func_args&#39;: {}}}</span>
 <span class="sd">        &gt;&gt;&gt; object(np.array([1, 2, 3]), 10)</span>
 <span class="sd">        2.0</span>
-
+<span class="sd">        &gt;&gt;&gt; def feature_addition(x, offset=1):</span>
+<span class="sd">        ...     return float(x.mean() + offset)</span>
+<span class="sd">        &gt;&gt;&gt; object = Function(feature_addition)</span>
+<span class="sd">        &gt;&gt;&gt; object</span>
+<span class="sd">        {&#39;$audonnx.core.function.Function&#39;: {&#39;func&#39;: &#39;def feature_addition(x, offset=1):\n    return float(x.mean() + offset)\n&#39;, &#39;func_args&#39;: {}}}</span>
+<span class="sd">        &gt;&gt;&gt; object({&quot;x&quot;: np.array([1, 2, 3]), &quot;offset&quot;: 1})</span>
+<span class="sd">        3.0</span>
 <span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
 
     <span class="nd">@audobject</span><span class="o">.</span><span class="n">init_decorator</span><span class="p">(</span>
@@ -179,28 +185,80 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">func</span> <span class="o">=</span> <span class="n">func</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Function&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">func_args</span> <span class="o">=</span> <span class="n">func_args</span> <span class="ow">or</span> <span class="p">{}</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Additional function arguments&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Default set function arguments&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_signature</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_signature</span><span class="o">.</span><span class="n">parameters</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Function parameters&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_match_args</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">object</span><span class="p">],</span> <span class="n">sampling_rate</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">object</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the matching positional and keyword arguments for the function.&quot;&quot;&quot;</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">func_args</span>
+        <span class="c1"># In case there is only one input,</span>
+        <span class="c1"># it is passed as a positional argument</span>
+        <span class="c1"># alongside the sampling rate, if provided</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">sampling_rate</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">inputs</span><span class="p">,)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">sampling_rate</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span>
+        <span class="c1"># In case the input is a dictionary,</span>
+        <span class="c1"># we add all inputs that could be used</span>
+        <span class="c1"># as keyword arguments</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">()</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span> <span class="o">|</span> <span class="n">inputs</span>
+        <span class="k">if</span> <span class="n">sampling_rate</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;sampling_rate&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sampling_rate</span>
+        <span class="c1"># Filter out arguments that are not required for this transformation</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">}</span>
+        <span class="k">return</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span>
 
 <div class="viewcode-block" id="Function.__call__"><a class="viewcode-back" href="../../../api/audonnx.Function.html#audonnx.Function.__call__">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">signal</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-        <span class="n">sampling_rate</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">object</span><span class="p">],</span> <span class="n">sampling_rate</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Transform input signal.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Apply function on inputs.</span>
+
+<span class="sd">        All required arguments of the function</span>
+<span class="sd">        that are not already set in the :attr:`func_args`</span>
+<span class="sd">        must be provided.</span>
+
+<span class="sd">        If ``inputs`` is a :class:`numpy.ndarray`,</span>
+<span class="sd">        it is passed as a positional argument to the function,</span>
+<span class="sd">        and the ``sampling_rate``, if provided,</span>
+<span class="sd">        is passed as the second positional argument.</span>
+
+<span class="sd">        If ``inputs`` is a dictionary,</span>
+<span class="sd">        the dictionary entries</span>
+<span class="sd">        are matched to the function arguments</span>
+<span class="sd">        and passed as keyword arguments.</span>
+<span class="sd">        Keys that don&#39;t occur in the function arguments</span>
+<span class="sd">        are ignored.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            signal: input signal</span>
+<span class="sd">            inputs: input signal</span>
+<span class="sd">                or dictionary with multiple inputs</span>
 <span class="sd">            sampling_rate: sampling rate in Hz</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            transformed signal</span>
+<span class="sd">            transformed inputs</span>
 
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: if the passed input could not be matched</span>
+<span class="sd">                to the function arguments</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">(</span>
-            <span class="n">signal</span><span class="p">,</span>
-            <span class="n">sampling_rate</span><span class="p">,</span>
-            <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">func_args</span><span class="p">,</span>
-        <span class="p">)</span></div></div>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_match_args</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">sampling_rate</span><span class="p">)</span>
+        <span class="n">error_message</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;The passed inputs and sampling rate &quot;</span>
+            <span class="s2">&quot;could not be matched to the function arguments.&quot;</span>
+        <span class="p">)</span>
+        <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="n">res</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">bound</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_signature</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">error_message</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">bound</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">bound</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
@@ -216,7 +274,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2025/06/11 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2025/08/19 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

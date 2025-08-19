@@ -50,6 +50,10 @@ is\_loaded\_from\_dict
 ----------------------
 .. autoattribute:: Function.is_loaded_from_dict
     
+parameters
+----------
+.. autoattribute:: Function.parameters
+    
 resolvers
 ---------
 .. autoattribute:: Function.resolvers
