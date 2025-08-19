@@ -5,6 +5,8 @@ Usage
     :hide-code:
     :hide-output:
 
+    import warnings
+
     import pandas as pd
 
 
@@ -18,6 +20,9 @@ Usage
     def index_to_html(self):
         return self.to_frame(index=False)._repr_html_()
     setattr(pd.Index, '_repr_html_', index_to_html)
+
+    # Ignore warning for using legacy torch to onnx export
+    warnings.simplefilter(action="ignore", category=DeprecationWarning)
 
 
 :mod:`audonnx` offers a simple interface
@@ -138,6 +143,7 @@ And we assign meaningful names to the nodes.
         output_names=['gender'],  # assign custom name to output node
         dynamic_axes={'feature': {1: 'time'}},  # dynamic size
         opset_version=12,
+        dynamo=False,
     )
 
 From the exported model file
@@ -416,6 +422,7 @@ we do not set a transform for it.
             'feature': {1: 'time'},
         },
         opset_version=12,
+        dynamo=False,
     )
 
     onnx_model_7 = audonnx.Model(
