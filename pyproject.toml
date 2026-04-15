@@ -33,6 +33,7 @@ dependencies = [
     'audobject >=0.7.2',
     'onnx',
     'onnxruntime >=1.12.0',
+    'onnxruntime <1.24 ; python_version == "3.10"',
 ]
 # Get version dynamically from git
 # (needs setuptools_scm tools config below)
