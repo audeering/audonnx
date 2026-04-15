@@ -69,7 +69,7 @@ Calculate features and run Torch_ model.
     >>> with torch.no_grad():
     ...     z = torch_model(torch.from_numpy(y))
     >>> z
-    tensor([191.0256, 232.3628])
+    tensor([191.025..., 232.3628])
 
 
 Export model

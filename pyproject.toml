@@ -96,6 +96,13 @@ addopts = '''
     --cov-report term-missing
     --cov-report xml
 '''
+# Silence the legacy TorchScript-based ONNX exporter deprecation
+# warnings raised by the torch.onnx.export examples in our doctests.
+# Filters are narrowly scoped so other deprecations still surface.
+filterwarnings = [
+    'ignore:.*legacy TorchScript-based ONNX export.*:DeprecationWarning',
+    'ignore::DeprecationWarning:torch\.onnx\..*',
+]
 
 
 # ----- ruff --------------------------------------------------------------
