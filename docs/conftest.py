@@ -34,21 +34,28 @@ from sybil.parsers.rest import SkipParser
 # same filename (``[examplenum]`` is always 0) and each linecache
 # entry would overwrite the previous one. We therefore make the name
 # unique per example using a counter stored on the runner instance.
-_orig_doctest_run = doctest.DocTestRunner.run
+#
+# The patch is made idempotent via a sentinel attribute so that
+# ``audonnx/conftest.py`` (which needs the same patch for module
+# docstring doctests) can apply it too without double-wrapping,
+# regardless of conftest import order.
+_PATCH_ATTR = "_audonnx_linecache_patch"
 
+if not getattr(doctest.DocTestRunner.run, _PATCH_ATTR, False):
+    _orig_doctest_run = doctest.DocTestRunner.run
 
-def _run_with_linecache(self, test, *args, **kwargs):
-    counter = getattr(self, "_example_counter", 0) + 1
-    self._example_counter = counter
-    test.name = f"{test.name}-{counter}"
-    for examplenum, example in enumerate(test.examples):
-        filename = "<doctest %s[%d]>" % (test.name, examplenum)
-        lines = example.source.splitlines(keepends=True)
-        linecache.cache[filename] = (len(example.source), None, lines, filename)
-    return _orig_doctest_run(self, test, *args, **kwargs)
+    def _run_with_linecache(self, test, *args, **kwargs):
+        counter = getattr(self, "_example_counter", 0) + 1
+        self._example_counter = counter
+        test.name = f"{test.name}-{counter}"
+        for examplenum, example in enumerate(test.examples):
+            filename = "<doctest %s[%d]>" % (test.name, examplenum)
+            lines = example.source.splitlines(keepends=True)
+            linecache.cache[filename] = (len(example.source), None, lines, filename)
+        return _orig_doctest_run(self, test, *args, **kwargs)
 
-
-doctest.DocTestRunner.run = _run_with_linecache
+    setattr(_run_with_linecache, _PATCH_ATTR, True)
+    doctest.DocTestRunner.run = _run_with_linecache
 
 
 # Path to the test audio file shipped with the documentation.
