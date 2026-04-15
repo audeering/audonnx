@@ -266,6 +266,8 @@ you have installed
 as well as
 ``onnxruntime``.
 
+.. skip: start
+
 .. code-block:: pycon
 
     >>> import onnxruntime.quantization
@@ -282,8 +284,6 @@ as well as
     ... )
 
 The output of the quantized model differs slightly.
-
-.. skip: start
 
 .. code-block:: pycon
 
@@ -372,7 +372,7 @@ Then we can save and load the model as before.
     >>> onnx_model_5.to_yaml(onnx_meta_path)
     >>> onnx_model_6 = audonnx.load(onnx_root)
     >>> onnx_model_6(signal, sampling_rate)
-    array([43.00619  , -2.5457659], dtype=float32)
+    array([43.0061..., -2.545765...], dtype=float32)
 
 
 Multiple nodes
