@@ -1,12 +1,12 @@
 from collections.abc import Sequence
 
 import numpy as np  # noqa: F401, needed for doctest
+import onnx
 import onnxruntime
 
 from audonnx.core.function import Function
 from audonnx.core.model import Model
 from audonnx.core.typing import Device
-import onnx
 
 
 def create_model(
