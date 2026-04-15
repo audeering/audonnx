@@ -1,12 +1,12 @@
 from collections.abc import Sequence
 
 import numpy as np  # noqa: F401, needed for doctest
-import onnx
 import onnxruntime
 
 from audonnx.core.function import Function
 from audonnx.core.model import Model
 from audonnx.core.typing import Device
+import onnx
 
 
 def create_model(
@@ -153,47 +153,16 @@ def create_model_proto(
         ONNX object
 
     Examples:
-        >>> create_model_proto([[2]])
-        ir_version: 7
-        producer_name: "test"
-        graph {
-          node {
-            input: "input-0"
-            output: "output-0"
-            op_type: "Identity"
-          }
-          name: "test"
-          input {
-            name: "input-0"
-            type {
-              tensor_type {
-                elem_type: 1
-                shape {
-                  dim {
-                    dim_value: 2
-                  }
-                }
-              }
-            }
-          }
-          output {
-            name: "output-0"
-            type {
-              tensor_type {
-                elem_type: 1
-                shape {
-                  dim {
-                    dim_value: 2
-                  }
-                }
-              }
-            }
-          }
+        >>> model = create_model_proto([[2]])
+        >>> print(onnx.printer.to_text(model))
+        <
+           ir_version: 7,
+           opset_import: ["" : 14],
+           producer_name: "test"
+        >
+        test (float[2] "input-0") => (float[2] "output-0") {
+           "output-0" = Identity ("input-0")
         }
-        opset_import {
-          version: 14
-        }
-        <BLANKLINE>
 
     .. _`supported data types`: https://onnxruntime.ai/docs/reference/operators/custom-python-operator.html#supported-data-types
 
