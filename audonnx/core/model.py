@@ -2,6 +2,7 @@ from collections.abc import Sequence
 import os
 
 import numpy as np
+import onnx
 import onnxruntime
 import yaml
 
@@ -14,7 +15,6 @@ from audonnx.core.ort import device_to_providers
 from audonnx.core.typing import Device
 from audonnx.core.typing import Labels
 from audonnx.core.typing import Transform
-import onnx
 
 
 class Model(audobject.Object):
