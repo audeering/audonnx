@@ -5,7 +5,8 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Changelog &mdash; Documentation</title>
@@ -28,8 +29,6 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/audeering.css" type="text/css" />
-  <link rel="stylesheet" href="_static/jupyter-sphinx.css" type="text/css" />
-  <link rel="stylesheet" href="_static/thebelab.css" type="text/css" />
   <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -66,7 +65,7 @@
             
             
               <div class="version">
-                v1.0.0
+                v1.0.1
               </div>
             
           
@@ -105,6 +104,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#version-1-0-1-2026-04-16">Version 1.0.1 (2026-04-16)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-1-0-0-2025-08-19">Version 1.0.0 (2025-08-19)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-8-0-2025-06-11">Version 0.8.0 (2025-06-11)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-7-0-2023-12-18">Version 0.7.0 (2023-12-18)</a></li>
@@ -168,13 +168,21 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="changelog">
-<h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this heading">¶</a></h1>
+  <section id="changelog">
+<h1>Changelog<a class="headerlink" href="#changelog" title="Link to this heading">¶</a></h1>
 <p>All notable changes to this project will be documented in this file.</p>
 <p>The format is based on <a class="reference external" href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>,
 and this project adheres to <a class="reference external" href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
-<div class="section" id="version-1-0-0-2025-08-19">
-<h2>Version 1.0.0 (2025-08-19)<a class="headerlink" href="#version-1-0-0-2025-08-19" title="Permalink to this heading">¶</a></h2>
+<section id="version-1-0-1-2026-04-16">
+<h2>Version 1.0.1 (2026-04-16)<a class="headerlink" href="#version-1-0-1-2026-04-16" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Added: support for Python 3.14</p></li>
+<li><p>Changed: depend on <code class="docutils literal notranslate"><span class="pre">onnxruntime&lt;1.24</span></code> for Python 3.10</p></li>
+<li><p>Changed: exclude <code class="docutils literal notranslate"><span class="pre">tests/</span></code> and <code class="docutils literal notranslate"><span class="pre">docs/</span></code> folders from the Python package</p></li>
+</ul>
+</section>
+<section id="version-1-0-0-2025-08-19">
+<h2>Version 1.0.0 (2025-08-19)<a class="headerlink" href="#version-1-0-0-2025-08-19" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Added: support multiple model inputs
 when calling <code class="docutils literal notranslate"><span class="pre">audonnx.Model</span></code>
@@ -195,9 +203,9 @@ the second positional argument of
 from <code class="docutils literal notranslate"><span class="pre">signal</span></code>
 to <code class="docutils literal notranslate"><span class="pre">inputs</span></code></p></li>
 </ul>
-</div>
-<div class="section" id="version-0-8-0-2025-06-11">
-<h2>Version 0.8.0 (2025-06-11)<a class="headerlink" href="#version-0-8-0-2025-06-11" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="version-0-8-0-2025-06-11">
+<h2>Version 0.8.0 (2025-06-11)<a class="headerlink" href="#version-0-8-0-2025-06-11" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Added: <code class="docutils literal notranslate"><span class="pre">ir_version</span></code> argument
 to <code class="docutils literal notranslate"><span class="pre">audonnx.testing.create_model()</span></code>
@@ -208,9 +216,9 @@ with a default value of <code class="docutils literal notranslate"><span class="
 <li><p>Removed: support for Python 3.9</p></li>
 <li><p>Removed: support for Python 3.8</p></li>
 </ul>
-</div>
-<div class="section" id="version-0-7-0-2023-12-18">
-<h2>Version 0.7.0 (2023-12-18)<a class="headerlink" href="#version-0-7-0-2023-12-18" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="version-0-7-0-2023-12-18">
+<h2>Version 0.7.0 (2023-12-18)<a class="headerlink" href="#version-0-7-0-2023-12-18" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Added: <code class="docutils literal notranslate"><span class="pre">audonnx.device_to_providers()</span></code>
 to convert device names
@@ -228,44 +236,44 @@ to <code class="docutils literal notranslate"><span class="pre">audonnx.Model</s
 and <code class="docutils literal notranslate"><span class="pre">audonnx.testing.create_model()</span></code>
 to provide ONNX runtime options</p></li>
 </ul>
-</div>
-<div class="section" id="version-0-6-5-2023-11-10">
-<h2>Version 0.6.5 (2023-11-10)<a class="headerlink" href="#version-0-6-5-2023-11-10" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="version-0-6-5-2023-11-10">
+<h2>Version 0.6.5 (2023-11-10)<a class="headerlink" href="#version-0-6-5-2023-11-10" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Fixed: publishing of documentation as Github pages</p></li>
 </ul>
-</div>
-<div class="section" id="version-0-6-4-2023-11-10">
-<h2>Version 0.6.4 (2023-11-10)<a class="headerlink" href="#version-0-6-4-2023-11-10" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="version-0-6-4-2023-11-10">
+<h2>Version 0.6.4 (2023-11-10)<a class="headerlink" href="#version-0-6-4-2023-11-10" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Added: pre-processing step in the documentation
 on how to quantize an ONNX model</p></li>
 <li><p>Added: support for Python 3.11</p></li>
 <li><p>Removed: support for Python 3.7</p></li>
 </ul>
-</div>
-<div class="section" id="version-0-6-3-2023-01-03">
-<h2>Version 0.6.3 (2023-01-03)<a class="headerlink" href="#version-0-6-3-2023-01-03" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="version-0-6-3-2023-01-03">
+<h2>Version 0.6.3 (2023-01-03)<a class="headerlink" href="#version-0-6-3-2023-01-03" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Added: support for Python 3.10</p></li>
 <li><p>Changed: split API documentation into sub-pages
 for each function</p></li>
 </ul>
-</div>
-<div class="section" id="version-0-6-2-2022-07-14">
-<h2>Version 0.6.2 (2022-07-14)<a class="headerlink" href="#version-0-6-2-2022-07-14" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="version-0-6-2-2022-07-14">
+<h2>Version 0.6.2 (2022-07-14)<a class="headerlink" href="#version-0-6-2-2022-07-14" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Changed: require <code class="docutils literal notranslate"><span class="pre">audobject&gt;=0.7.2</span></code></p></li>
 </ul>
-</div>
-<div class="section" id="version-0-6-1-2022-06-27">
-<h2>Version 0.6.1 (2022-06-27)<a class="headerlink" href="#version-0-6-1-2022-06-27" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="version-0-6-1-2022-06-27">
+<h2>Version 0.6.1 (2022-06-27)<a class="headerlink" href="#version-0-6-1-2022-06-27" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Fixed: added missing <code class="docutils literal notranslate"><span class="pre">onnx</span></code> dependency to <code class="docutils literal notranslate"><span class="pre">setup.cfg</span></code></p></li>
 </ul>
-</div>
-<div class="section" id="version-0-6-0-2022-06-23">
-<h2>Version 0.6.0 (2022-06-23)<a class="headerlink" href="#version-0-6-0-2022-06-23" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="version-0-6-0-2022-06-23">
+<h2>Version 0.6.0 (2022-06-23)<a class="headerlink" href="#version-0-6-0-2022-06-23" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Added: <code class="docutils literal notranslate"><span class="pre">audonnx.Function</span></code></p></li>
 <li><p>Added: <code class="docutils literal notranslate"><span class="pre">audonnx.Model.labels()</span></code></p></li>
@@ -281,22 +289,22 @@ to <code class="docutils literal notranslate"><span class="pre">audonnx.Model.__
 <li><p>Changed: support output nodes where last dimension is dynamic</p></li>
 <li><p>Deprecated: argument <code class="docutils literal notranslate"><span class="pre">output_names</span></code> of <code class="docutils literal notranslate"><span class="pre">audonnx.Model.__call__()</span></code></p></li>
 </ul>
-</div>
-<div class="section" id="version-0-5-2-2022-04-01">
-<h2>Version 0.5.2 (2022-04-01)<a class="headerlink" href="#version-0-5-2-2022-04-01" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="version-0-5-2-2022-04-01">
+<h2>Version 0.5.2 (2022-04-01)<a class="headerlink" href="#version-0-5-2-2022-04-01" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Fixed: always replace dynamic axis names with <code class="docutils literal notranslate"><span class="pre">-1</span></code>
 in input and output shapes of model nodes</p></li>
 </ul>
-</div>
-<div class="section" id="version-0-5-1-2022-03-29">
-<h2>Version 0.5.1 (2022-03-29)<a class="headerlink" href="#version-0-5-1-2022-03-29" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="version-0-5-1-2022-03-29">
+<h2>Version 0.5.1 (2022-03-29)<a class="headerlink" href="#version-0-5-1-2022-03-29" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Added: argument <code class="docutils literal notranslate"><span class="pre">auto_install</span></code> to <code class="docutils literal notranslate"><span class="pre">audonnx.load()</span></code></p></li>
 </ul>
-</div>
-<div class="section" id="version-0-5-0-2022-02-09">
-<h2>Version 0.5.0 (2022-02-09)<a class="headerlink" href="#version-0-5-0-2022-02-09" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="version-0-5-0-2022-02-09">
+<h2>Version 0.5.0 (2022-02-09)<a class="headerlink" href="#version-0-5-0-2022-02-09" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Added: argument <code class="docutils literal notranslate"><span class="pre">device</span></code></p></li>
 <li><p>Changed: use CPU by default</p></li>
@@ -307,27 +315,27 @@ in input and output shapes of model nodes</p></li>
 <code class="docutils literal notranslate"><span class="pre">audonnx.Model.predict()</span></code>,
 <code class="docutils literal notranslate"><span class="pre">audonnx.Model.transform</span></code></p></li>
 </ul>
-</div>
-<div class="section" id="version-0-4-3-2022-01-10">
-<h2>Version 0.4.3 (2022-01-10)<a class="headerlink" href="#version-0-4-3-2022-01-10" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="version-0-4-3-2022-01-10">
+<h2>Version 0.4.3 (2022-01-10)<a class="headerlink" href="#version-0-4-3-2022-01-10" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Fixed: publication of docs failed</p></li>
 </ul>
-</div>
-<div class="section" id="version-0-4-2-2022-01-10">
-<h2>Version 0.4.2 (2022-01-10)<a class="headerlink" href="#version-0-4-2-2022-01-10" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="version-0-4-2-2022-01-10">
+<h2>Version 0.4.2 (2022-01-10)<a class="headerlink" href="#version-0-4-2-2022-01-10" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Fixed: publication of docs failed</p></li>
 </ul>
-</div>
-<div class="section" id="version-0-4-1-2022-01-10">
-<h2>Version 0.4.1 (2022-01-10)<a class="headerlink" href="#version-0-4-1-2022-01-10" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="version-0-4-1-2022-01-10">
+<h2>Version 0.4.1 (2022-01-10)<a class="headerlink" href="#version-0-4-1-2022-01-10" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Fixed: author email address in Python package metadata</p></li>
 </ul>
-</div>
-<div class="section" id="version-0-4-0-2022-01-10">
-<h2>Version 0.4.0 (2022-01-10)<a class="headerlink" href="#version-0-4-0-2022-01-10" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="version-0-4-0-2022-01-10">
+<h2>Version 0.4.0 (2022-01-10)<a class="headerlink" href="#version-0-4-0-2022-01-10" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Added: first public release</p></li>
 <li><p>Changed: switch to MIT license</p></li>
@@ -335,47 +343,47 @@ in input and output shapes of model nodes</p></li>
 <li><p>Fixed: remove <code class="docutils literal notranslate"><span class="pre">audsp</span></code> from docstring example
 as we no longer depend on it</p></li>
 </ul>
-</div>
-<div class="section" id="version-0-3-3-2021-12-30">
-<h2>Version 0.3.3 (2021-12-30)<a class="headerlink" href="#version-0-3-3-2021-12-30" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="version-0-3-3-2021-12-30">
+<h2>Version 0.3.3 (2021-12-30)<a class="headerlink" href="#version-0-3-3-2021-12-30" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Changed: use Python 3.8 as default</p></li>
 </ul>
-</div>
-<div class="section" id="version-0-3-2-2021-11-01">
-<h2>Version 0.3.2 (2021-11-01)<a class="headerlink" href="#version-0-3-2-2021-11-01" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="version-0-3-2-2021-11-01">
+<h2>Version 0.3.2 (2021-11-01)<a class="headerlink" href="#version-0-3-2-2021-11-01" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Changed: use <code class="docutils literal notranslate"><span class="pre">audobject</span></code> &gt;=0.6.1</p></li>
 </ul>
-</div>
-<div class="section" id="version-0-3-1-2021-10-05">
-<h2>Version 0.3.1 (2021-10-05)<a class="headerlink" href="#version-0-3-1-2021-10-05" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="version-0-3-1-2021-10-05">
+<h2>Version 0.3.1 (2021-10-05)<a class="headerlink" href="#version-0-3-1-2021-10-05" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Fixed: <code class="docutils literal notranslate"><span class="pre">audonnx.load()</span></code> try to load model from ONNX if YAML does not exist</p></li>
 </ul>
-</div>
-<div class="section" id="version-0-3-0-2021-10-01">
-<h2>Version 0.3.0 (2021-10-01)<a class="headerlink" href="#version-0-3-0-2021-10-01" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="version-0-3-0-2021-10-01">
+<h2>Version 0.3.0 (2021-10-01)<a class="headerlink" href="#version-0-3-0-2021-10-01" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Changed: audobject &gt;=0.5.0</p></li>
 <li><p>Changed: force <code class="docutils literal notranslate"><span class="pre">.yaml</span></code> extension when model is saved</p></li>
 <li><p>Fixed: if possible load model from <code class="docutils literal notranslate"><span class="pre">.yaml</span></code> in <code class="docutils literal notranslate"><span class="pre">audonnx.load()</span></code></p></li>
 </ul>
-</div>
-<div class="section" id="version-0-2-2-2021-09-23">
-<h2>Version 0.2.2 (2021-09-23)<a class="headerlink" href="#version-0-2-2-2021-09-23" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="version-0-2-2-2021-09-23">
+<h2>Version 0.2.2 (2021-09-23)<a class="headerlink" href="#version-0-2-2-2021-09-23" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Fixed: link to ONNX runtime CUDA mapping table</p></li>
 </ul>
-</div>
-<div class="section" id="version-0-2-1-2021-09-15">
-<h2>Version 0.2.1 (2021-09-15)<a class="headerlink" href="#version-0-2-1-2021-09-15" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="version-0-2-1-2021-09-15">
+<h2>Version 0.2.1 (2021-09-15)<a class="headerlink" href="#version-0-2-1-2021-09-15" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Fixed: loading of old models that contain a <code class="docutils literal notranslate"><span class="pre">model.yaml</span></code> file</p></li>
 </ul>
-</div>
-<div class="section" id="version-0-2-0-2021-07-20">
-<h2>Version 0.2.0 (2021-07-20)<a class="headerlink" href="#version-0-2-0-2021-07-20" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="version-0-2-0-2021-07-20">
+<h2>Version 0.2.0 (2021-07-20)<a class="headerlink" href="#version-0-2-0-2021-07-20" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Added:
 <code class="docutils literal notranslate"><span class="pre">audonnx.InputNode</span></code>,
@@ -400,20 +408,20 @@ as we no longer depend on it</p></li>
 <code class="docutils literal notranslate"><span class="pre">audonnx.Model.output_shape</span></code>,
 <code class="docutils literal notranslate"><span class="pre">audonnx.Model.output_type</span></code>,</p></li>
 </ul>
-</div>
-<div class="section" id="version-0-1-1-2021-03-31">
-<h2>Version 0.1.1 (2021-03-31)<a class="headerlink" href="#version-0-1-1-2021-03-31" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="version-0-1-1-2021-03-31">
+<h2>Version 0.1.1 (2021-03-31)<a class="headerlink" href="#version-0-1-1-2021-03-31" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Changed: update documentation how to select specific GPU device</p></li>
 </ul>
-</div>
-<div class="section" id="version-0-1-0-2021-03-25">
-<h2>Version 0.1.0 (2021-03-25)<a class="headerlink" href="#version-0-1-0-2021-03-25" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="version-0-1-0-2021-03-25">
+<h2>Version 0.1.0 (2021-03-25)<a class="headerlink" href="#version-0-1-0-2021-03-25" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Added: initial release</p></li>
 </ul>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
@@ -436,7 +444,7 @@ as we no longer depend on it</p></li>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2025/08/19 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/04/16 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -444,7 +452,7 @@ as we no longer depend on it</p></li>
   <div role="contentinfo">
     <p>
         
-      &copy; 2021-2025 audEERING GmbH
+      &copy; 2021-2026 audEERING GmbH
     </p>
   </div> 
 
@@ -468,21 +476,16 @@ as we no longer depend on it</p></li>
     
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
-        <script src="_static/thebelab-helper.js"></script>
-        <script src="_static/clipboard.min.js"></script>
-        <script src="_static/copybutton.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=9bcbadda"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="_static/copybutton.js?v=ccdb6887"></script>
     
 
   
 
+  <script type="text/javascript" src="_static/js/jquery.js"></script>
   <script type="text/javascript" src="_static/js/theme.js"></script>
 
   <script type="text/javascript">

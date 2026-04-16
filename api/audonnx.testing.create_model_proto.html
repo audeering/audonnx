@@ -5,7 +5,8 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>create_model_proto() &mdash; Documentation</title>
@@ -28,8 +29,6 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/audeering.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/jupyter-sphinx.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/thebelab.css" type="text/css" />
   <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -67,7 +66,7 @@
             
             
               <div class="version">
-                v1.0.0
+                v1.0.1
               </div>
             
           
@@ -147,11 +146,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="create-model-proto">
-<h1>create_model_proto()<a class="headerlink" href="#create-model-proto" title="Permalink to this heading">¶</a></h1>
+  <section id="create-model-proto">
+<h1>create_model_proto()<a class="headerlink" href="#create-model-proto" title="Link to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="audonnx.testing.create_model_proto">
-<span class="sig-prename descclassname"><span class="pre">audonnx.testing.</span></span><span class="sig-name descname"><span class="pre">create_model_proto</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shapes</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">opset_version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">14</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ir_version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">7</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/audonnx/core/testing.html#create_model_proto"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audonnx.testing.create_model_proto" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">audonnx.testing.</span></span><span class="sig-name descname"><span class="pre">create_model_proto</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shapes</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">opset_version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">14</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ir_version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">7</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/audonnx/core/testing.html#create_model_proto"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audonnx.testing.create_model_proto" title="Link to this definition">¶</a></dt>
 <dd><p>Create test ONNX proto object.</p>
 <p>Creates an identity graph
 with input and output nodes
@@ -165,68 +164,38 @@ one dynamic axis is allowed.
 The identity graph can be used as <code class="docutils literal notranslate"><span class="pre">path</span></code> argument
 of <a class="reference internal" href="audonnx.Model.html#audonnx.Model" title="audonnx.Model"><code class="xref py py-class docutils literal notranslate"><span class="pre">audonnx.Model</span></code></a>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>shapes</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]]) – list with shapes defining the identical
+<li><p><strong>shapes</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]]</span>) – list with shapes defining the identical
 input and output nodes of the model graph</p></li>
-<li><p><strong>dtype</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – data type, see <a class="reference external" href="https://onnxruntime.ai/docs/reference/operators/custom-python-operator.html#supported-data-types">supported data types</a></p></li>
-<li><p><strong>opset_version</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – opset version</p></li>
-<li><p><strong>ir_version</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – ir version</p></li>
+<li><p><strong>dtype</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – data type, see <a class="reference external" href="https://onnxruntime.ai/docs/reference/operators/custom-python-operator.html#supported-data-types">supported data types</a></p></li>
+<li><p><strong>opset_version</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – opset version</p></li>
+<li><p><strong>ir_version</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – ir version</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelProto</span></code></p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelProto</span></code></span></p>
 </dd>
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>ONNX object</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">create_model_proto</span><span class="p">([[</span><span class="mi">2</span><span class="p">]])</span>
-<span class="go">ir_version: 7</span>
-<span class="go">producer_name: &quot;test&quot;</span>
-<span class="go">graph {</span>
-<span class="go">  node {</span>
-<span class="go">    input: &quot;input-0&quot;</span>
-<span class="go">    output: &quot;output-0&quot;</span>
-<span class="go">    op_type: &quot;Identity&quot;</span>
-<span class="go">  }</span>
-<span class="go">  name: &quot;test&quot;</span>
-<span class="go">  input {</span>
-<span class="go">    name: &quot;input-0&quot;</span>
-<span class="go">    type {</span>
-<span class="go">      tensor_type {</span>
-<span class="go">        elem_type: 1</span>
-<span class="go">        shape {</span>
-<span class="go">          dim {</span>
-<span class="go">            dim_value: 2</span>
-<span class="go">          }</span>
-<span class="go">        }</span>
-<span class="go">      }</span>
-<span class="go">    }</span>
-<span class="go">  }</span>
-<span class="go">  output {</span>
-<span class="go">    name: &quot;output-0&quot;</span>
-<span class="go">    type {</span>
-<span class="go">      tensor_type {</span>
-<span class="go">        elem_type: 1</span>
-<span class="go">        shape {</span>
-<span class="go">          dim {</span>
-<span class="go">            dim_value: 2</span>
-<span class="go">          }</span>
-<span class="go">        }</span>
-<span class="go">      }</span>
-<span class="go">    }</span>
-<span class="go">  }</span>
-<span class="go">}</span>
-<span class="go">opset_import {</span>
-<span class="go">  version: 14</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">create_model_proto</span><span class="p">([[</span><span class="mi">2</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">onnx</span><span class="o">.</span><span class="n">printer</span><span class="o">.</span><span class="n">to_text</span><span class="p">(</span><span class="n">model</span><span class="p">))</span>
+<span class="go">&lt;</span>
+<span class="go">   ir_version: 7,</span>
+<span class="go">   opset_import: [&quot;&quot; : 14],</span>
+<span class="go">   producer_name: &quot;test&quot;</span>
+<span class="go">&gt;</span>
+<span class="go">test (float[2] &quot;input-0&quot;) =&gt; (float[2] &quot;output-0&quot;) {</span>
+<span class="go">   &quot;output-0&quot; = Identity (&quot;input-0&quot;)</span>
 <span class="go">}</span>
 </pre></div>
 </div>
 </dd></dl>
 
-</div>
+</section>
 
 
            </div>
@@ -251,7 +220,7 @@ input and output nodes of the model graph</p></li>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2025/08/19 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/04/16 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -259,7 +228,7 @@ input and output nodes of the model graph</p></li>
   <div role="contentinfo">
     <p>
         
-      &copy; 2021-2025 audEERING GmbH
+      &copy; 2021-2026 audEERING GmbH
     </p>
   </div> 
 
@@ -283,21 +252,16 @@ input and output nodes of the model graph</p></li>
     
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
-        <script src="../_static/thebelab-helper.js"></script>
-        <script src="../_static/clipboard.min.js"></script>
-        <script src="../_static/copybutton.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=9bcbadda"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../_static/copybutton.js?v=ccdb6887"></script>
     
 
   
 
+  <script type="text/javascript" src="../_static/js/jquery.js"></script>
   <script type="text/javascript" src="../_static/js/theme.js"></script>
 
   <script type="text/javascript">
