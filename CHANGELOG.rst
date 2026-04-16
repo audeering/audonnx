@@ -12,7 +12,7 @@ Version 1.0.1 (2026-04-16)
 
 * Added: support for Python 3.14
 * Changed: depend on ``onnxruntime<1.24`` for Python 3.10
-* Changed: Changed: exclude ``tests/`` and ``docs/`` folders from the Python package
+* Changed: exclude ``tests/`` and ``docs/`` folders from the Python package
 
 
 Version 1.0.0 (2025-08-19)
