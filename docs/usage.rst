@@ -186,10 +186,10 @@ but we can use audinterface_ to create one.
     ...     process_func=onnx_model,
     ... )
     >>> interface.process_index(index)
-                                                  female        male
+                                              female        male
     file     start           end
-    test.wav 0 days 00:00:00 0 days 00:00:03  191.204071  232.138229
-             0 days 00:00:03 0 days 00:00:05  190.130585  230.189331
+    test.wav 0 days 00:00:00 0 days 00:00:03  191.20...  232.13...
+             0 days 00:00:03 0 days 00:00:05  190.13...  230.18...
 
 Or if we are only interested in the majority class.
 
@@ -372,7 +372,7 @@ Then we can save and load the model as before.
     >>> onnx_model_5.to_yaml(onnx_meta_path)
     >>> onnx_model_6 = audonnx.load(onnx_root)
     >>> onnx_model_6(signal, sampling_rate)
-    array([43.0061..., -2.545765...], dtype=float32)
+    array([43.006..., -2.545...], dtype=float32)
 
 
 Multiple nodes
@@ -478,9 +478,7 @@ returns a dictionary with output for every node.
 .. code-block:: pycon
 
     >>> onnx_model_7(signal, sampling_rate)
-    {'hidden': array([ 7.6037818e-01, -1.2064241e-02,  3.2603091e-01, -4.6754807e-01,
-           -4.1000482e+02,  7.2107361e+01, -5.6038922e+02,  1.9108322e+01],
-          dtype=float32), 'gender': array([307.07407 ,  22.489958], dtype=float32), 'confidence': array([-92.46997], dtype=float32)}
+    {'hidden': array([ 7.603...e-01, ...], dtype=float32), 'gender': array([307.07..., 22.489...], dtype=float32), 'confidence': array([-92.46...], dtype=float32)}
 
 To request a specific node use the ``outputs`` argument.
 
@@ -491,7 +489,7 @@ To request a specific node use the ``outputs`` argument.
     ...     sampling_rate,
     ...     outputs="gender",
     ... )
-    array([307.07407 ,  22.489958], dtype=float32)
+    array([307.07..., 22.489...], dtype=float32)
 
 Or provide a list of names to request several outputs.
 
@@ -502,7 +500,7 @@ Or provide a list of names to request several outputs.
     ...     sampling_rate,
     ...     outputs=["gender", "confidence"],
     ... )
-    {'gender': array([307.07407 ,  22.489958], dtype=float32), 'confidence': array([-92.46997], dtype=float32)}
+    {'gender': array([307.07..., 22.489...], dtype=float32), 'confidence': array([-92.46...], dtype=float32)}
 
 To concatenate the outputs to a single array,
 do:
@@ -515,7 +513,7 @@ do:
     ...     outputs=["gender", "confidence"],
     ...     concat=True,
     ... )
-    array([307.07407 ,  22.489958, -92.46997 ], dtype=float32)
+    array([307.07..., 22.489..., -92.46...], dtype=float32)
 
 Create interface and process a file.
 
@@ -533,7 +531,7 @@ Create interface and process a file.
     >>> interface.process_file(file)
                                                    female       male  confidence
     file     start  end
-    test.wav 0 days 0 days 00:00:05.247687500  307.074066  22.489958  -92.469971
+    test.wav 0 days 0 days 00:00:05.247687500  307.07...  22.489...  -92.46...
 
 
 Additional input values
@@ -589,9 +587,7 @@ as a dictionary when calling the model.
     ...     {"signal": signal, "feature": y},
     ...     sampling_rate,
     ... )
-    {'hidden': array([ 7.6037818e-01, -1.2064241e-02,  3.2603091e-01, -4.6754807e-01,
-           -4.1000482e+02,  7.2107361e+01, -5.6038922e+02,  1.9108322e+01],
-          dtype=float32), 'gender': array([307.07407 ,  22.489958], dtype=float32), 'confidence': array([-92.46997], dtype=float32)}
+    {'hidden': array([ 7.603...e-01, ...], dtype=float32), 'gender': array([307.07..., 22.489...], dtype=float32), 'confidence': array([-92.46...], dtype=float32)}
 
 It is also possible to create a model
 that doesn't use a ``signal`` as input.
@@ -688,9 +684,7 @@ input.
     ...     {"signal": signal, "my_input": y},
     ...     sampling_rate,
     ... )
-    {'hidden': array([ 7.6037818e-01, -1.2064241e-02,  3.2603091e-01, -4.6754807e-01,
-           -4.1000482e+02,  7.2107361e+01, -5.6038922e+02,  1.9108322e+01],
-          dtype=float32), 'gender': array([307.07407 ,  22.489958], dtype=float32), 'confidence': array([-92.46997], dtype=float32)}
+    {'hidden': array([ 7.603...e-01, ...], dtype=float32), 'gender': array([307.07..., 22.489...], dtype=float32), 'confidence': array([-92.46...], dtype=float32)}
 
 We can optionally set keyword arguments with default values,
 in this case ``offset``.
@@ -701,9 +695,7 @@ in this case ``offset``.
     ...     {"signal": signal, "my_input": y, "offset": 1},
     ...     sampling_rate,
     ... )
-    {'hidden': array([ 7.6037818e-01, -1.2064241e-02,  3.2603091e-01, -4.6754807e-01,
-           -4.1040109e+02,  7.2496727e+01, -5.6054236e+02,  1.9019484e+01],
-          dtype=float32), 'gender': array([307.29623 ,  22.639301], dtype=float32), 'confidence': array([-92.62186], dtype=float32)}
+    {'hidden': array([ 7.603...e-01, ...], dtype=float32), 'gender': array([307.29..., 22.63...], dtype=float32), 'confidence': array([-92.6...], dtype=float32)}
 
 
 Run on the GPU
