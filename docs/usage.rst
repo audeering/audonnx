@@ -69,7 +69,7 @@ Calculate features and run Torch_ model.
     >>> with torch.no_grad():
     ...     z = torch_model(torch.from_numpy(y))
     >>> z
-    tensor([191.025..., 232.3628])
+    tensor([191.025..., 232.362...])
 
 
 Export model
@@ -168,7 +168,7 @@ Check that the exported model gives the expected output.
 .. code-block:: pycon
 
     >>> onnx_model(signal, sampling_rate)
-    array([191.02567, 232.36278], dtype=float32)
+    array([191.025..., 232.36...], dtype=float32)
 
 
 Create interface
@@ -242,7 +242,7 @@ Load the model from a YAML file.
     >>> import audobject
     >>> onnx_model_2 = audobject.from_yaml(onnx_meta_path)
     >>> onnx_model_2(signal, sampling_rate)
-    array([191.02567, 232.36278], dtype=float32)
+    array([191.025..., 232.36...], dtype=float32)
 
 Or shorter:
 
@@ -250,7 +250,7 @@ Or shorter:
 
     >>> onnx_model_3 = audonnx.load(onnx_root)
     >>> onnx_model_3(signal, sampling_rate)
-    array([191.02567, 232.36278], dtype=float32)
+    array([191.025..., 232.36...], dtype=float32)
 
 
 Quantize weights
@@ -293,7 +293,7 @@ The output of the quantized model differs slightly.
     ...     transform=smile,
     ... )
     >>> onnx_model_4(signal, sampling_rate)
-    array([191.16478, 232.2706 ], dtype=float32)
+    array([191.16..., 232.27...], dtype=float32)
 
 .. skip: end
 
@@ -617,7 +617,7 @@ and can ignore the ``sampling_rate``.
 .. code-block:: pycon
 
     >>> onnx_model_9(y)
-    array([191.02567, 232.36278], dtype=float32)
+    array([191.025..., 232.36...], dtype=float32)
 
 We can also use :class:`audonnx.Function`
 with a function with any arguments,
