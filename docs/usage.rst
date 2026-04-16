@@ -8,23 +8,24 @@ Models with single or multiple input and output nodes are supported.
 We begin with creating some test input -
 a file path, a signal array and an index in audformat_.
 
-.. code-block:: pycon
+.. code-block:: python
 
-    >>> import audiofile
-    >>> import pandas as pd
-    >>> file = "test.wav"
-    >>> signal, sampling_rate = audiofile.read(
-    ...     file,
-    ...     always_2d=True,
-    ... )
-    >>> index = pd.MultiIndex.from_arrays(
-    ...     [
-    ...         [file, file],
-    ...         pd.to_timedelta(["0s", "3s"]),
-    ...         pd.to_timedelta(["3s", "5s"]),
-    ...     ],
-    ...     names=["file", "start", "end"],
-    ... )
+    import audiofile
+    import pandas as pd
+
+    file = "test.wav"
+    signal, sampling_rate = audiofile.read(
+        file,
+        always_2d=True,
+    )
+    index = pd.MultiIndex.from_arrays(
+        [
+            [file, file],
+            pd.to_timedelta(["0s", "3s"]),
+            pd.to_timedelta(["3s", "5s"]),
+        ],
+        names=["file", "start", "end"],
+    )
 
 
 Torch model
@@ -32,34 +33,36 @@ Torch model
 
 Create Torch_ model with a single input and output node.
 
-.. code-block:: pycon
+.. code-block:: python
 
-    >>> import torch
-    >>> class TorchModelSingle(torch.nn.Module):
-    ...
-    ...     def __init__(
-    ...         self,
-    ...     ):
-    ...         super().__init__()
-    ...         self.hidden = torch.nn.Linear(18, 8)
-    ...         self.out = torch.nn.Linear(8, 2)
-    ...
-    ...     def forward(self, x: torch.Tensor):
-    ...         y = self.hidden(x.mean(dim=-1))
-    ...         y = self.out(y)
-    ...         return y.squeeze()
-    >>> torch_model = TorchModelSingle()
+    import torch
+
+    class TorchModelSingle(torch.nn.Module):
+    
+        def __init__(
+            self,
+        ):
+            super().__init__()
+            self.hidden = torch.nn.Linear(18, 8)
+            self.out = torch.nn.Linear(8, 2)
+    
+        def forward(self, x: torch.Tensor):
+            y = self.hidden(x.mean(dim=-1))
+            y = self.out(y)
+            return y.squeeze()
+    torch_model = TorchModelSingle()
 
 Create OpenSMILE_ feature extractor to convert the
 raw audio signal to a sequence of low-level descriptors.
 
-.. code-block:: pycon
+.. code-block:: python
 
-    >>> import opensmile
-    >>> smile = opensmile.Smile(
-    ...     feature_set=opensmile.FeatureSet.GeMAPSv01b,
-    ...     feature_level=opensmile.FeatureLevel.LowLevelDescriptors,
-    ... )
+    import opensmile
+
+    smile = opensmile.Smile(
+        feature_set=opensmile.FeatureSet.GeMAPSv01b,
+        feature_level=opensmile.FeatureLevel.LowLevelDescriptors,
+    )
 
 Calculate features and run Torch_ model.
 
@@ -85,23 +88,24 @@ we tell the function that the last dimension
 of the input has a dynamic size.
 And we assign meaningful names to the nodes.
 
-.. code-block:: pycon
+.. code-block:: python
 
-    >>> import audeer
-    >>> import os
-    >>> onnx_root = audeer.mkdir("onnx")
-    >>> onnx_model_path = os.path.join(onnx_root, "model.onnx")
-    >>> dummy_input = torch.randn(y.shape[1:])
-    >>> torch.onnx.export(
-    ...     torch_model,
-    ...     dummy_input,
-    ...     onnx_model_path,
-    ...     input_names=["feature"],  # assign custom name to input node
-    ...     output_names=["gender"],  # assign custom name to output node
-    ...     dynamic_axes={"feature": {1: "time"}},  # dynamic size
-    ...     opset_version=12,
-    ...     dynamo=False,
-    ... )
+    import audeer
+    import os
+
+    onnx_root = audeer.mkdir("onnx")
+    onnx_model_path = os.path.join(onnx_root, "model.onnx")
+    dummy_input = torch.randn(y.shape[1:])
+    torch.onnx.export(
+        torch_model,
+        dummy_input,
+        onnx_model_path,
+        input_names=["feature"],  # assign custom name to input node
+        output_names=["gender"],  # assign custom name to output node
+        dynamic_axes={"feature": {1: "time"}},  # dynamic size
+        opset_version=12,
+        dynamo=False,
+    )
 
 From the exported model file
 we now create an object of :class:`audonnx.Model`.
@@ -207,10 +211,10 @@ Save and load
 
 Save the model to a YAML file.
 
-.. code-block:: pycon
+.. code-block:: python
 
-    >>> onnx_meta_path = os.path.join(onnx_root, "model.yaml")
-    >>> onnx_model.to_yaml(onnx_meta_path)
+    onnx_meta_path = os.path.join(onnx_root, "model.yaml")
+    onnx_model.to_yaml(onnx_meta_path)
 
 .. code-block:: pycon
 
@@ -268,20 +272,21 @@ as well as
 
 .. skip: start
 
-.. code-block:: pycon
+.. code-block:: python
 
-    >>> import onnxruntime.quantization
-    >>> onnx_infer_path = os.path.join(onnx_root, "model_infer.onnx")
-    >>> onnxruntime.quantization.quant_pre_process(
-    ...     onnx_model_path,
-    ...     onnx_infer_path,
-    ... )
-    >>> onnx_quant_path = os.path.join(onnx_root, "model_quant.onnx")
-    >>> onnxruntime.quantization.quantize_dynamic(
-    ...     onnx_infer_path,
-    ...     onnx_quant_path,
-    ...     weight_type=onnxruntime.quantization.QuantType.QUInt8,
-    ... )
+    import onnxruntime.quantization
+
+    onnx_infer_path = os.path.join(onnx_root, "model_infer.onnx")
+    onnxruntime.quantization.quant_pre_process(
+        onnx_model_path,
+        onnx_infer_path,
+    )
+    onnx_quant_path = os.path.join(onnx_root, "model_quant.onnx")
+    onnxruntime.quantization.quantize_dynamic(
+        onnx_infer_path,
+        onnx_quant_path,
+        weight_type=onnxruntime.quantization.QuantType.QUInt8,
+    )
 
 The output of the quantized model differs slightly.
 
@@ -318,16 +323,16 @@ we can define a function that extracts
 Mel-frequency cepstral coefficients (MFCCs)
 with librosa_.
 
-.. code-block:: pycon
+.. code-block:: python
 
-    >>> def mfcc(x, sr):
-    ...     import librosa  # import here to make function self-contained
-    ...     y = librosa.feature.mfcc(
-    ...         y=x.squeeze(),
-    ...         sr=sr,
-    ...         n_mfcc=18,
-    ...     )
-    ...     return y.reshape(1, 18, -1)
+    def mfcc(x, sr):
+        import librosa  # import here to make function self-contained
+        y = librosa.feature.mfcc(
+            y=x.squeeze(),
+            sr=sr,
+            n_mfcc=18,
+        )
+        return y.reshape(1, 18, -1)
 
 As long as the function is self-contained
 (i.e. does not depend on external variables or imports)
@@ -383,34 +388,34 @@ raw audio in addition to the features
 and provides two more output nodes -
 the output from the hidden layer and a confidence value.
 
-.. code-block:: pycon
+.. code-block:: python
 
-    >>> class TorchModelMulti(torch.nn.Module):
-    ...
-    ...     def __init__(
-    ...         self,
-    ...     ):
-    ...         super().__init__()
-    ...         self.hidden_left = torch.nn.Linear(1, 4)
-    ...         self.hidden_right = torch.nn.Linear(18, 4)
-    ...         self.out = torch.nn.ModuleDict(
-    ...             {
-    ...                 "gender": torch.nn.Linear(8, 2),
-    ...                 "confidence": torch.nn.Linear(8, 1),
-    ...             }
-    ...         )
-    ...
-    ...     def forward(self, signal: torch.Tensor, feature: torch.Tensor):
-    ...         y_left = self.hidden_left(signal.mean(dim=-1))
-    ...         y_right = self.hidden_right(feature.mean(dim=-1))
-    ...         y_hidden = torch.cat([y_left, y_right], dim=-1)
-    ...         y_gender = self.out["gender"](y_hidden)
-    ...         y_confidence = self.out["confidence"](y_hidden)
-    ...         return (
-    ...             y_hidden.squeeze(),
-    ...             y_gender.squeeze(),
-    ...             y_confidence,
-    ...         )
+    class TorchModelMulti(torch.nn.Module):
+    
+        def __init__(
+            self,
+        ):
+            super().__init__()
+            self.hidden_left = torch.nn.Linear(1, 4)
+            self.hidden_right = torch.nn.Linear(18, 4)
+            self.out = torch.nn.ModuleDict(
+                {
+                    "gender": torch.nn.Linear(8, 2),
+                    "confidence": torch.nn.Linear(8, 1),
+                }
+            )
+    
+        def forward(self, signal: torch.Tensor, feature: torch.Tensor):
+            y_left = self.hidden_left(signal.mean(dim=-1))
+            y_right = self.hidden_right(feature.mean(dim=-1))
+            y_hidden = torch.cat([y_left, y_right], dim=-1)
+            y_gender = self.out["gender"](y_hidden)
+            y_confidence = self.out["confidence"](y_hidden)
+            return (
+                y_hidden.squeeze(),
+                y_gender.squeeze(),
+                y_confidence,
+            )
 
 Export the new model to ONNX_ format and load it.
 Note that we do not assign labels to all output nodes.
@@ -478,7 +483,7 @@ returns a dictionary with output for every node.
 .. code-block:: pycon
 
     >>> onnx_model_7(signal, sampling_rate)
-    {'hidden': array([ 7.603...e-01, ...], dtype=float32), 'gender': array([307.07..., 22.489...], dtype=float32), 'confidence': array([-92.46...], dtype=float32)}
+    {'hidden': array([ 7.603...e-01, ...], dtype=float32), 'gender': ...}
 
 To request a specific node use the ``outputs`` argument.
 
@@ -500,7 +505,7 @@ Or provide a list of names to request several outputs.
     ...     sampling_rate,
     ...     outputs=["gender", "confidence"],
     ... )
-    {'gender': array([307.07..., 22.489...], dtype=float32), 'confidence': array([-92.46...], dtype=float32)}
+    {'gender': array([307.07..., 22.489...], dtype=float32), 'confidence': ...}
 
 To concatenate the outputs to a single array,
 do:
@@ -587,7 +592,7 @@ as a dictionary when calling the model.
     ...     {"signal": signal, "feature": y},
     ...     sampling_rate,
     ... )
-    {'hidden': array([ 7.603...e-01, ...], dtype=float32), 'gender': array([307.07..., 22.489...], dtype=float32), 'confidence': array([-92.46...], dtype=float32)}
+    {'hidden': array([ 7.603...e-01, ...], dtype=float32), 'gender': ...}
 
 It is also possible to create a model
 that doesn't use a ``signal`` as input.
@@ -684,7 +689,7 @@ input.
     ...     {"signal": signal, "my_input": y},
     ...     sampling_rate,
     ... )
-    {'hidden': array([ 7.603...e-01, ...], dtype=float32), 'gender': array([307.07..., 22.489...], dtype=float32), 'confidence': array([-92.46...], dtype=float32)}
+    {'hidden': array([ 7.603...e-01, ...], dtype=float32), 'gender': ...}
 
 We can optionally set keyword arguments with default values,
 in this case ``offset``.
@@ -695,7 +700,7 @@ in this case ``offset``.
     ...     {"signal": signal, "my_input": y, "offset": 1},
     ...     sampling_rate,
     ... )
-    {'hidden': array([ 7.603...e-01, ...], dtype=float32), 'gender': array([307.29..., 22.63...], dtype=float32), 'confidence': array([-92.6...], dtype=float32)}
+    {'hidden': array([ 7.603...e-01, ...], dtype=float32), 'gender': ...}
 
 
 Run on the GPU
