@@ -4,7 +4,7 @@ from doctest import NORMALIZE_WHITESPACE
 from sybil import Sybil
 from sybil.parsers.rest import DocTestParser
 
-from audonnx._doctest_linecache import install_doctest_linecache_patch
+from docs.conftest import install_doctest_linecache_patch
 
 
 # Install the shared ``linecache`` patch so ``inspect.getsource``

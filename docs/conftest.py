@@ -1,5 +1,13 @@
+"""Sybil-based doctest collection for ``docs/usage.rst``.
+
+Also provides ``install_doctest_linecache_patch()`` which is shared
+with ``audonnx/conftest.py``.
+"""
+
+import doctest
 from doctest import ELLIPSIS
 from doctest import NORMALIZE_WHITESPACE
+import linecache
 import os
 import shutil
 
@@ -9,13 +17,57 @@ from sybil.parsers.rest import DocTestParser
 from sybil.parsers.rest import PythonCodeBlockParser
 from sybil.parsers.rest import SkipParser
 
-from audonnx._doctest_linecache import install_doctest_linecache_patch
+
+# ---------------------------------------------------------------------------
+# Shared helper: make ``inspect.getsource`` work inside doctest examples
+# ---------------------------------------------------------------------------
+#
+# ``audonnx.Function`` uses ``audobject.resolver.Function``, which calls
+# ``inspect.getsource(func)`` to serialise a function's source code.
+# ``inspect.getsource`` reads source lines from ``linecache`` keyed by
+# ``func.__code__.co_filename``.
+#
+# Python's ``doctest`` module compiles each example with a synthetic
+# filename (``<doctest name[N]>``) but does *not* register the source
+# in ``linecache``, so ``inspect.getsource`` raises ``OSError`` for
+# functions defined inline in doctests.  We fix this by wrapping
+# ``DocTestRunner.run`` to populate ``linecache`` before each run.
+
+_PATCH_ATTR = "_audonnx_linecache_patch"
 
 
-# Install the shared ``linecache`` patch so ``inspect.getsource``
-# works for functions defined inline in doctests (needed by
-# ``audonnx.Function``/``audobject.resolver.Function`` when they
-# serialise a function's source code).
+def install_doctest_linecache_patch() -> None:
+    """Patch ``doctest.DocTestRunner.run`` to populate ``linecache``.
+
+    The patch is guarded by a sentinel attribute so that it is only
+    applied once, regardless of how many times this function is called.
+    """
+    if getattr(doctest.DocTestRunner.run, _PATCH_ATTR, False):
+        return
+
+    orig_run = doctest.DocTestRunner.run
+
+    def run_with_linecache(self, test, *args, **kwargs):
+        counter = getattr(self, "_example_counter", 0) + 1
+        self._example_counter = counter
+        test.name = f"{test.name}-{counter}"
+        for examplenum, example in enumerate(test.examples):
+            filename = "<doctest %s[%d]>" % (test.name, examplenum)
+            lines = example.source.splitlines(keepends=True)
+            linecache.cache[filename] = (
+                len(example.source),
+                None,
+                lines,
+                filename,
+            )
+        return orig_run(self, test, *args, **kwargs)
+
+    setattr(run_with_linecache, _PATCH_ATTR, True)
+    doctest.DocTestRunner.run = run_with_linecache
+
+
+# Install the patch so ``inspect.getsource`` works for functions
+# defined inline in doctests.
 install_doctest_linecache_patch()
 
 
