@@ -35,6 +35,7 @@ jobs:
     - name: Install uv
       uses: astral-sh/setup-uv@v9.0.0
       with:
+        cache-suffix: ${{ github.workflow }}
         prune-cache: true
 
     - name: Prepare Ubuntu
