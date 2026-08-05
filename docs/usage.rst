@@ -203,7 +203,7 @@ Or if we are only interested in the majority class.
     file      start            end
     test.wav  0 days 00:00:00  0 days 00:00:03    male
               0 days 00:00:03  0 days 00:00:05    male
-    dtype: object
+    dtype: ...
 
 
 Save and load
