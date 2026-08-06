@@ -25,15 +25,18 @@ jobs:
             python-version: '3.14'
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
 
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v7
       with:
         python-version: ${{ matrix.python-version }}
 
     - name: Install uv
-      uses: astral-sh/setup-uv@v5
+      uses: astral-sh/setup-uv@v9.0.0
+      with:
+        cache-suffix: ${{ github.workflow }}
+        prune-cache: true
 
     - name: Prepare Ubuntu
       run: |
@@ -48,8 +51,8 @@ jobs:
       run: uv run pytest
 
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v4
+      uses: codecov/codecov-action@v7
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        file: ./coverage.xml
+        files: ./coverage.xml
       if: matrix.os == 'ubuntu-latest'
